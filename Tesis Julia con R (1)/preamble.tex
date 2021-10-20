@@ -1,0 +1,120 @@
+\usepackage[paperwidth=17cm, paperheight=22.5cm, bottom=2.5cm, right=2.5cm]{geometry}
+
+% El borde inferior puede parecerles muy amplio a la vista. Les recomiendo hacer una prueba de impresión antes para ajustarlo
+
+\usepackage{amssymb,amsmath,amsthm} % Símbolos matemáticos
+\usepackage[spanish,mexico,es-tabla]{babel}
+\usepackage[utf8]{inputenc} % Acentos y otros símbolos 
+\usepackage{enumerate}
+\usepackage{optidef}
+\usepackage{hyperref} % Hipervínculos en el índice
+\usepackage[spanish]{cleveref}
+\usepackage{graphicx}
+\usepackage[usenames,dvipsnames]{xcolor} % Color
+%\usepackage{subfig} % Subfiguras
+\usepackage{listings}%Para los códigos de MALTAB, ver documentación de matlab-prettifier
+\usepackage[framed]{matlab-prettifier}
+\usepackage[linesnumbered,lined,boxruled,spanish,onelanguage]{algorithm2e}
+\usepackage{titling}
+\usepackage{amsfonts}
+\usepackage[thinc]{esdiff}
+\spanishdecimal{.}
+\definecolor{itamgreen}{RGB}{0,104,83}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=itamgreen,
+    filecolor=itamgreen,      
+    urlcolor=itamgreen,
+    citecolor=itamgreen
+}
+\urlstyle{same}
+
+
+\usepackage{translations}
+\graphicspath{{Imagenes/}} % En qué carpeta están las imágenes
+
+\DeclareTranslationFallback{rank}{rank}
+\DeclareTranslation{english}{rank}{rank}
+\DeclareTranslation{spanish}{rank}{rango}
+
+\DeclareMathOperator{\rank}{\GetTranslation{rank}}
+
+
+% Para eliminar guiones y justificar texto
+\tolerance=1
+\emergencystretch=\maxdimen
+\hyphenpenalty=10000
+\hbadness=10000
+
+\linespread{1.25} % Asemeja el interlineado 1.5 de Word
+
+\let\oldfootnote\footnote % Deja espacio entre el número del pie de página y el inicio del texto
+\renewcommand\footnote[1]{%
+\oldfootnote{\hspace{0.05mm}#1}}
+
+\newcommand{\bigO}[1]{\ensuremath{\mathop{}\mathopen{}\mathcal{O}\mathopen{}\left(#1\right)}}
+
+\newcommand\smallO[1]{
+    \mathchoice
+    {% mode \displaystyle
+      \scriptstyle\mathcal{O}\left(#1\right)
+    }
+    {% mode \textstyle
+      \scriptstyle\mathcal{O}\left(#1\right)
+    }
+    {% mode \scriptstyle
+      \scriptscriptstyle\mathcal{O}\left(#1\right)
+    }
+    {% mode \scriptscriptstyle
+      \scalebox{0.7}{$\scriptscriptstyle\mathcal{O}$}\left(#1\right)
+    }
+}
+  
+
+\renewcommand{\thefootnote} {\textcolor{Black}{\arabic{footnote}}} % Súperindice a color negro
+
+\setlength{\footnotesep}{0.75\baselineskip} % Espaciado entre notas al pie
+
+\usepackage{fnpos} % Footnotes al final de pág.
+
+\usepackage[justification=centering, font=bf, labelsep=period, skip=5pt]{caption} % Centrar captions de tablas y ponerlas en negritas
+
+\newcommand{\imagesource}[1]{{\footnotesize Fuente: #1}}
+
+\usepackage{tabularx} % Big tables
+\usepackage{adjustbox}
+\usepackage{longtable}
+
+
+\usepackage{float} % Float tables
+
+\usepackage{pgfplots} % Gráficas
+\pgfplotsset{compat=newest}
+\pgfplotsset{width=7.5cm}
+\pgfkeys{/pgf/number format/1000 sep={}}
+
+\newtheorem{theorem}{Teorema}[chapter]
+\newtheorem{corollary}{Corolario}[theorem]
+\newtheorem{lemma}[theorem]{Lema}
+\newtheorem{definition}{Definición}
+\newtheorem{plain}{Proposición}
+\newtheorem{remark}{Corolario}[plain]
+
+\newcommand{\Tr}[1]{\operatorname{Tr}\left(#1\right)}
+\newcommand{\diag}[1]{\operatorname{diag}\left(#1\right)}
+\newcommand{\frNm}[1]{\left\|#1\right\|_{\mathrm{F}}}
+
+\SetKwBlock{Loop}{Repetir}{fin}
+
+\usepackage{afterpage}
+\newcommand\myemptypage{
+    \null
+    \thispagestyle{empty}
+    \newpage
+    }
+    
+    
+\usepackage{todonotes}
+%HAY Q BORRAR ESTOS COMMANDS EVENTUALMENTE
+\newcommand{\val}[1]{\todo[color=blue!20!white]{\textbf{Vale:} #1}}
+\newcommand{\valinline}[1]{\todo[inline,color=blue!20!white]{\textbf{Vale:} #1}}

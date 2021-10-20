@@ -1,0 +1,189 @@
+%----------------------------------------------------------------------------------------
+%	PREÁMBULO
+%----------------------------------------------------------------------------------------
+
+
+\documentclass[11pt, oneside]{book}
+\input{preamble.tex}
+
+\begin{document}
+
+%----------------------------------------------------------------------------------------
+%	PORTADA
+%----------------------------------------------------------------------------------------
+
+
+
+\title{Una tesis extendida ($\overline{\text{tesis}}$)} 
+\author{Valeria Aurora Pérez Chávez}
+
+\begin{titlepage}
+\begin{center}
+
+\textsc{\Large Instituto Tecnológico Autónomo de México}\\[2em]
+
+%Figura
+\begin{figure}[h]
+\begin{center}
+\includegraphics[scale=0.9]{logo-ITAM.pdf}
+\end{center}
+\end{figure}
+
+% Pueden modificar el tamaño del logo cambiando la escala
+
+\textbf{\LARGE \thetitle}\\[2em]
+
+\textsc{\large Tesis}\\[1em]
+
+\textsc{\large que para obtener el título de}\\[1em]
+
+\textsc{\LARGE Licenciado en Matemáticas Aplicadas}\\[1em]
+
+\textsc{\large Presenta}\\[1em]
+
+\textsc{\LARGE \theauthor}\\[1em]
+
+\textsc{\large Asesor: Ernesto Juvenal Barrios Zamudio}\\[1em]
+
+
+% Asegúrense de escribir el nombre completo de su asesor con grado académico
+
+\end{center}
+
+\vspace*{\fill}
+\textsc{Ciudad de México \hspace*{\fill} 2021} %El otro año es el bueno
+
+\end{titlepage}
+
+
+
+%----------------------------------------------------------------------------------------
+%	DECLARACIÓN
+%----------------------------------------------------------------------------------------
+
+\thispagestyle{empty}
+
+\vspace*{\fill}
+\begingroup
+
+\noindent
+«Con fundamento en los artículos 21 y 27 de la Ley Federal del Derecho de Autor y como titular de los derechos moral y patrimonial de la obra titulada ``\textbf{\thetitle}'', otorgo de manera gratuita y permanente al Instituto Tecnológico Autónomo de México y a la Biblioteca Raúl Bailléres Jr., la autorización para que fijen la obra en cualquier medio, incluido el electrónico, y la divulguen entre sus usuarios, profesores, estudiantes o terceras personas, sin que pueda percibir por tal divulgación una contraprestación.»
+
+
+\centering 
+
+\vspace{3em}
+
+\textsc{\theauthor}
+
+\vspace{5em}
+
+\rule[1em]{20em}{0.5pt} % Línea para la fecha
+
+\textsc{Fecha}
+ 
+\vspace{8em}
+
+\rule[1em]{20em}{0.5pt} % Línea para la firma
+
+\textsc{Firma}
+
+\endgroup
+\vspace*{\fill}
+
+\newpage
+
+
+%----------------------------------------------------------------------------------------
+%	DEDICATORIA
+%----------------------------------------------------------------------------------------
+
+\thispagestyle{empty}
+\pagenumbering{gobble}
+
+\chapter*{Agradecimientos}
+
+Agradezco a facu por ser tan chingona y a Mike por pasarme el formato. Salu2.
+\begin{flushright}
+\textsc{El Serch}
+\end{flushright}
+\newpage
+
+
+\pagestyle{plain}
+\frontmatter
+%----------------------------------------------------------------------------------------
+%	RESUMEN
+%----------------------------------------------------------------------------------------
+\include{Chapters/Resumen}
+
+
+%----------------------------------------------------------------------------------------
+%	ÍNDICE GENERAL
+%---------------------------------------------------------------------------------------
+
+\tableofcontents %Opcional pero sugerido, en especial si como Paco van a escribir un libro de 500 páginas. Es tesis, no enciclopedia.
+
+%----------------------------------------------------------------------------------------
+%	ÍNDICE DE CUADROS Y FIGURAS
+%---------------------------------------------------------------------------------------
+
+\listofalgorithms %Opcional
+\newpage
+
+\listoftables %Opcional
+
+\listoffigures %Opcional
+
+%----------------------------------------------------------------------------------------
+%	TESIS
+%----------------------------------------------------------------------------------------
+
+\mainmatter % Empieza la numeración de las páginas
+
+\pagestyle{plain}
+
+% Incluye los capítulos en el fólder de capítulos
+
+\include{Chapters/1.Introduccion}
+\include{Chapters/2.Julia}
+\include{Chapters/3.Turing}
+\include{Chapters/4.R}
+\include{Chapters/5.ComputadorasVirtuales}
+
+
+%----------------------------------------------------------------------------------------
+%	APÉNDICES
+%----------------------------------------------------------------------------------------
+
+\begin{appendix}
+
+\include{Apendices/ApA}
+
+\end{appendix}
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAFÍA
+%----------------------------------------------------------------------------------------
+
+\bibliography{referencias}
+\bibliographystyle{siam}
+
+\newpage
+\thispagestyle{empty}
+\begin{center}
+\begin{minipage}{.6\linewidth}
+\begin{center}
+\vspace{3cm}
+\begin{small}
+\textit{\thetitle}, escrito por \theauthor , se terminó de imprimir de madrugada,\\ con mucha cafeína en las venas\\ y ojeras en la cara. %Le ponen el nombre del lugar donde la manden a imprimir, la ciudad y el año
+\end{small}
+\end{center}
+\end{minipage}
+\end{center}
+
+% Si lo prefieren, avisen a su taller que esta página ya la incluyeron ustedes para que no les impriman las que ellos usan. Lo recomiendo ampliamente
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
