@@ -1,13 +1,13 @@
 \chapter{Julia}
 
-Julia es un lenguaje de programación gratis cuyo propósito general es ser tan rápido como C,pero manteniendo la facilidad de lenguaje de R o Python. Es una combinación de sintaxis simple con alto rendimiento computacional. Su slogan es "Julia se ve como Python, se siente como Lisp, corre como Fortran" \citep{Hackers}. 
+Julia es un lenguaje de programación gratis cuyo propósito general es ser tan rápido como C, pero manteniendo la facilidad de lenguaje de R o Python. Es una combinación de sintaxis simple con alto rendimiento computacional. Su slogan es "Julia se ve como Python, se siente como Lisp, corre como Fortran" \citep{Hackers}. 
 Esta combinación de características hace que Julia sea un leguaje de programación que ha tomado mucha fuerza en la comunidad científica. Por lo tanto, en esta sección explicaré los básicos de Julia, desde su instalación hasta análisis de regresiones multivariadas. 
 
 \section{Instalación}
 Al momento de escritura de esta tesis la versión de Julia disponible es la v1.6.3 hasta el 23 de Septiembre del 2021. Para descargar Julia, hay que entrar al siguiente link: \url{https://julialang.org/downloads/}. 
 
 \subsection{Windows}
-Para esta versión de Julia, las opciones disponibles de descarga son un instalador de 64-bits o uno de 32-bits. Para saber el tipo de Sistema que tiene tu ordenador de Windows, debes seleccionar el botón de Start, después Configuración $>$ Sistema $>$ Acerca de. En esta opción puedes ver el tipo de sistema que tiene tu computadora. Con esta información, eliges el instalador para tu computadora. Es importante seleccionar el 'installer' y no el 'portable'. Una vez descargado, seleccionas el archivo .exe y sigues los pasos de instalación. 
+Para esta versión de Julia, las opciones disponibles de descarga son un instalador de 64-bits o uno de 32-bits. Para saber el tipo de Sistema que tiene tu ordenador de Windows, debes seleccionar el botón de \textsf{Start}, después \textsf{Configuración} $>$ \textsf{Sistema} $>$ \textsf{Acerca de}. En esta opción puedes ver el tipo de sistema que tiene tu computadora. Con esta información, eliges el instalador para tu computadora. Es importante seleccionar el \textsf{installer} y no el \textsf{portable}. Una vez descargado, seleccionas el archivo \textsf{.exe} y sigues los pasos de instalación. 
 
 
 \subsection{Mac}
@@ -16,7 +16,7 @@ Para el sistema operativo de Mac, solo hay una versión disponible de descarga. 
 
 
 \section{Atom}
-Atom es un editor de texto de programación. Su meta es \textit{no dificultar su uso ni posibilidad de modificación} \citep{ATOM}. \val{No estoy segura de como arreglar esto pero igual parece que no usaremos ATOM} Busca ser lo suficientemente fácil para que cualquier persona, ya sea principiante o experto en la programación lo pueda utilizar. Por lo tanto, es una buena herramienta para escribir, editar y documentar el trabajo que uno hace en Julia. 
+Atom es un editor de texto de programación. Su meta es \textit{no dificultar su uso ni posibilidad de modificación} \citep{ATOM}. \val{No estoy segura de como arreglar esto pero igual parece que no usaremos ATOM} Busca ser lo suficientemente fácil para que cualquier persona, ya sea principiante o experto en programación lo pueda utilizar. Por lo tanto, es una buena herramienta para escribir, editar y documentar el trabajo que uno hace en Julia. 
 
 \subsection{Instalación en Windows} 
 Por supuesto, el primer paso es instalar el programa. Para hacerlo, hay que ir a la página \url{https://atom.io/} y hacer clic en el botón de \textsf{Download}. 
@@ -31,7 +31,7 @@ Una vez descargado el archivo ejecutable solo hay que darle clic. Este proceso p
 \end{center}
 \end{figure}
 
-El usuario puede modificar la pantalla de Atom con diferentes colores y temas siguiendo las instrucciones de la página \url{https://flight-manual.atom.io/getting-started/sections/atom-basics/}. Sin embargo, esa información no es relevante para esta tesis por lo que se va a omitir. 
+El usuario puede modificar la pantalla de Atom con diferentes colores y temas siguiendo las instrucciones que vienen en la página \url{https://flight-manual.atom.io/getting-started/sections/atom-basics/}. Sin embargo, esa información no es relevante para esta tesis por lo que se va a omitir. 
 
 
 \subsection{Conexión con Julia}
@@ -50,18 +50,20 @@ Una ventaja de Atom es utilizarlo por su función principal: ser un editor de te
 
 
 \section{Símbolo del sistema}
-Otra opción (mi favorita) es correr Julia desde el símbolo del sistema (también conocido como \textit{Command Prompt} o cmd). De ahora en adelante, se usarán por igual los términos símbolo del sistema y cmd. Para facilitar el uso y trabajo en Julia, recomiendo agregar Julia a un \textit{PATH}. Las instrucciones para hacerlo en Windows 10 están en el link \url{https://julialang.org/downloads/platform/#windows}
+Otra opción (mi favorita) es correr Julia desde el símbolo del sistema (también conocido como \textit{Command Prompt} o cmd). De ahora en adelante, se usarán por igual los términos símbolo del sistema y cmd. Para facilitar el uso y trabajo en Julia, recomiendo agregar Julia a un \textit{PATH}. Las instrucciones para hacerlo en Windows 10 están en la página \url{https://julialang.org/downloads/platform/#windows}.
 
 \subsection{\textit{Multithreading}}
 Una de las razones por las que Julia es un lenguaje de programación muy rápido es que tiene la capacidad para multihilo (\textit{multithreading} en inglés). Esto significa que puede correr diferentes tareas de manera simultánea en varios hilos. De la manera más simple: la meta de los autores de Julia fue hacer un lenguaje de programación con un rendimiento tan alto que pudiera hacer varias cosas a la vez. Debido a que uno de los objetivos de esta tesis es medir la eficiencia y velocidad de Julia, es crucial conocer la característica del \textit{multithreading} y como utilizarla. 
 \\
 Juno automáticamente pone la misma cantidad de hilos que la cantidad de núcleos de procesadores disponibles \citep{multithreading-julia}. Sin embargo, esto se puede modificar entrando a \textsf{File} $>$ \textsf{Settings} $>$ \textsf{Packages}. Después, buscar el paquete \textit{julia-client} y seleccionar los \textsf{Settings} del paquete. Finalmente, dentro del apartado de \textsf{Julia Options} buscar \textsf{Number of Threads} y poner el número deseado. 
 \\
-Por otro lado, si se está usando el símbolo de sistema el camino es diferente. Antes de ejecutar julia, es necesario modificar la cantidad de hilos que se van a utilizar. En Windows, esto se hace escribiendo \texttt{set JULIA\_ NUM\_ THREADS=4} \citep{Julia_manual} En este ejemplo, se cambiaron los hilos a 4 pero se puede poner cualquier número aunque se recomienda que el número no exceda de la cantidad de procesadores físicos de la computadora. Después de hacer esta modificación, ahora sí ejecutamos Julia. 
+Por otro lado, si se está usando el símbolo de sistema el camino es diferente. Antes de ejecutar julia, es necesario modificar la cantidad de hilos que se van a utilizar. En Windows, esto se hace escribiendo \texttt{set JULIA\_ NUM\_ THREADS=4} \citep{Julia_manual} En este ejemplo, se cambiaron los hilos a 4, pero se puede poner cualquier número. Sin embargo, se recomienda que el número no exceda de la cantidad de procesadores físicos de la computadora. Después de hacer esta modificación, ahora sí podemos ejecutar Julia. 
 \\
 Para observar que el cambio se ejecutó de manera correcta (en cualquiera de las dos opciones) basta con correr el comando \texttt{Threads.nthreads()} y observar que la respuesta sea el número deseado. 
 
 \section{Jupyter}
+Otra forma de correr Julia es utilizando Jupyther. Jupyter es un programa que exite para desarrollar software de manera pública en decenas de lenguajes de programación \val{Viene de la página oficial de Jupyter que todavía no tengo referencia}. Una de las ventajas de utilizar Jupyter para esta tesis es que se pueden utilizar los tres lenguajes de programación (R, Python y Julia) en un mismo software. 
+\\
 La manera más fácil para obtener Jupyter es instalanda Anaconda. Anaconda es ua interfaz gráfica que permite manejar y administrar aplicaciones, paquetes, ambientes y canales sin necesidad de usar comandos en el cmd. Para instalar Anaconda en Windows hay que ir a esta página \url{https://docs.anaconda.com/anaconda/install/windows/} y seguir las instrucciones de instalación. La instalación de este programa puede tomar unos cuantos minutos. 
 \\
 Una vez instalado Anaconda, basta con ejecutarlo y después seleccionar \textsf{Launch} debajo del ícono de Jupyter Notebook. Se abrirá una ventana en tu navegador como la siguiente: 
@@ -70,10 +72,14 @@ Una vez instalado Anaconda, basta con ejecutarlo y después seleccionar \textsf{
 \begin{center}
 \includegraphics[scale=0.45]{Imagenes/inicio_jupyther.JPG}
  \caption{Ventana inicial de Jupyter}
-  \label{main_atom}
+  \label{main_jupyter}
 \end{center}
 \end{figure}
 
+Para poder trabajar con Julia en Jupyter, hay que instalar el paquete \texttt{IJulia} como en las instrucciones % \ref{instalacion_paquete}.
+
+\valinline{No me gustaría agregar en esta parte la instalación de paquetes pero si se tiene que hacer pues ni modo} 
+Para confirmar que la instalación está bien hecha hay que abrir Jupyter, seleccionar \textsf{New} y debe aparecer la opción de \textsf{Julia 1.6.3}.
 
 
 \section{Básicos de Julia}
@@ -81,6 +87,7 @@ Como ya se mencionó, Julia busca ser un lenguaje de programación sencillo e in
 
 \subsection{Operaciones básicas}
 La siguiente tabla muestra la sintaxis usada para las operaciones básicas en Julia. 
+\\
 
 \begin{tabular}{|c|c|c|}
 \hline 
@@ -108,7 +115,6 @@ La siguiente tabla muestra la sintaxis usada para las operaciones básicas en Ju
 \hline 
 \end{tabular} 
 
-
 La siguiente tabla muestra los operadores booleanos en Julia. \val{Se ven horribles los \& \& pero ncon verbatim no funciona}
 
 \begin{center}
@@ -122,7 +128,7 @@ La siguiente tabla muestra los operadores booleanos en Julia. \val{Se ven horrib
 \end{center}
 
 \subsubsection{Operaciones básicas en vectores}
-En Julia, para cada operación binaria existe su correspondiente operación punto (\textit{dot operation} en inglés). Estas funciones son definidas para efectuarse elemento por elemento en vectores y matrices. Para llamarse, basta agregar un punto antes del operador binario. Por ejemplo,
+En Julia, para cada operación binaria existe su correspondiente operación punto (\textit{dot operation} en inglés). Estas funciones están definidas para efectuarse elemento por elemento en vectores y matrices. Para llamarse, basta agregar un punto antes del operador binario. Por ejemplo,
  \texttt{[1 9 9 7] .$\wedge$ 2} eleva cada uno de los elementos del vector al cuadrado. 
 \\
 También es importante mencionar que Julia maneja los números imaginarios utilizando el sufijo \texttt{im}. Sin embargo, como no utilizaran en esta tesis, se omitirá mayor explicacion. 
@@ -131,6 +137,11 @@ También es importante mencionar que Julia maneja los números imaginarios utili
 \subsection{\textit{Strings} (secuencias de caracteres)} 
 
 Además de números, Julia puede asignar characteres a variables. Esto se hace utilizando las comillas dobles. Por ejemplo,
+
+\begin{minted}{julia}
+    string = "Esta tesis es genial"
+\end{minted}
+
 
 \begin{tcolorbox}
       \dquote{\texttt{Esta tesis es genial}}
@@ -148,7 +159,7 @@ Similar a otros lenguajes de programación, podemos accesar a caracteres especí
 
 Además, Julia también cuenta con la opción de concatenación de múltiples strings. Esto se hace utilizando un asterisco $*$ para separar cada uno de los strings. Por ejemplo,
 
-\begin{figure}[h]
+\begin{figure}[H]
 \begin{center}
 \includegraphics[scale=0.8]{Imagenes/ejemplo_concatenacion.JPG}
   \label{ejemplo_string_concatenacion}
@@ -166,7 +177,7 @@ En Julia, una función es un objeto que asigna una tupla de argumentos a un valo
 \end{center}
 \end{figure}
 
-Además, puedes agregar la palabra \textit{return} para que la función regrese un valor. Por ejemplo, si quisieramos tener una función a la que les dos números y te regrese el número mayor, la función sería la siguiente:
+Además, puedes agregar la palabra \textit{return} para que la función regrese un valor. Por ejemplo, si quisieramos tener una función a la que le des dos números y te regrese el número mayor, la función sería la siguiente:
 
 \begin{tcolorbox}
       \begin{verbatim}
@@ -214,7 +225,7 @@ En Julia, para definir un vector columna se hace uso de los corchetes cuadrados 
          A = [1, 9, 9, 7]
       \end{verbatim}
 \end{tcolorbox}
-da como resultado un vector de 4 elementos de tipo Int64.
+da como resultado un vector de 4 elementos de tipo Int64. \val{Me interesa mucho ver lo de los tipos}
 
 Si quisiera definir un vector renglón, se hace exactamente igual solamente omitiendo el uso de las comas. Sin embargo, es importante señalar que  ahora Julia tomó el objeto A como una matriz, no como un vector. 
 
@@ -262,7 +273,7 @@ De manera análoga con los vectores, para llamar un solo elemento de la matriz s
 Ya que conocemos los arreglos básicos que se pueden manejar en Julia es momento de conocer y manejar los \textit{dataframes}. Un dataframe es una tabla estructurada de dos dimensiones que se usa para tabular distintos tipos de datos. Julia tiene un paquete llamado \textit{DataFrames}  que permite trabajar con dataframes que uno crea en Julia o que viene de alguna base de datos externa. 
 
 \subsubsection{Instalación del paquete}
-Similar a otros lenguajes de programación, cuando se usa un paquete por primera vez hay que instalarlo. En las ocasiones siguientes donde se quiera volver a usar el paquete basta con llamarlo con la palabra $using$. 
+Similar a otros lenguajes de programación, cuando se usa un paquete por primera vez hay que instalarlo. En las ocasiones siguientes donde se quiera volver a usar el paquete basta con llamarlo con la palabra \texttt{using}. 
 \\
 Para instalar el paquete, hay que poner las siguientes líneas de código. 
 \val{Lo malo de esta versión es que no encuentro como enumerarlo}
@@ -290,7 +301,7 @@ Una vez instalado el paquete de DataFrames, hay que hacerle saber a Julia que lo
 
 \subsubsection{Crear un dataframe}
 
-Aunque de manera general los dataframes se utilicen para manejar grandes cantidades de información exportada de otros formatos, es importante saber como se crea y manipula un dataframe desde cero en Julia. Para crear un dataframe, hay que escribir la palabra \texttt{DataFrame} y abrir un paréntesis. Después, se escribe el nombre de la primera columna, un signo de igualdad y los datos que corresponden a esa columna. Se repite lo mismo con la cantidad de columnas que se requieran. Por ejemplo, para hacer un dataframe con las claves únicas y nombres de cinco mujeres el código sería el siguiente: 
+Aunque de manera general los dataframes se utilicen para manejar grandes cantidades de información exportada de otros formatos, es importante saber como se crea y manipula un dataframe desde cero en Julia. Para crear un dataframe, hay que escribir la palabra \texttt{DataFrame} y abrir un paréntesis. Después, se escribe el nombre de la primera columna, un signo de igualdad y los datos que corresponden a esa variable. Se repite lo mismo con la cantidad de columnas que se requieran. Por ejemplo, para hacer un dataframe con las claves únicas y nombres de cinco mujeres el código sería el siguiente: 
 
 
 \begin{tcolorbox}
@@ -303,7 +314,7 @@ Aunque de manera general los dataframes se utilicen para manejar grandes cantida
 
 
 
-Es importante nombrar las columnas del dataframe ya que de esta forma basta con escribir \texttt{df.col} para referirnos a la columna llamada col del dataframe llamado df. De la misma manera, si se quisiera agregar una columna nueva basta con asignarle datos a \texttt{df.colNueva}. Por ejemplo, si quisieramos agregar una columna llamada texttt{color} al dataframe del ejemplo anterior, el código sería el siguiente: 
+Es importante nombrar las columnas del dataframe ya que de esta forma basta con escribir \texttt{df.col} para referirnos a la columna llamada col del dataframe llamado df. De la misma manera, si se quisiera agregar una columna nueva basta con asignarle datos a \texttt{df.colNueva}. Por ejemplo, si quisieramos agregar una columna llamada \texttt{color} al dataframe del ejemplo anterior, el código sería el siguiente: 
 
 \begin{minted}{julia}
      df.color = ["morado", "azul", "verde", "negro", "rojo"]
@@ -323,7 +334,7 @@ Como cualquier otro objeto en Julia, los dataframes tienen diferentes funciones 
 
 Como se mencionó anteriormente, los dataframes son utilizados para contener grandes cantidades de información. Usualmente, esta información no es generada en Julia por lo que hay importarla. Una de las formas más rápidas es usando el paquete \texttt{CSV}. Para instalarlo, hay que seguir los pasos como en la  \ref{instalacion_paquete} cambiando \texttt{DataFrames} por \texttt{CSV}. 
 \\
-Una vez instalado el programa, basta utilizar el comando \texttt{CSV.read} y la ruta de la ubicación del archivo para exportar los datos. Continuando con el ejemplo anterior, 
+Una vez instalado el programa, basta utilizar el comando \texttt{CSV.read} y la ruta de la ubicación del archivo para exportar los datos. Por ejemplo, 
 
 \begin{minted}{julia}
      df = CSV.read("C:/Users/Valeria/Documents/ITAM/Tesis/Julia con R/ejemplo.csv", DataFrame)
@@ -348,13 +359,13 @@ Una vez que ya podemos manejar relativamente grandes volúmenes de información 
 
 Regresión es un método que permite a los investigadores resumir como predicciones o valores promedio de un resultado varian a través de variables individuales definidas como predictores. \citep{regression_other_stories} 
 
-En pocas palabras, una regresión es una fórmula que intenta explicar como una variable depende otras. Como es de esperarse, Julia tiene un paquete llamado \texttt{GLM} que calcula modelos lineales. Para instalarlo y utilizarlo, hay que seguir las instrucciones que vienen en la tabla \ref{instalacion_paquete}. Para ajustar un modelo lineal generalizado, hay que usar la función glm(formula, data, family, link) donde 
+En pocas palabras, una regresión es una fórmula que intenta explicar como una variable depende otras. Como es de esperarse, Julia tiene un paquete llamado \texttt{GLM} que calcula modelos lineales. Para instalarlo y utilizarlo, hay que seguir las instrucciones que vienen en la tabla \ref{instalacion_paquete} con este paquete. Para ajustar un modelo lineal generalizado, hay que usar la función \texttt{glm(formula, data, family, link)} donde 
 
 \begin{itemize}
-    \item formula: usa los nombres de las columnas del dataframe de datos para referirse a las variables predictoras
-    \item data: el dataframe que contenga los predictores de las formula
-    \item family: podemos elegir entre Bernoulli(), Binomial(), Gamma(), Normal(), Poisson() o NegativeBinomial() \val{Todavía no entiendo muy bien esto}
-    \item link: \val{no entiendo muy bien a que se refiere esto, creo que está fuera del alcance de la tesis}
+    \item \texttt{formula}: usa los nombres de las columnas del dataframe de datos para referirse a las variables predictoras
+    \item \texttt{data}: el dataframe que contenga los predictores de las formula
+    \item \texttt{family}: podemos elegir entre Bernoulli(), Binomial(), Gamma(), Normal(), Poisson() o NegativeBinomial() \val{Todavía no entiendo muy bien esto}
+    \item \texttt{link}: \val{no entiendo muy bien a que se refiere esto, creo que está fuera del alcance de la tesis}
 \end{itemize}
 
 \valinline{Viene del manual de GLM que todavia no tengo referencia}
@@ -397,7 +408,7 @@ El modelo de regresión lineal clásico para múltiples predictores es
 
 \begin{equation*}
     \begin{aligned}
-    y_i = \beta_1 X_{i1} + \dots + \beta_k X_{ik} + \epsilon_1, \text{ para } i = 1, \dots, n
+    y_i = \beta_1 X_{i1} + \dots + \beta_k X_{ik} + \epsilon_i, \text{ para } i = 1, \dots, n
     \end{aligned}
 \end{equation*}
 
