@@ -1,0 +1,71 @@
+\chapter{\textit{Polynomials}}
+
+Polynomials es un paquete de Julia que proporciona arimética básica, integración, diferenciación, evaluación, raíces para polinomios univariados \cite{poly_manual}. Para instalar el paquete hay que seguir los comandos \ref{instalacion_paquete}. Esta sección va a explicar como ajustar un polinomio a un conjunto de datos. 
+
+\section{El problema}
+Supongamos que tenemos un conjunto de datos con solamente dos variables $x$ y $y$. Buscamos ajustarlos a un polinomio de grado $k$. Es decir, buscamos ajustar los datos al modelo
+
+\begin{equation} \label{eq_polinomio}
+    \begin{aligned}
+    y = \sum_{j = 0}^{k} \beta_j x^j + \epsilon
+    \end{aligned}
+\end{equation}
+
+El problema consiste en encontrar los mejores coeficientes que cumplan la ecuación anterior. Para hacerlo, el paquete Polynomials utiliza una implementación del método de Gauss-Newton para resolver un problema de mínimos cuadrados no lineal. \val{Ya sé que dice que es para problemas no lineales y el mío es un problema lineal pero es el único que funciona}
+
+
+\section{Método Gauss-Newton}
+\valinline{Supongo que lo tengo que explicar???}
+
+
+
+\section{Ejemplo}
+Para probar la función \texttt{fit} del paquete Polynomials elegí utilizar el conjunto de datos llamado \textit{Filip} del Laboratorio de Información Tecnológica perteneciente al Instituto Nacional de Estándares y Tecnología (NIST por sus siglas en inglés). Los datos y el resultado de la estimación de coeficientes están en \url{https://www.itl.nist.gov/div898/strd/lls/data/LINKS/DATA/Filip.dat}. 
+\\
+El código en Julia para obtener el resultado es el siguiente: 
+
+\begin{minted}{julia}
+    using Polynomials
+    filip = CSV.read("filip_data.csv", DataFrame)
+    coef_filip = CSV.read("coeficientes_filip.csv", DataFrame)
+    x = filip.x
+    y = filip.y
+    as = coef_filip.coeficiente
+    p = Polynomials.fit(x,y, 10)
+\end{minted}
+
+Los datos con las 82 observaciones en forma de pares ordenados es \texttt{filip\_data.csv}, mientras que los datos con los resultados de los coeficientes dados por el NIST es \texttt{coeficientes\_filip.csv}. Dichos documentos fueron obtenidos de la página mencionada anteriormente. 
+\\
+El resultado obtenido en Julia es \val{Lo voy a dejar asi aunque se ve pésimo, solo es para que se vean todos los coeficientes}
+
+\begin{tcolorbox}
+    \begin{verbatim}
+    -1467.4896770751313 - 2772.179712060834x
+    - 2316.3711834983233x^2 - 1127.973991485157x^3 -
+    354.478249903365x^4 - 75.12420525407894x^5 -
+    10.875318557918678x^6 - 1.0622150384213702x^7 -
+    0.06701911888098762x^8 - 0.0024678109131484544x^9 -
+    4.0296254716574806e-5x^10
+    \end{verbatim}
+\end{tcolorbox}
+
+\valinline{OJO, no me da el error de la estimación, ni valor t ni nada}
+
+Para comparar los resultados con las estimaciones reales de los coeficientes, uso el siguiente código de Julia:
+
+\begin{minted}{julia}
+    as = coef_filip.coeficiente
+    q = Polynomial(as)
+    maximum(abs(p(x) - q(x)) for x in range(0,1, length=1000))
+\end{minted}
+
+Es decir, creo un polinomio con las estimaciones de los coeficientes de NIST y después hago la diferencia en valor absoluto con la estimación que yo obtuve. El resultado es
+
+\begin{tcolorbox}
+    \begin{verbatim}
+        0.0003723332774825394
+    \end{verbatim}
+\end{tcolorbox}
+
+Por lo tanto, en la peor estimación de $\beta_i$, Julia acierta hasta 3 dígitos. 
+
