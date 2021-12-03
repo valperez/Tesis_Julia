@@ -1,0 +1,187 @@
+---
+title: "NIST_comparacionR_resultados"
+author: "Valeria Perez"
+date: "19/11/2021"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+options(tinytex.verbose = TRUE)
+```
+
+## Problema
+
+El problema a resolver es ajustar un polinomio de grado 10 a los datos llamados filip 
+proporcionados por NIST. De forma matricial, el problema es 
+$$y = X \beta$$ donde la matrix $X$ es de 82 x 11, la matriz $\beta$ es de 11 x 1. 
+El problema es un problema de ecuaciones lineales que intenté resolver con 4 métodos diferentes en Julia. Como no encontraba el error a mis algoritmos, decidí ponerlos a prueba. 
+\\
+En general, son dos pruebas diferentes. La primera es que comparo los resultados de los 4 algoritmos contra el resultado de la función lm en R. La segunda es que hago las estimaciones de los coeficientes $\beta$ para todos los polinomios, desde el polinomio de grado 1 hasta el polinomio de grado 10. 
+\\
+Antes que nada, el código para obtener los resultados. En primer lugar, leo y asigno a las variables nuevas los resultados que obtuve de Julia. 
+```{r cars}
+library(polynom)
+library(knitr)
+library(pracma)
+library(dplyr)
+
+setwd("~/ITAM/Tesis/Julia con R/Code/NIST")
+data <- read.csv("filip_data.csv")
+
+setwd("~/ITAM/Tesis/Julia con R/Code/NIST/Resultados")
+
+temp <- list.files(pattern = "resultados_grado_")
+myfiles <- lapply(temp, read.csv)
+
+myfiles[[11]] <- myfiles[[2]]
+myfiles <- myfiles[-2]
+
+for (i in 1:10){
+  assign(paste("resultados_grado_", i), myfiles[[i]])
+}
+```
+Ahora para los tiempos de cada método
+
+```{r}
+temp <- list.files(pattern = "tiempos_grado_")
+myfiles <- lapply(temp, read.csv)
+
+myfiles[[11]] <- myfiles[[2]]
+myfiles <- myfiles[-2]
+
+df_tiempos <- data.frame()
+
+for (i in 1:10){
+  df_tiempos <- rbind(df_tiempos, myfiles[[i]])
+}
+
+nombres <- c()
+
+for (k in 1:i){
+  nombres <- c(nombres, paste0("k_", k))
+}
+  row.names(df_tiempos) <- nombres
+```
+
+
+
+Después, hago el código para el polinomio de grado 1. 
+
+```{r}
+# Para polinomio de grado = 1
+
+start <- Sys.time()
+lm_1 <- lm(y ~ x, data = data, x = TRUE)
+end <- Sys.time()
+
+`resultados_grado_ 1`$R <- lm_1$coefficients
+row.names(`resultados_grado_ 1`) <- c("b0", "b1")
+X_1 <- lm_1$x
+
+time_vec <- c(end - start)
+```
+
+Finalmente, el código para los polinomios de grado > 1
+
+```{r}
+# Para polinomios de grado > 1
+
+for (i in 2:10){
+  #Hacemos el modelo
+  model <- paste("y ~ x", paste("+ I(x^", 2:i, ")", sep='', collapse=''))
+  
+  # Lo convertimos en formula
+  form <- formula(model)
+  
+  #Ejecutamos el modelo
+  start <- Sys.time()
+  lm.plus <- lm(form, data = data, x = TRUE, tol = 1e-10)
+  end <- Sys.time()
+  time <- end - start
+  time_vec <- c(time_vec, time)
+  
+  # Guardo el df correspondiente a un auxiliar
+  resultados_aux <- get(paste("resultados_grado_", i))
+  # para unirle los coeficientes
+  resultados_aux$R <- lm.plus$coefficients
+  
+  nombres <- c("b0")
+  # Para el nombre de los renglones
+  for (k in 1:i){
+    nombres <- c(nombres, paste0("b", k))
+  }
+  row.names(resultados_aux) <- nombres
+  
+  #Finalmente, hago el df final
+  assign(paste("resultados_grado_", i), resultados_aux)
+  
+  assign(paste("X_", i), lm.plus$x)
+}
+```
+
+Agrego una columna vacía en el dataframe de los tiempos. 
+
+```{r}
+df_tiempos <- df_tiempos %>%
+  mutate(R = time_vec)
+kable(df_tiempos, caption = "Tiempos de ejecución de los métodos")
+```
+
+
+
+Los resultados estan en las siguientes tablas. 
+```{r}
+kable(`resultados_grado_ 1`, caption = "Polinomio grado 1")
+#kable(`resultados_grado_ 2`, caption = "Polinomio grado 2")
+#kable(`resultados_grado_ 3`, caption = "Polinomio grado 3")
+#kable(`resultados_grado_ 4`, caption = "Polinomio grado 4")
+#kable(`resultados_grado_ 5`, caption = "Polinomio grado 5")
+kable(`resultados_grado_ 6`, caption = "Polinomio grado 6")
+#kable(`resultados_grado_ 7`, caption = "Polinomio grado 7")
+#kable(`resultados_grado_ 8`, caption = "Polinomio grado 8")
+#kable(`resultados_grado_ 9`, caption = "Polinomio grado 9")
+kable(`resultados_grado_ 10`, caption = "Polinomio grado 10")
+```
+
+
+
+Vamos a calcular los valores singulares de la matriz X 
+```{r}
+X <- `X_ 10`
+
+S.svd <- svd(X)
+S.d <- S.svd$d
+
+S.d
+```
+
+Ahora calculemos los valores propios de X^{T}X
+```{r}
+XtX <- t(X) %*% X
+
+XtX.e <- eigen(XtX)
+r <- sqrt(XtX.e$values)
+r
+```
+Ahora calculemos el número de condición de la matriz X con una función de R y con la fórmula $$\dfrac{\sigma_1}{\sigma_n}$$
+
+```{r}
+#con R
+num_cond <- cond(X)
+
+# a mano
+S.d <- sort(S.d, decreasing = TRUE)
+num_cond_2 <- S.d[1] / S.d[length(S.d)]
+
+# y cerificamos que sean los mismos
+num_cond == num_cond_2
+```
+
+

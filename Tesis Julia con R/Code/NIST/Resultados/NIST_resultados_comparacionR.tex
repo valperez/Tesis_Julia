@@ -1,0 +1,498 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\title{NIST\_comparacionR\_resultados}
+\author{Valeria Perez}
+\date{19/11/2021}
+
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={NIST\_comparacionR\_resultados},
+  pdfauthor={Valeria Perez},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\begin{document}
+\maketitle
+
+\hypertarget{problema}{%
+\subsection{Problema}\label{problema}}
+
+El problema a resolver es ajustar un polinomio de grado 10 a los datos
+llamados filip proporcionados por NIST. De forma matricial, el problema
+es \[y = X \beta\] donde la matrix \(X\) es de 82 x 11, la matriz
+\(\beta\) es de 11 x 1. El problema es un problema de ecuaciones
+lineales que intenté resolver con 4 métodos diferentes en Julia. Como no
+encontraba el error a mis algoritmos, decidí ponerlos a prueba.
+\textbackslash{} En general, son dos pruebas diferentes. La primera es
+que comparo los resultados de los 4 algoritmos contra el resultado de la
+función lm en R. La segunda es que hago las estimaciones de los
+coeficientes \(\beta\) para todos los polinomios, desde el polinomio de
+grado 1 hasta el polinomio de grado 10. \textbackslash{} Antes que nada,
+el código para obtener los resultados. En primer lugar, leo y asigno a
+las variables nuevas los resultados que obtuve de Julia.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(polynom)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'polynom' was built under R version 4.0.5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(knitr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'knitr' was built under R version 4.0.5
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#setwd("\textasciitilde{}/ITAM/Tesis/Julia con R/Code/NIST")}
+\NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"filip\_data.csv"}\NormalTok{)}
+
+\CommentTok{\#setwd("\textasciitilde{}/ITAM/Tesis/Julia con R/Code/NIST/Resultados")}
+
+\NormalTok{temp }\OtherTok{\textless{}{-}} \FunctionTok{list.files}\NormalTok{(}\AttributeTok{pattern =} \StringTok{"resultados\_grado\_"}\NormalTok{)}
+\NormalTok{myfiles }\OtherTok{\textless{}{-}} \FunctionTok{lapply}\NormalTok{(temp, read.csv)}
+
+\NormalTok{myfiles[[}\DecValTok{11}\NormalTok{]] }\OtherTok{\textless{}{-}}\NormalTok{ myfiles[[}\DecValTok{2}\NormalTok{]]}
+\NormalTok{myfiles }\OtherTok{\textless{}{-}}\NormalTok{ myfiles[}\SpecialCharTok{{-}}\DecValTok{2}\NormalTok{]}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\DecValTok{10}\NormalTok{)\{}
+  \FunctionTok{assign}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"resultados\_grado\_"}\NormalTok{, i), myfiles[[i]])}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Después, hago el código para el polinomio de grado 1.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Para polinomio de grado = 1}
+\NormalTok{lm\_1 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(y }\SpecialCharTok{\textasciitilde{}}\NormalTok{ x, }\AttributeTok{data =}\NormalTok{ data, }\AttributeTok{x =} \ConstantTok{TRUE}\NormalTok{)}
+\StringTok{\textasciigrave{}}\AttributeTok{resultados\_grado\_ 1}\StringTok{\textasciigrave{}}\SpecialCharTok{$}\NormalTok{R }\OtherTok{\textless{}{-}}\NormalTok{ lm\_1}\SpecialCharTok{$}\NormalTok{coefficients}
+\FunctionTok{row.names}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{resultados\_grado\_ 1}\StringTok{\textasciigrave{}}\NormalTok{) }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"b0"}\NormalTok{, }\StringTok{"b1"}\NormalTok{)}
+\NormalTok{X\_1 }\OtherTok{\textless{}{-}}\NormalTok{ lm\_1}\SpecialCharTok{$}\NormalTok{x}
+\end{Highlighting}
+\end{Shaded}
+
+Finalmente, el código para los polinomios de grado \textgreater{} 1
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Para polinomios de grado \textgreater{} 1}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{2}\SpecialCharTok{:}\DecValTok{10}\NormalTok{)\{}
+  \CommentTok{\#Hacemos el modelo}
+\NormalTok{  model }\OtherTok{\textless{}{-}} \FunctionTok{paste}\NormalTok{(}\StringTok{"y \textasciitilde{} x"}\NormalTok{, }\FunctionTok{paste}\NormalTok{(}\StringTok{"+ I(x\^{}"}\NormalTok{, }\DecValTok{2}\SpecialCharTok{:}\NormalTok{i, }\StringTok{")"}\NormalTok{, }\AttributeTok{sep=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{, }\AttributeTok{collapse=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{))}
+  
+  \CommentTok{\# Lo convertimos en formula}
+\NormalTok{  form }\OtherTok{\textless{}{-}} \FunctionTok{formula}\NormalTok{(model)}
+  
+  \CommentTok{\#Ejecutamos el modelo}
+\NormalTok{  lm.plus }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(form, }\AttributeTok{data =}\NormalTok{ data, }\AttributeTok{x =} \ConstantTok{TRUE}\NormalTok{)}
+  
+  \CommentTok{\# Guardo el df correspondiente a un auxiliar}
+\NormalTok{  resultados\_aux }\OtherTok{\textless{}{-}} \FunctionTok{get}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"resultados\_grado\_"}\NormalTok{, i))}
+  \CommentTok{\# para unirle los coeficientes}
+\NormalTok{  resultados\_aux}\SpecialCharTok{$}\NormalTok{R }\OtherTok{\textless{}{-}}\NormalTok{ lm.plus}\SpecialCharTok{$}\NormalTok{coefficients}
+  
+\NormalTok{  nombres }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\StringTok{"b0"}\NormalTok{)}
+  \CommentTok{\# Para el nombre de los renglones}
+  \ControlFlowTok{for}\NormalTok{ (k }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{i)\{}
+\NormalTok{    nombres }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(nombres, }\FunctionTok{paste0}\NormalTok{(}\StringTok{"b"}\NormalTok{, k))}
+\NormalTok{  \}}
+  \FunctionTok{row.names}\NormalTok{(resultados\_aux) }\OtherTok{\textless{}{-}}\NormalTok{ nombres}
+  
+  \CommentTok{\#Finalmente, hago el df final}
+  \FunctionTok{assign}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"resultados\_grado\_"}\NormalTok{, i), resultados\_aux)}
+  
+  \FunctionTok{assign}\NormalTok{(}\FunctionTok{paste}\NormalTok{(}\StringTok{"X\_"}\NormalTok{, i), lm.plus}\SpecialCharTok{$}\NormalTok{x)}
+  
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Los resultados estan en las siguientes tablas.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{kable}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{resultados\_grado\_ 1}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{caption =} \StringTok{"Polinomio grado 1"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\caption{Polinomio grado 1}\tabularnewline
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endfirsthead
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endhead
+b0 & 1.0592655 & 1.0592655 & 1.0592655 & 1.0592655 & 1.0592655 \\
+b1 & 0.0340946 & 0.0340946 & 0.0340946 & 0.0340946 & 0.0340946 \\
+\bottomrule
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{kable}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{resultados\_grado\_ 2}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{caption =} \StringTok{"Polinomio grado 2"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\caption{Polinomio grado 2}\tabularnewline
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endfirsthead
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endhead
+b0 & 0.9223409 & 0.9223409 & 0.9223409 & 0.9223409 & 0.9223409 \\
+b1 & -0.0140724 & -0.0140724 & -0.0140724 & -0.0140724 & -0.0140724 \\
+b2 & -0.0039770 & -0.0039770 & -0.0039770 & -0.0039770 & -0.0039770 \\
+\bottomrule
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{kable}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{resultados\_grado\_ 3}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{caption =} \StringTok{"Polinomio grado 3"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\caption{Polinomio grado 3}\tabularnewline
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endfirsthead
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endhead
+b0 & 0.3902712 & 0.3902712 & 0.3902712 & 0.3902712 & 0.3902712 \\
+b1 & -0.3033645 & -0.3033645 & -0.3033645 & -0.3033645 & -0.3033645 \\
+b2 & -0.0537195 & -0.0537195 & -0.0537195 & -0.0537195 & -0.0537195 \\
+b3 & -0.0027265 & -0.0027265 & -0.0027265 & -0.0027265 & -0.0027265 \\
+\bottomrule
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{kable}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{resultados\_grado\_ 4}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{caption =} \StringTok{"Polinomio grado 4"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\caption{Polinomio grado 4}\tabularnewline
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endfirsthead
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endhead
+b0 & 2.6444057 & 2.6444057 & 2.6444057 & 2.6444057 & 2.6444057 \\
+b1 & 1.3744058 & 1.3744058 & 1.3744058 & 1.3744058 & 1.3744058 \\
+b2 & 0.3970969 & 0.3970969 & 0.3970969 & 0.3970969 & 0.3970969 \\
+b3 & 0.0492439 & 0.0492439 & 0.0492439 & 0.0492439 & 0.0492439 \\
+b4 & 0.0021749 & 0.0021749 & 0.0021749 & 0.0021749 & 0.0021749 \\
+\bottomrule
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{kable}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{resultados\_grado\_ 5}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{caption =} \StringTok{"Polinomio grado 5"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\caption{Polinomio grado 5}\tabularnewline
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endfirsthead
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endhead
+b0 & 4.3006539 & 4.3006539 & 4.3006539 & 4.3006544 & 4.3006539 \\
+b1 & 2.9237727 & 2.9237727 & 2.9237727 & 2.9237731 & 2.9237727 \\
+b2 & 0.9589165 & 0.9589165 & 0.9589165 & 0.9589167 & 0.9589165 \\
+b3 & 0.1481183 & 0.1481183 & 0.1481183 & 0.1481184 & 0.1481183 \\
+b4 & 0.0106384 & 0.0106384 & 0.0106384 & 0.0106384 & 0.0106384 \\
+b5 & 0.0002825 & 0.0002825 & 0.0002825 & 0.0002825 & 0.0002825 \\
+\bottomrule
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{kable}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{resultados\_grado\_ 6}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{caption =} \StringTok{"Polinomio grado 6"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\caption{Polinomio grado 6}\tabularnewline
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endfirsthead
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endhead
+b0 & -18.0975496 & -18.0975496 & -18.0975496 & 1.9043149 &
+-18.0975496 \\
+b1 & -22.2966441 & -22.2966441 & -22.2966441 & 0.0000000 &
+-22.2966441 \\
+b2 & -10.5769427 & -10.5769427 & -10.5769427 & -0.4810935 &
+-10.5769427 \\
+b3 & -2.5981095 & -2.5981095 & -2.5981095 & -0.2185587 & -2.5981095 \\
+b4 & -0.3486584 & -0.3486584 & -0.3486584 & -0.0403353 & -0.3486584 \\
+b5 & -0.0242444 & -0.0242444 & -0.0242444 & -0.0033915 & -0.0242444 \\
+b6 & -0.0006834 & -0.0006834 & -0.0006834 & -0.0001075 & -0.0006834 \\
+\bottomrule
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{kable}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{resultados\_grado\_ 7}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{caption =} \StringTok{"Polinomio grado 7"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\caption{Polinomio grado 7}\tabularnewline
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endfirsthead
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endhead
+b0 & -8.6609575 & -8.6609575 & -8.6609588 & 0.0000000 & -8.6609575 \\
+b1 & -9.8263025 & -9.8263025 & -9.8263040 & 0.0000000 & -9.8263025 \\
+b2 & -3.6650346 & -3.6650346 & -3.6650351 & 0.0000000 & -3.6650346 \\
+b3 & -0.5141292 & -0.5141292 & -0.5141295 & -0.1742561 & -0.5141292 \\
+b4 & 0.0207340 & 0.0207340 & 0.0207339 & -0.0871662 & 0.0207340 \\
+b5 & 0.0142807 & 0.0142807 & 0.0142807 & -0.0170740 & 0.0142807 \\
+b6 & 0.0015076 & 0.0015076 & 0.0015076 & -0.0015216 & 0.0015076 \\
+b7 & 0.0000525 & 0.0000525 & 0.0000525 & -0.0000515 & 0.0000525 \\
+\bottomrule
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{kable}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{resultados\_grado\_ 8}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{caption =} \StringTok{"Polinomio grado 8"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\caption{Polinomio grado 8}\tabularnewline
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endfirsthead
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endhead
+b0 & 175.9750151 & 175.9750152 & 175.9750570 & 0.0000000 &
+175.9750151 \\
+b1 & 269.2657673 & 269.2657674 & 269.2657897 & 0.0000000 &
+269.2657673 \\
+b2 & 177.4702511 & 177.4702512 & 177.4702530 & 0.0000000 &
+177.4702511 \\
+b3 & 65.4365443 & 65.4365443 & 65.4365573 & 0.0000000 & 65.4365443 \\
+b4 & 14.7617342 & 14.7617342 & 14.7617357 & 0.0554432 & 14.7617342 \\
+b5 & 2.0867401 & 2.0867401 & 2.0867399 & 0.0285355 & 2.0867401 \\
+b6 & 0.1806048 & 0.1806048 & 0.1806048 & 0.0056228 & 0.1806048 \\
+b7 & 0.0087567 & 0.0087567 & 0.0087567 & 0.0004978 & 0.0087567 \\
+b8 & 0.0001823 & 0.0001823 & 0.0001823 & 0.0000166 & 0.0001823 \\
+\bottomrule
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{kable}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{resultados\_grado\_ 9}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{caption =} \StringTok{"Polinomio grado 9"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\caption{Polinomio grado 9}\tabularnewline
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endfirsthead
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endhead
+b0 & -174.2804420 & -174.2804443 & -174.2802936 & 0.0000000 &
+-174.2804456 \\
+b1 & -326.8822038 & -326.8822077 & -326.8825148 & 0.0000000 &
+-326.8822099 \\
+b2 & -266.0565360 & -266.0565388 & -266.0571501 & 0.0000000 &
+-266.0565405 \\
+b3 & -123.9216126 & -123.9216137 & -123.9219121 & 0.0000000 &
+-123.9216144 \\
+b4 & -36.3816705 & -36.3816708 & -36.3816855 & 0.0000000 &
+-36.3816710 \\
+b5 & -6.9791883 & -6.9791883 & -6.9791852 & -0.0151684 & -6.9791884 \\
+b6 & -0.8746602 & -0.8746602 & -0.8746601 & -0.0078823 & -0.8746602 \\
+b7 & -0.0690601 & -0.0690601 & -0.0690601 & -0.0015521 & -0.0690601 \\
+b8 & -0.0031183 & -0.0031183 & -0.0031183 & -0.0001365 & -0.0031183 \\
+b9 & -0.0000614 & -0.0000614 & -0.0000614 & -0.0000045 & -0.0000614 \\
+\bottomrule
+\end{longtable}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{kable}\NormalTok{(}\StringTok{\textasciigrave{}}\AttributeTok{resultados\_grado\_ 10}\StringTok{\textasciigrave{}}\NormalTok{, }\AttributeTok{caption =} \StringTok{"Polinomio grado 10"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{longtable}[]{@{}lrrrrr@{}}
+\caption{Polinomio grado 10}\tabularnewline
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endfirsthead
+\toprule
+& PolFit & QRPivot & MoorePenrose & LinearFit & R \\
+\midrule
+\endhead
+b0 & -1467.4896771 & 9.0134262 & 9.1661966 & 0.0000000 & -174.2804456 \\
+b1 & -2772.1797121 & 1.6525458 & 2.7223863 & 0.0000000 & -326.8822099 \\
+b2 & -2316.3711835 & -5.7676064 & -4.2207903 & 0.0000000 &
+-266.0565405 \\
+b3 & -1127.9739915 & -3.8636656 & -2.7920321 & 0.0000000 &
+-123.9216144 \\
+b4 & -354.4782499 & -0.6703657 & -0.2334151 & 0.0000000 & -36.3816710 \\
+b5 & -75.1242053 & 0.1806044 & 0.2944490 & 0.0000000 & -6.9791884 \\
+b6 & -10.8753186 & 0.1055234 & 0.1251241 & 0.0036864 & -0.8746602 \\
+b7 & -1.0622150 & 0.0214449 & 0.0236685 & 0.0019173 & -0.0690601 \\
+b8 & -0.0670191 & 0.0022775 & 0.0024377 & 0.0003759 & -0.0031183 \\
+b9 & -0.0024678 & 0.0001262 & 0.0001329 & 0.0000328 & -0.0000614 \\
+b10 & -0.0000403 & 0.0000029 & 0.0000030 & 0.0000011 & NA \\
+\bottomrule
+\end{longtable}
+
+\end{document}

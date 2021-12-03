@@ -1,0 +1,213 @@
+---
+title: "Ajuste_comparacionR"
+author: "Valeria Perez"
+date: "24/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(dplyr)
+library(stringr)
+library(knitr)
+```
+
+### Regresión Lineal En Julia y en R
+
+Como segundo ejercicio voy a hacer una regresión lineal con datos del Censo de Población y Vivienda 2020 que se encuentran en la página https://www.inegi.org.mx/programas/ccpv/2020/default.html#Documentacion. 
+
+Como se trabajó en el ejercicio pasado, queremos ver como se comporta Julia en comparación con R. Para este ejercicio, hice 6 regresiones diferentes con 4 cantidades de datos diferentes. Para las regresiones, partí de una fórmula base que tiene 5 regresores. A partir de ella, a cada fórmula de regresión  nueva le fui agregando 1 regresor más hasta llegar a una fórmula con 10 regresores.  
+La fórmula de regresión base llamada fit 5 es 
+$$ingresos \sim horas_{trabajadas} + entidad_{trabao} +  sexo + edad + escolaridad_{nivel}$$. 
+El resto de fórmulas de regresión son: 
+
+  * fit 6: fit 5 + posición_{trabajo}
+  * fit 7: fit 5 + posición_{trabajo} + alfabetismo_{nivel}
+  * fit 8: fit 5 + posición_{trabajo} + alfabetismo_{nivel} + aguinaldo
+  * fit 9: fit 5 + posición_{trabajo} + alfabetismo_{nivel} + aguinaldo + vacaciones
+  * fit10: fit 5 + posición_{trabajo} + alfabetismo_{nivel} + aguinaldo + vacaciones + servicio_{medico}
+
+
+Para las cantidades de datos, seleccioné al azar una muestra de 500, 5 mil, 50 mil y 500 mil observaciones del Censo. Hice un ajuste con cada muestra para cada fórmula de regresión. Es decir, para la regresión con la fórmula base, hay 4 tablas de resultados correspondientes a las 4 diferentes cantidades de observaciones. 
+Al final, tengo 24 tablas de resultados con dos columnas. La primera columna es el ajuste hecho en Julia y la segunda es el ajuste hecho en R. Los resultados son exactamente iguales en todos los casos. 
+Para no saturar el espacio, se presenta una tabla de resultados al azar. Sin embargo, el resto de las tablas están en el apéndice (?). 
+
+
+## Ejemplo ajuste con Julia
+
+```{r cars}
+setwd("~/ITAM/Tesis/Julia con R/Code/Censo/Resultados_Julia")
+temp <- list.files(pattern = "*.csv")
+
+myfiles <- lapply(temp, read.csv)
+```
+Reemplazamos los nombres para que se vea más bonito
+```{r}
+n = length(temp)
+
+for (i in 1:n){
+  temp[i] <- str_replace(temp[i], ".csv", "")
+}
+```
+
+
+Primero vamos a leer todos los csv donde haya datos. 
+```{r}
+n = length(myfiles)
+
+for (i in 1:n){
+  assign(temp[i], myfiles[[i]])
+}
+```
+
+Vamos a editar los dataframes de resultados.
+```{r}
+for (i in (n/2 + 1):n){
+  aux <- get(temp[i])
+  aux <- aux %>% 
+    select(Name, `Coef.`) %>%
+    rename(Julia = `Coef.`)
+  assign(temp[i], aux)
+}
+```
+
+Vamos a hacer una función para que todo sea más eficiente. 
+```{r}
+#Función para unir los resultados de R con los de Julia
+union_resultados <- function(vec_strings, fm){
+  for (i in 1:(k/2)){
+    aux <- get(vec_strings[i])
+    ajuste <- lm(fm, aux)
+    coeficientes <- ajuste$coefficients
+
+    res_aux <- get(vec_strings[(k/2) + i])
+    res_aux <- res_aux %>%
+      mutate(R = coeficientes)
+    return (res_aux)
+  }
+}
+```
+
+
+Fit 5 (base)
+```{r}
+fm_5 <- formula(INGTRMEN ~ as.factor(SEXO) + EDAD + as.factor(NIVACAD) + 
+                  HORTRA +   as.factor(ENT_PAIS_TRAB))
+
+fit5_strings <- temp[str_detect(temp, "fit5")]
+
+k <- length(fit5_strings)
+
+for (i in (k/2 +1):k){
+  assign(fit5_strings[i], union_resultados(fit5_strings, fm_5))
+}
+```
+
+```{r}
+kable(res_500_fit5, caption = "Fit 5, 500 observaciones")
+```
+
+
+Fit 6
+
+```{r}
+fm_6 <- formula(INGTRMEN ~ as.factor(SEXO) + EDAD + as.factor(NIVACAD) + 
+                  HORTRA +   as.factor(ENT_PAIS_TRAB) + as.factor(SITTRA))
+
+fit6_strings <- temp[str_detect(temp, "fit6")]
+
+k <- length(fit6_strings)
+
+for (i in (k/2 +1):k){
+  assign(fit6_strings[i], union_resultados(fit6_strings, fm_6))
+}
+```
+
+```{r}
+kable(res_500mil_fit6, caption = "Fit 6, 500 mil observaciones")
+```
+
+Fit 7
+
+```{r}
+fm_7 <- formula(INGTRMEN ~ as.factor(SEXO) + EDAD + as.factor(NIVACAD) + 
+                  HORTRA +   as.factor(ENT_PAIS_TRAB) + as.factor(SITTRA) + 
+                  as.factor(ALFABET))
+
+fit7_strings <- temp[str_detect(temp, "fit7")]
+
+k <- length(fit7_strings)
+
+for (i in (k/2 +1):k){
+  assign(fit7_strings[i], union_resultados(fit7_strings, fm_7))
+}
+```
+
+```{r}
+kable(res_5mil_fit7, caption = "Fit 7, 5 mil observaciones")
+```
+
+Fit 8
+
+```{r}
+fm_8 <- formula(INGTRMEN ~ as.factor(SEXO) + EDAD + as.factor(NIVACAD) + 
+                  HORTRA +   as.factor(ENT_PAIS_TRAB) + as.factor(SITTRA) + 
+                  as.factor(ALFABET) + as.factor(AGUINALDO))
+
+fit8_strings <- temp[str_detect(temp, "fit8")]
+
+k <- length(fit8_strings)
+
+for (i in (k/2 +1):k){
+  assign(fit8_strings[i], union_resultados(fit8_strings, fm_8))
+}
+```
+
+```{r}
+kable(res_500mil_fit8, caption = "Fit 8, 500 mil observaciones")
+```
+
+Fit 9
+
+```{r}
+fm_9 <- formula(INGTRMEN ~ as.factor(SEXO) + EDAD + as.factor(NIVACAD) + 
+                  HORTRA +   as.factor(ENT_PAIS_TRAB) + as.factor(SITTRA) + 
+                  as.factor(ALFABET) + as.factor(AGUINALDO) + as.factor(VACACIONES))
+
+fit9_strings <- temp[str_detect(temp, "fit9")]
+
+k <- length(fit9_strings)
+
+for (i in (k/2 +1):k){
+  assign(fit9_strings[i], union_resultados(fit9_strings, fm_9))
+}
+```
+
+```{r}
+kable(res_50mil_fit9, caption = "Fit 9, 50 mil observaciones")
+```
+
+Fit10
+
+```{r}
+fm_10 = formula(INGTRMEN ~ as.factor(SEXO) + EDAD + as.factor(NIVACAD) + 
+                  HORTRA +   as.factor(ENT_PAIS_TRAB) + as.factor(SITTRA) +
+                  as.factor(ALFABET) + as.factor(AGUINALDO) + 
+                  as.factor(VACACIONES) + as.factor(SERVICIO_MEDICO))
+
+fit10_strings <- temp[str_detect(temp, "fit10")]
+
+k <- length(fit10_strings)
+
+for (i in (k/2 +1):k){
+  assign(fit10_strings[i], union_resultados(fit10_strings, fm_10))
+}
+```
+
+```{r}
+kable(res_500_fit10, caption = "Fit 10, 500 observaciones")
+```
+
