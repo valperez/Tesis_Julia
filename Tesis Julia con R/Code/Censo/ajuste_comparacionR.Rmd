@@ -31,8 +31,8 @@ El resto de fórmulas de regresión son:
   * fit10: fit 5 + posición_{trabajo} + alfabetismo_{nivel} + aguinaldo + vacaciones + servicio_{medico}
 
 
-Para las cantidades de datos, seleccioné al azar una muestra de 500, 5 mil, 50 mil y 500 mil observaciones del Censo. Hice un ajuste con cada muestra para cada fórmula de regresión. Es decir, para la regresión con la fórmula base, hay 4 tablas de resultados correspondientes a las 4 diferentes cantidades de observaciones. 
-Al final, tengo 24 tablas de resultados con dos columnas. La primera columna es el ajuste hecho en Julia y la segunda es el ajuste hecho en R. Los resultados son exactamente iguales en todos los casos. 
+Para las cantidades de datos, seleccioné al azar una muestra de 500, 5 mil, 50 mil, 500 mil y 2 millones y medio de observaciones del Censo. Hice un ajuste con cada muestra para cada fórmula de regresión. Es decir, para la regresión con la fórmula base, hay 5 tablas de resultados correspondientes a las 5 diferentes cantidades de observaciones. 
+Al final, tengo 25 tablas de resultados con dos columnas. La primera columna es el ajuste hecho en Julia y la segunda es el ajuste hecho en R. Los resultados son exactamente iguales en todos los casos. 
 Para no saturar el espacio, se presenta una tabla de resultados al azar. Sin embargo, el resto de las tablas están en el apéndice (?). 
 
 
@@ -82,6 +82,7 @@ union_resultados <- function(vec_strings, fm){
     aux <- get(vec_strings[i])
     ajuste <- lm(fm, aux)
     coeficientes <- ajuste$coefficients
+    remove(aux)  #Para vaciar un poco de la memoria
 
     res_aux <- get(vec_strings[(k/2) + i])
     res_aux <- res_aux %>%
@@ -107,7 +108,7 @@ for (i in (k/2 +1):k){
 ```
 
 ```{r}
-kable(res_500_fit5, caption = "Fit 5, 500 observaciones")
+kable(res_2500mil_fit5, caption = "Fit 5, 2.5 millones observaciones")
 ```
 
 
@@ -208,6 +209,6 @@ for (i in (k/2 +1):k){
 ```
 
 ```{r}
-kable(res_500_fit10, caption = "Fit 10, 500 observaciones")
+kable(res_2500mil_fit10, caption = "Fit 10, 2.5 millones observaciones")
 ```
 
