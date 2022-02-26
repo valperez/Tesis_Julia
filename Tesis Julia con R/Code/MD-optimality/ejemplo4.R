@@ -1,15 +1,44 @@
 library(BsMD2)
-library(BsMD)
-library(JuliaCall)
-julia_setup(JULIA_HOME = "C:/Users/Valeria/AppData/Local/Programs/Julia-1.6.3/bin")
 
 setwd("~/ITAM/Tesis/Julia con R/Code/MD-optimality")
-julia_source("MDopt.jl")
-
 data(M96e2)
 print(M96e2)
 
-set.seed(99)
+X <- as.matrix(cbind(blk = rep(-1, 8), M96e2[c(25,2,19,12,13,22,7,32), 1:5]))
+y <- M96e2[c(25,2,19,12,13,22,7,32), 6]
+
+pp <- BsProb1(X = X[, 2:6], y = y, p = .25, gamma = .4, 
+              max_int = 3, max_fac = 5, top = 32)
+
+p <- pp@p_mod
+facs <- pp@fac_mod
+Xcand <- as.matrix(cbind(blk = rep(+1, 32), M96e2[, 1:5]))
+t <- Sys.time()
+e4_R <- BsMD2::MDopt(X = X, y = y, Xcand = Xcand, 
+                     nMod = 32, p_mod = p, fac_mod = facs, 
+                     g = 0.4, Iter = 10, nStart = 25, top = 5)
+Sys.time() - t
+
+# # # R paquete original 
+library(BsMD)
+reactor8.BsProb <- BsProb(X = X, y = y, blk = 1, mFac = 5, mInt = 3, 
+                          p = 0.25, g = 0.40, ng = 1, nMod = 32)
+
+nf <- reactor8.BsProb$nftop
+s2 <- reactor8.BsProb$sigtop
+
+t_RO <- Sys.time()
+ej4_RO <- BsMD::MD(X = X, y = y, nFac = 5, nBlk = 1, mInt = 3, 
+                   g = 0.40, nMod = 32, p = p, s2 = s2, nf = nf, 
+                   facs = facs, nFDes = 4, Xcand = Xcand, 
+                   mIter = 20, nStart = 25, top = 5)
+Sys.time() - t_RO
+
+
+library(JuliaCall)
+julia_setup(JULIA_HOME = "C:/Users/Valeria/AppData/Local/Programs/Julia-1.6.3/bin")
+
+julia_source("MDopt.jl")
 
 X <- as.matrix(cbind(blk = rep(-1, 8), M96e2[c(25,2,19,12,13,22,7,32), 1:5]))
 y <- M96e2[c(25,2,19,12,13,22,7,32), 6]
@@ -33,7 +62,39 @@ julia_assign("Xcand", Xcand)
 julia_command("Xcand = NamedArray(Xcand)")
 julia_eval("Xcand = Int64.(Xcand)")
 
+t_J <- Sys.time()
 julia_eval("MDopt(X = X, y = y, Xcand = Xcand, nMod = 32, p_mod = p_mod, 
     fac_mod = fac_mod, nFDes = 4, max_int = 3, g = 0.4, Iter = 10, nStart = 25, top = 5)")
+Sys.time() - t_J
 
+
+# # # Python con R
+library(reticulate)
+
+source_python("MD_Python.py")
+
+X_P <- as.data.frame(X)
+Xcand_P <- as.data.frame(Xcand)
+fac_mod_P <- as.data.frame(facs)
+
+X_P <- r_to_py(X_P)
+y_P <- r_to_py(y) 
+Xcand_P <- r_to_py(Xcand_P)
+p_mod_P <- r_to_py(p)
+fac_mod_P <- r_to_py(fac_mod_P)
+
+nMod_P <- r_to_py(32L)
+nFDes_P <- r_to_py(4L)
+max_int_P <- r_to_py(3L)
+g_P <- r_to_py(0.4)
+Iter_P <- r_to_py(10L)
+nStart_P <- r_to_py(25L)
+top_P <- r_to_py(5L)
+
+t_P <- Sys.time()
+MD_Python(X = X_P, y = y_P, Xcand = Xcand_P, nMod = nMod_P, 
+          p_mod = p_mod_P, fac_mod = fac_mod_P, 
+          nFDes = nFDes_P, max_int = max_int_P, 
+          g = g_P, Iter = Iter_P, nStart = nStart_P, top = top_P)
+Sys.time() - t_P
 

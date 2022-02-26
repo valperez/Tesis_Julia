@@ -1,14 +1,6 @@
-# Julia con R
-# aqui me dice lo de las funciones : https://syl1.gitbook.io/julia-language-a-concise-tutorial/language-core/interfacing-julia-with-other-languages
-
+# # # R tesis Paty
 library(BsMD2)
-library(JuliaCall)
-julia_setup(JULIA_HOME = "C:/Users/Valeria/AppData/Local/Programs/Julia-1.6.3/bin")
-
 setwd("~/ITAM/Tesis/Julia con R/Code/MD-optimality")
-julia_source("MDopt.jl")
-
-set.seed(99)
 
 X <- as.matrix(BM93e3[1:16,c(1,2,4,6,9)]) #matriz de diseÃ±o inicial
 y <- as.vector(BM93e3[1:16,10]) #vector de respuesta
@@ -25,23 +17,74 @@ Xcand <- matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
                 nrow=16,dimnames=list(1:16,c("blk","f1","f2","f3","f4"))
 )
 
+
+t <- Sys.time()
+e3_R <- BsMD2::MDopt(X = X, y = y, Xcand = Xcand,
+                     nMod = 5, p_mod = p_mod, fac_mod = fac_mod, 
+                     nStart = 25)
+Sys.time() - t
+
+# # # R paquete original
+library(BsMD)
+
+s2 <- c(0.5815, 0.5815, 0.5815, 0.5815, 0.4412)
+
+t_RO <- Sys.time()
+e3_RO <- BsMD::MD(X = X, y = y, nFac = 4, nBlk = 1, mInt = 3, g = 2, 
+          nMod = 5, p = p_mod, s2 = s2, nf = c(3, 3, 3, 3, 4), 
+          facs = fac_mod, nFDes = 4, Xcand = Xcand, mIter = 20, 
+          nStart = 25, top = 10)
+Sys.time() - t_RO
+
+# # #  Julia con R
+library(JuliaCall)
+julia_setup(JULIA_HOME = "C:/Users/Valeria/AppData/Local/Programs/Julia-1.6.3/bin")
+
+julia_source("MDopt.jl")
 # Conversiones para los tipos de Julia
-X <- as.data.frame(X)
-julia_assign("X", X)
-julia_assign("y", y)
-julia_assign("p_mod", p_mod)
-julia_assign("fac_mod", fac_mod)
-julia_command("fac_mod = NamedArray(fac_mod)")
-julia_eval("fac_mod = Int64.(fac_mod)")
-julia_assign("Xcand", Xcand)
-julia_command("Xcand = NamedArray(Xcand)")
-julia_eval("Xcand = Int64.(Xcand)")
+X_J <- as.data.frame(X)
+julia_assign("X_J", X_J)
+julia_assign("y_J", y)
+julia_assign("p_mod_J", p_mod)
+julia_assign("fac_mod_J", fac_mod)
+julia_command("fac_mod_J = NamedArray(fac_mod_J)")
+julia_eval("fac_mod_J = Int64.(fac_mod_J)")
+julia_assign("Xcand_J", Xcand)
+julia_command("Xcand_J = NamedArray(Xcand_J)")
+julia_eval("Xcand_J = Int64.(Xcand_J)")
 
-#julia_command("X = convert(DataFrame, X)")
+t_J <- Sys.time()
+julia_eval("MDopt(X = X_J, y = y_J, Xcand = Xcand_J, nMod = 5, 
+    p_mod = p_mod_J, fac_mod = fac_mod_J, nFDes = 4, max_int = 3, g = 2, Iter = 20, nStart = 10, top = 10)")
+Sys.time() - t_J
 
-julia_eval("MDopt(X = X, y = y, Xcand = Xcand, nMod = 5, 
-    p_mod = p_mod, fac_mod = fac_mod, nFDes = 4, max_int = 3, g = 2, Iter = 20, nStart = 10, top = 10)")
+# Python con R
+library(reticulate)
 
+source_python("MD_Python.py")
 
+X_P <- as.data.frame(X)
+Xcand_P <- as.data.frame(Xcand)
+fac_mod_P <- as.data.frame(fac_mod)
 
+X_P <- r_to_py(X_P)
+y_P <- r_to_py(y) 
+Xcand_P <- r_to_py(Xcand_P)
+p_mod_P <- r_to_py(p_mod)
+fac_mod_P <- r_to_py(fac_mod_P)
+
+nMod_P <- r_to_py(5L)
+nFDes_P <- r_to_py(4L)
+max_int_P <- r_to_py(3L)
+g_P <- r_to_py(2L)
+Iter_P <- r_to_py(20L)
+nStart_P <- r_to_py(25L)
+top_P <- r_to_py(10L)
+
+t_P <- Sys.time()
+MD_Python(X = X_P, y = y_P, Xcand = Xcand_P, nMod = nMod_P, 
+          p_mod = p_mod_P, fac_mod = fac_mod_P, 
+          nFDes = nFDes_P, max_int = max_int_P, 
+          g = g_P, Iter = Iter_P, nStart = nStart_P, top = top_P)
+Sys.time() - t_P
 
