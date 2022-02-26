@@ -1,6 +1,8 @@
 \chapter{Ajuste de polinomios}
 
 \section{El problema}
+El problema que voy a abordar en esta sección es el mismo que abordaron \cite{laberintos} en el artículo mencionado en las referencias. Sin embargo, la diferencia es que yo utilicé Julia, R y Python  mientras que ellos compararon R, Excel, Stata, SPSS, SAS y Matlab. 
+
 Supongamos que tenemos un conjunto de datos con solamente dos variables $x$, $y$. Buscamos ajustarlos a un polinomio de grado $k$. Es decir, buscamos ajustar los datos al modelo
 
 \begin{equation*} 
@@ -22,7 +24,6 @@ El problema consiste en encontrar los mejores coeficientes que cumplan la ecuaci
 
 donde $y$ es un vector de tamaño $n$, $X$ es una matriz de tamaño $n \times (k + 1)$ y $\beta$ es un vector de tamaño $k + 1$. 
 
-\\
 
 \section{Los datos}
 En esta sección explicare como ajustar un conjunto de datos a un polinomio de grado $k$. Los datos que usare son proporcionados por el Instituto Nacional de Standards y Tecnología (NIST por sus siglas en inglés). Para este problema, seleccioné el conjunto llamado filip que se encuentra en \url{https://www.itl.nist.gov/div898/strd/lls/data/LINKS/DATA/Filip.dat}. Estos datos contienen 82 pares ordenados $(x_i, y_i)$. La siguiente imagen muestra las primeras 10 observaciones de los datos. 
@@ -35,7 +36,7 @@ En esta sección explicare como ajustar un conjunto de datos a un polinomio de g
 \end{figure}
 
 \valinline{no sé si agregar una gráfica rápida de los datos porque a simple vista no parecen un polinomio de grado 10}
-\\
+
 Seleccioné este conjunto de datos porque además de proporcionar la información para el ajuste, también dan la respuesta al vector $\beta$ con alta precisión en sus dígitos. 
 
 \section{Planteamiento del problema}
@@ -58,11 +59,9 @@ Podríamos definir la matriz $X$ de la siguiente manera
 
 Representar la matriz $X$ de esta forma tiene una ventaja. Cada elemento puede ser visto como $x_{i, j}$ donde el renglón $i$ representa la observación $i$ de los datos. Por otro lado, la columna $j$ representa la potencia a la que está elevada la observación $i$. Por ejemplo, el elemento $x_{34, 5}$ es la observación 34 de los datos elevado a la 5 potencia. Sin embargo, es importante reconocer que el elemento $x_{34, 5}$ realmente está en la columna 6 de la matriz. El pequeño cambio de notación es solamente para no perder de vista la potencia de las observaciones. 
 
-\\
 
 Por último, el vector $\beta$ de la ecuación \ref{eq_matricial_pol} es de dimensión 11 y es la incógnita del problema. 
 
-\\
 
 En Julia, el código para cargar los datos es el siguiente: 
 
@@ -125,14 +124,14 @@ En nuestro caso, queremos ajustar un polinomio de grado 10 a los datos guardados
 
 donde \texttt{poly(x, 10)} es una función con sintaxis extendida que se utiliza específicamente para regresión polinomial. Esta función viene programada en la documentación del paquete \textsf{StatsModels} en el apartado de \textsf{Extending @formula syntax} que se encuentra en la dirección \url{https://juliastats.org/StatsModels.jl/stable/internals/}. \val{No sé si mejor poner la referencia?? creo que si}
 
-\\
+
 
 Este método no funcionó. Dado que los datos de NIST vienen con la respuesta correcta, fue claro observar que los resultados con el paquete GLM no ajustaron de manera precisa el polinomio. 
 
 \subsection{Descomposición QR versión económica}
 
 \begin{definition}
-La factorización QR de una matriz $A$ de dimensiones $m \times n$ es el producto de una matriz $Q$ de $m \times n$ con columnas ortogonales y una matriz $R$ cuadrada y triangular superior \cite{garcia2017second}. 
+La factorización QR de una matriz $A$ de dimensiones $m \times n$ es el producto de una matriz $Q$ de $m \times n$ con columnas ortogonales y una matriz $R$ cuadrada y triangular superior \cite[p.~191]{garcia2017second}. 
 \end{definition}
 
 Una de las aplicaciones de la descomposición QR es dar solución a problemas de mínimos cuadrados. Por lo tanto, es el segundo método que utilizamos para obtener los valores $\beta$ de \ref{eq_matricial_pol}.
@@ -144,19 +143,18 @@ Una de las aplicaciones de la descomposición QR es dar solución a problemas de
      \langle u_i , uj \rangle = \delta_{ij} \text{ para toda $i, j$}
      \end{aligned}
  \end{equation*}
- Una secuencia ortonormal de vectores es un sistema ortonormal \cite{garcia2017second}.
+ Una secuencia ortonormal de vectores es un sistema ortonormal \cite[p.~147]{garcia2017second}.
  \end{definition}
 
 \begin{definition}
-Una base ortonormal para un espacio de producto interno finito es una base que es un sistema ortonormal \cite{garcia2017second}.
+Una base ortonormal para un espacio de producto interno finito es una base que es un sistema ortonormal \cite[p.~149]{garcia2017second}.
 \end{definition}
 
 En nuestro problema las dimensiones $m \times n$ de la matriz $X$ son $82 \times 11$. Además, $X$ tiene rango $r = 10 < n$ por lo que la matriz $R$ de la descomposición QR es singular. Como consecuencia, no se puede generar una base ortonormal de $R(X)$. Sin embargo, el proceso de factorización QR se puede modificar usando una matriz de permutación para generar una base ortonormal.
 
-\\
 
 \begin{definition}
-Una matriz $A$ es una matriz de permutación si exactamente una entrada en cada renglón y en calada columna es 1 y todas las otras entradas son 0 \cite{garcia2017second}.
+Una matriz $A$ es una matriz de permutación si exactamente una entrada en cada renglón y en calada columna es 1 y todas las otras entradas son 0 \cite[p.~183]{garcia2017second}.
 \end{definition}
 
 La idea del método QR modificado es generar una matriz de permutación $P$ tal que 
@@ -192,10 +190,8 @@ R_{11} & R_{12} \\
 \end{pmatrix}
 \end{aligned}
 \end{equation*}
-donde $R_{11}$ es una matriz triangular superior de tamaño $r \times r$ con entradas en la diagonal diferentes de cero. 
+donde $R_{11}$ es una matriz triangular superior de tamaño $r \times r$ con entradas en la diagonal diferentes de cero \cite[p.~532]{numerical_linear_algebra}.
 \end{theorem}
-
-\cite{numerical_linear_algebra}
 
 \val{literal el teorema viene de Datta 2010}
 
@@ -209,11 +205,11 @@ Para aplicar este método en Julia, hay que usar el siguiente código
     R = F.R
 \end{minted}
 
-\\
+
 
 Ya tenemos el código que calcula las matrices $P, Q, R$ de la descomposición QR con columnas pivoteadas. Para resolver nuestro problema original \ref{eq_matricial_pol} y obtener los valores de los elementos de $\beta$ hay que hacer un poco de álgebra. 
 
-\\
+
 
 Recordemos que el problema es obtener $\beta$ de la ecuación $y = X \beta$. También, por el teorema \ref{exitencia_QR_dec}, sabemos que $X$ siempre tiene descomposición QR con columnas pivoteadas. Es decir, $XP = QR$. Por otro lado, como $P$ es matriz de permutación por lo que
 
@@ -269,7 +265,7 @@ En Julia, esto se programa de la siguiente manera
     # 2. Resuelvo beta = Pz
     x_QR = P*z
 \end{minted}
-\\
+
 
 Este método tampoco funcionó. Podemos empezar a consider que los datos son tan sensibles que la propagación del error es tal que no permite un buen ajuste del polinomio. Intentaremos con otros dos métodos.
 
@@ -286,7 +282,7 @@ Sea $A$ una matriz de $m \times n$ y sea $q = min \{m, n \}$. Si el rango de $A 
 \end{equation*}
 Si A = 0, entonces los valores singulares de A son $\sigma_1 = \sigma_2 = \dots = \sigma_q = 0$. 
 Los valores singulares de $A \in M_{n}$ son los eigenvalores de $(A^{*}A)^{1/2}$ que son los mismos eignevalores de $(AA^{*})^{1/2}$
-\cite{garcia2017second}
+\cite[p.~420]{garcia2017second}
 \end{definition}
 
 Los valores singulares tienen muchas apliciones. Sin embargo, para resolver ecuaciones lineales son usados para obtener la descomposición de valores singulares (DVS). 
@@ -324,12 +320,11 @@ donde
     \end{aligned}
 \end{equation*}
  tiene las mismas dimensiones que A. Si m = n, entonces $U, V \in M_{n}(F)$ y $\Sigma = \Sigma_r \oplus 0_{n-r}$.
- \cite{garcia2017second}
+ \cite[p.~421]{garcia2017second}
 \end{theorem}
 
 La ecuación \ref{decomposicion} con las características del teorema anterior lleva por nombre descomposición en valores singulares (DVS). 
 
-\\
 
 Es importante observar que las matrices $U$ y $V$ son matrices unitarias. Es decir, 
 
@@ -361,7 +356,7 @@ Sea $A$ una matriz de $m \times n$ de rango $r$ con una descomposición en valor
     \end{aligned}
 \end{equation*}
 Entonces $A^{\dagger} = V \Sigma^{\dagger} U ^{*}$ y esta es la descomposición de valores singulares de $A^{\dagger}$. 
-\cite{friedberglinearalgebra}
+\cite[p.~414]{friedberglinearalgebra}
 \end{theorem}
 
 Podemos ver que en realidad lo único que cambia al calcular la pseudoinversa es la matriz $\Sigma$. Sin embargo, esta nueva matriz $A^{\dagger}$ tiene propiedades interesantes. 
@@ -375,11 +370,9 @@ Podemos ver que en realidad lo único que cambia al calcular la pseudoinversa es
 
 Recordando que buscamos obtener $\beta$ que satisfaga la ecuación \ref{eq_matricial_pol} podemos ver que el sistema lineal está sobredeterminado. Esto se puede verificar por las dimensiones de la matriz $X_{n \times m} = X_{82 \times 11}$. Como $m < n$, sabemos que hay más ecuaciones que variables desconocidas. 
 
-\\
 
 \valinline{Como sabemos que y esta en el espacio de columnas de V?}
 De la ecuación \ref{eq_matricial_pol} podemos multiplicar por $X^{T}$ para obtener
-
 \begin{equation}
 \label{transformacion_eq_base}
     \begin{aligned}
@@ -401,12 +394,11 @@ La ecuación \ref{transformacion_eq_base} siempre da un sistema determinado (bal
 
 Por lo tanto, la pseudo inversa de Moore Penrose da la solución de mínimos cuadrados de \ref{eq_matricial_pol} \cite{worldScientificNews}
 
-\\
 
 En Julia, este método se puede programar de la siguiente manera:
 
 \begin{minted}{julia}
-    ### Inversa de Moore Penrose
+    # # # Inversa de Moore Penrose
     N = pinv(X)
     aux = ones(k + 1)
     x_MP = N*y 
@@ -417,20 +409,15 @@ Este método tampoco funcionó. Por lo tanto, investigue más a fondo los paquet
 \subsection{\textit{Polynomials}}
 \textit{Polynomials} es un paquete que proporciona aritmética básica, integración, diferenciación, evaluación y hallar raíces para polinomios univariados \cite{poly_manual}. Para poder usar el paquete primero hay que descargarlo usando el código \ref{instalacion_paquete}. 
 
-\\
 
 El paquete \textit{Polynomials} tiene su propia función \texttt{fit} que toma tres variables como entrada. Las primeras dos entradas son las correspondientes a $x$ y $y$ de los datos a utilizar (en este caso, los datos filip). La tercera entrada corresponde al grado que buscamos que sea el polinomio (en este caso, grado 10). 
-
-\\
 
 A diferencia de los otros método utilizados para este problema, la función \texttt{fit} usa el metódo Gauss-Newton para resolver sistemas de ecuaciones no lineales. Sin embargo, en este caso tenemos un problema lineal. Esta fue la primera razón por la que este paquete no fue mi primera opción para resolver el problema. 
 \valinline{No sé si tengo que explicar este método}
 
-\\
 
 La segunda razón es que a diferencia de la función \texttt{lm} del paquete \textit{GLM}, la función \texttt{fit} solamente aporta los coeficientes del ajuste del polinomio. Es decir, no da como resultado el error estandar, ni el valor p de la estimación. Sin embargo, tengo que agregarlo a esta sección de la tesis, ya que es el único método que funcionó. 
 
-\\
 
 El código en Julia se ve de la siguiente manera:
 
@@ -439,7 +426,6 @@ using Polynomials
 x_pol = Polynomials.fit(x, y, 10)
 \end{minted}
 
-\\
 
 Este método fue el único de los cuatro que funcionó para el polinomio de grado 10. La desventaja de este método es que la función solamente arroja los coeficientes $\beta$. Si quisieramos ampliar el análisis y observar, por ejemplo, el valor p de algún regresor tendríamos que buscar otra manera de obtenerlo. 
 
@@ -447,13 +433,13 @@ Este método fue el único de los cuatro que funcionó para el polinomio de grad
 \section{Evaluación de los métodos}
 Una cuestión válida es preguntarse si tal vez lo que está mal es la implementación de los algoritmos y, debido a esto, no dan la respuesta correcta. Por tanto, para probar que los métodos estén programados de la manera correcta los somentí a una serie de pruebas.
 
-\\
 
 La primera prueba consiste en que, usando los datos filip, cada método ajustaba un polinomio de grado $k$ de $k = 1, 2, \dots, 10$. Al final, para cada polinomio de grado $k$ tenía cuatro resultados de ajuste (uno por cada método). 
 
-\\
+La segunda prueba consiste en comparar los resultados con R. De manera análoga a Julia, en R también use los datos filip para ajustar un polinomio de grado $k$ de $k = 1, 2, \dots, 10$. Para esto, use la función \texttt{lm(formula, data)} donde los datos siempre son los mismos y la fórmula depende del grado del polinomio. Es importante mencionar que este problema ya ha sido abordado por otros usuarios y resuelto por Brian Ripley. Ripley es un matemático británico que ha escrito muchos libros sobre programación y ha ganado muchos premios por sus aportaciones a la estadística. Sin duda lo más relevante en este caso es que es uno de los contribuidores principales en el desarrollo de \textsf{R}. El código que utilicé para resolver este problema es el mismo que Ripley hizo público. 
 
-La segunda prueba consiste en comparar los resultados con R. De manera análoga a Julia, en R también use los datos filip para ajustar un polinomio de grado $k$ de $k = 1, 2, \dots, 10$. Para esto, use la función \texttt{lm(formula, data)} donde los datos siempre son los mismos y la fórmula depende del grado del polinomio. La tercera prueba fue medir el tiempo que tomaba a R ejecutar la función \texttt{lm} con los parametros especificados. El código es el siguiente: 
+
+La tercera prueba fue medir el tiempo que tomaba a R ejecutar la función \texttt{lm} con los parametros especificados. El código es el siguiente: 
 
 \begin{minted} {R}
 # Para polinomio de grado = 1
@@ -544,19 +530,16 @@ Finalmente, podemos ver la tabla de tiempos que le tomo a cada método. Las colu
 \section{Número de condición y precisión de la solución}
 
 \begin{definition}
-El número $\parallel A \parallel  \parallel A^{-1} \parallel$ se llama el número de condición de $A$ y se denota $Cond(A)$ \cite{numerical_linear_algebra}. 
+El número $\parallel A \parallel  \parallel A^{-1} \parallel$ se llama el número de condición de $A$ y se denota $Cond(A)$ \cite[p.~62]{numerical_linear_algebra}. 
 \end{definition}
 
 Como vimos en la sección de Evaluación de los métodos, los métodos sí están bien programados. Dejando de lado las funciones programadas por default en Julia, el método de factorización QR y descomposición de valores singulares arrojaron buenos resultados hasta los polinomios de grado 9. Esto nos puede llevar a pensar que en realidad, los datos en sí son muy susceptibles a cambios. Es decir, cualquier cambio en la matriz $X$ o en el vector $y$ resultara en un ajuste de los coeficientes $\beta$ poco preciso. Esta cualidad también se conoce como que los datos tienen impurezas. El caso contrario, donde los métodos dan resultados precisos se conoce a los datos como exactos \cite{numerical_linear_algebra}.
 
-\\
 
 En general, para nuestro problema \ref{eq_matricial_pol} tenemos tres casos: 
 \begin{itemize}
-    \item El vector $y$ tiene impurezas mientras que la matriz $X$ es exacta.
-    
+    \item El vector $y$ tiene impurezas mientras que la matriz $X$ es exacta. 
     \item La matriz $X$ tiene impurezas mientras que el vector $y$ es exacto
-    
     \item Ambos, el vector $y$ y la matriz $X$ tiene impurezas. 
 \end{itemize}
 
@@ -569,29 +552,26 @@ Supongamos que queremos resolver el sistema $Ax = b$. Supongamos que $A$ es no s
     \begin{aligned}
     \dfrac{\parallel \delta x \parallel}{\parallel x \parallel} \leq (\dfrac{Cond(A)}{1 - Cond(A) \dfrac{\parallel \Delta A \parallel}{\parallel A \parallel}}) (\dfrac{\parallel \Delta A \parallel}{\parallel A \parallel} + \dfrac{\parallel \delta b \parallel}{\parallel b \parallel})
     \end{aligned}
-\end{equation*} \cite{numerical_linear_algebra}
+\end{equation*} \cite[p.~65]{numerical_linear_algebra}
 \end{theorem}
 
 El teorema anterior nos está diciendo que los cambios en la solución $x$ son menor o iguales a una constante determinada por el número de condición multiplicada por la suma de las pertubaciones de $A$ y las pertubaciones de $b$. Además, el teorema nos dice que aunque las perturbaciones de $A$ y $b$ son pequeñas, puede haber un cambio grande en la solución si el número de condición es grande. Por lo tanto, $Cond(A)$ juega un papel crucial en la sensibilidad de la solución \cite{numerical_linear_algebra}. 
 
-\\
 
 El número de condición tiene varias propiedades pero en la que nos queremos centrar es en la siguiente: 
 
 \begin{equation} \label{formula:num_cond}
     \begin{aligned}
-    Cond(A) = \dfrac{\sigma_{máx}}{\sigma_{mín}}
+    Cond(A) = \dfrac{\sigma_{max}}{\sigma_{min}}
     \end{aligned}
 \end{equation}
 
-donde $\sigma_{max}$ y $\sigma_{mín}$ son, respectivamente, el valor singular más grande y más pequeño de $A$. 
-
-\\
+donde $\sigma_{max}$ y $\sigma_{min}$ son, respectivamente, el valor singular más grande y más pequeño de $A$. 
 
 Antes de calcular el número de condición de nuestra matriz $X$ de \ref{eq_matricial_pol}, vamos a ver una última definición. 
 
 \begin{definition} \label{def:condicionamiento}
-El sistema $Ax = b$ está mal condicionado si el $Cond(A)$ es grande (por ejemplo, $10^{5}, 10^{8}, 10^{10}, etc)$. En otro caso, está bien condicionado \cite{numerical_linear_algebra}.
+El sistema $Ax = b$ está mal condicionado si el $Cond(A)$ es grande (por ejemplo, $10^{5}, 10^{8}, 10^{10}, etc)$. En otro caso, está bien condicionado \cite[p.~68]{numerical_linear_algebra}.
 \end{definition}
 
 Ahora vamos a calcular el número de condición. Este calculo lo hice en Julia y en R usando ambos, la función que ya viene programada en cada lenguaje y usando la fórmula \ref{formula:num_cond}. En Julia, el código es 

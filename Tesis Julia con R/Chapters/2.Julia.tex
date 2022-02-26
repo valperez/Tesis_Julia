@@ -1,7 +1,11 @@
 \chapter{Julia}
 
 Julia es un lenguaje de programación gratis cuyo propósito general es ser tan rápido como C, pero manteniendo la facilidad de lenguaje de R o Python. Es una combinación de sintaxis simple con alto rendimiento computacional. Su slogan es "Julia se ve como Python, se siente como Lisp, corre como Fortran" \citep{Hackers}. 
-Esta combinación de características hace que Julia sea un leguaje de programación que ha tomado mucha fuerza en la comunidad científica. Por lo tanto, en esta sección explicaré los básicos de Julia, desde su instalación hasta análisis de regresiones multivariadas. 
+Esta combinación de características hace que Julia sea un lenguaje de programación que ha tomado mucha fuerza en la comunidad científica. Por lo tanto, en esta sección explicaré los básicos de Julia, desde su instalación hasta análisis de regresiones multivariadas. 
+
+\section{Reproducibilidad}
+Antes de empezar, es necesario enfatizar que esta tesis es completamente reproducible.En Peng y Hicks definen que "un análisis de datos publicado es reproducible si el conjunto de datos y el código utilizados para crear el análisis de datos está disponible para que otros lo analicen y estudien de manera independiente" \cite{peng2021reproducible}. A pesar de que en el artículo enfatizan que esta definición puede ser un poco ambigua, sí resaltan que la reproducibilidad es un medio para confiar y revisar el análisis de otros. Por lo tanto, en esta tesis decidí publicar el código que utilicé por medio de GITHUB y siempre hago énfasis en las fuentes de los datos. A pesar de que esta tesis no es un manual de Julia, Python o R considero da suma importancia publicar mi trabajo para que les sirva a mis compañeros ya sea como referencia o como punto de partida. 
+
 
 \section{Instalación}
 Al momento de escritura de esta tesis la versión de Julia disponible es la v1.6.3 hasta el 23 de Septiembre del 2021. Para descargar Julia, hay que entrar al siguiente link: \url{https://julialang.org/downloads/}. 
@@ -144,7 +148,7 @@ Además de números, Julia puede asignar characteres a variables. Esto se hace u
 
 
 \begin{tcolorbox}
-      \dquote{\texttt{Esta tesis es genial}}
+      \texttt{Esta tesis es genial}
 \end{tcolorbox}
 
 Similar a otros lenguajes de programación, podemos accesar a caracteres específicos de un string utilizando corchetes cuadrados $[$ $]$ y a cadenas seguidas de caracteres usando dos puntos $:$. Continuando con el ejemplo anterior, 
@@ -346,10 +350,6 @@ Una vez instalado el programa, basta utilizar el comando \texttt{CSV.read} y la 
   \label{insertar_df}
 \end{center}
 \end{figure}
-
-
-
-
 
 \subsection{Regresiones}
 

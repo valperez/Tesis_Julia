@@ -1,0 +1,485 @@
+\chapter{MDopt}
+
+Una de las razones por las que decidí estudiar matemáticas aplicadas es justamente por la parte de 'aplicadas'. Cuando en los cursos de estadística comencé a aprender sobre modelos que pueden describir información real, mi sorpresa y emoción fueron auténticas. Sin embargo, en esas clases también aprendí que hay muchos modelos posibles para un conjunto de datos y no hay una sola manera de elegir el \textit{mejor} modelo. Por lo tanto, para darle continuidad al tema de modelos lineales decidí abordar el problema de discriminación de modelos usando el método con el criterio MD, \textit{Model Discrimination} propuesto por Box y Hill. 
+
+En primer lugar, hay que discriminar entre las variables o factores que realmente afectan la variable de respuesta de las que no. Para esto se puede utilizar el método bayesiano descrito por Ana Patricia Vela Noyola \cite{tesis_paty}. Hay ocasiones donde utilizando este método es muy fácil determinar si un factor afecta o no la variable de respuesta. Sin embargo, hay ocasiones donde los resultados son ambiguos y pareciera que hay varios modelos que describen los datos. Por lo tanto, la estrategia que se usa es agregar ensayos adicionales específicos que, una vez agregados a los ensayos originales, darán una idea más clara sobre cuál es el mejor modelo. 
+
+Uno de estos métodos es el  que utiliza el criterio MD, de \textit{Model Discrimination}. La idea de este criterio es elegir ensayos que permitan la máxima discriminación posible entre los modelos probables \cite{meyer1996}. 
+
+\section{Explicación algoritmo completo o pseudocódigo}
+
+\section{Criterio MD}
+Lo siguiente es la explicación matemática que viene en el artículo de \cite{meyer1996}. 
+
+Supongamos que tenemos un experimento factorial fraccionario con $k$ factores. Sea \textbf{$Y$} el vector de respuestas de tamaño $n \times 1$. El modelo que mejor describe a \textbf{$Y$} depende de cuales factores están activos además de que el análisis debe considerar todas las posibles combinaciones de dichos factores. 
+
+Sea $M_i$ el modelo con una combinación particular de factores activos $f_i$ donde $0 \leq f_i \leq k$. Condicionado a que $M_i$ sea el modelo verdadero, asumimos un modelo lineal normal usual $\textbf{$Y$} \sim N(X_i \beta_i, \sigma^2 I).$ La matriz $X_i$ es la matriz de regresión para $M_i$ e incluye los efectos principales para cada factor activo y sus interacciones hasta cualquier orden deseado. Sea $t_i$ el número de efectos (sin incluir el término constante) en $M_i$. Denotemos a $M_0$ como el modelo sin factores activos. 
+
+Ahora asignaremos distribuciones a priori no informativas al término constante $\beta_0$ y el error la desviación estándar $\sigma$ que serán comunes para todos los modelos. Entonces, $p( \beta_0, \sigma) \propto \dfrac{1}{\sigma}$. El resto de coeficientes $\beta_i$ tienen distribuciones normales a priori con media 0 y desviación estándar $\gamma \sigma$. 
+
+Finalmente, hay que agregar probabilidades a priori a cada uno de los modelos posibles. La regla de Pareto, o \textit{sparsity of effects principle} dice que cuando hay varias variables, el sistema es más probable que esté dominado por los efectos principales e interacciones de orden bajo \cite{montgomery2017design}. En otras palabras, buscamos pocos factores que sean los principales y que la combinación entre ellos sea de orden bajo. Por lo tanto, podemos asumir que existe una probabilidad $\pi, \text{ } 0 < \pi < 1$ que cualquier factor esté activo. Además, asumimos que la creencia a priori de que un factor esté activo es independiente de las creencias de los demás factores. Entonces, la probabilidad a priori del modelo $M_i$ es $P(M_i) = \pi ^f_i (1 - \pi)^{k-f_i}.$ 
+
+Una vez observado el vector de datos \textbf{$Y$}, podemos actualizar las distribuciones de los parámetros para cada modelo y la probabilidad de que cada modelo sea válido. La probabilidad posterior de que $M_i$ sea el modelo correcto es 
+
+\begin{equation*}
+	\begin{aligned}
+		P(M_i | \textbf{Y}) \propto  \pi ^f_i (1 - \pi)^{k-f_i} \gamma^{-t_i} |\Gamma_i + X_i' X_i |^{-1/2} S_i^{-(n-1)/2}, 		
+	\end{aligned}
+\end{equation*}
+
+\begin{equation*}
+	\begin{aligned}
+		\hat{\beta_i} = (\Gamma_i + X_i' X_i)^{-1} X_i ' \textbf{Y}, 
+	\end{aligned}
+\end{equation*}
+
+y 
+
+\begin{equation*}
+	\begin{aligned}
+		S_i = (\textbf{Y} - X_i \hat{\beta_i})' (\textbf{Y} - X_i \hat{\beta_i}) + \hat{\beta_i}' \Gamma_i \hat{\beta_i}.
+	\end{aligned}
+\end{equation*}
+
+Es importante notar que las probabilidades $P(M_i | \textbf{Y})$ pueden ser sumadas sobre todos los modelos que inclutyan al factor $j$ para calcular la probabilidad posterior $P_j$ de que el factor $j$ está activo, 
+
+\begin{equation*}
+	\begin{aligned}
+		P_j = \sum_{M_i:factorjactivo} P(M_i | \textbf{Y})
+	\end{aligned}
+\end{equation*}
+
+El conjunto de probabilidades $\{ P_j \}$ da un resumen de la actividad de cada uno de los factores del experimento. 
+
+Si utilizara el análisis bayesiano, el experimento claramente sugeriría un modelo $M_i$ cuando la probabilidad posterior $P(M_i | \textbf{Y})$ es cercano a 1. Sin embargo, las conclusiones con ambiguas cuando hay varios modelos con probabilidades cercanas a 1. 
+
+El diseño MD propuesto por Box y Hill en 1967 \cite{hillybox1967} \val{Aqui tengo duda porque Meyer es el que los cita} tiene la siguiente forma. Sea \textbf{Y*} el vector de datos obtenidos de los ensayos adicionales y sea $P(\textbf{Y*} | M_i, \textbf{Y})$ la densidad predictiva de \textbf{Y*} dados los datos iniciales $\textbf{Y}$ y el modelo $M_i$. Entonces, 
+
+\begin{equation*}
+	\begin{aligned}
+		MD = \sum_{0 \leq i \neq j \leq m} P(M_i | \textbf{Y}) P(M_j | \textbf{Y}) \int_{-\infty}^{infty} p(\textbf{Y*} | M_i, \textbf{Y}) \times ln(\dfrac{p(\textbf{Y*} | M_i, \textbf{Y})}{p(\textbf{Y*} | M_j, \textbf{Y})}) d\textbf{Y*}
+	\end{aligned}
+\end{equation*}
+
+Sea $p_i$ la densidad predictiva para una nueva observación condicionada a las observaciones originales $Y$ and sea $M_i$ el modelo correcto. Entonces, el diseño de criterio es 
+
+\begin{equation*}
+	\begin{aligned}
+		MD = \sum_{0 \leq i \neq j \leq m} P(M_i | Y)  P(M_j | Y) I(p_i, p_j)
+	\end{aligned}
+\end{equation*}
+
+donde $I(p_i, p_j) = \int p_i ln(\dfrac{p_i}{p_j})$ es la información de Kullback-Leibler y mide la información media para discriminar a favor de $M_i$ contra $M_j$ cuando $M_i$ es el verdadero modelo. Además, la proporción $\dfrac{p_i}{p_j}$ puede verse como la probabilidad en favor de $M_i$ contra $M_j$ dados los datos de los experimentos extras. 
+
+Entre mayor sea el valor de MD para un diseño, mejor ya que el diseño que maximice MD puede ser referido como el diseño \textit{MD-óptimo}. 
+
+La intuición detrás de la fórmula del criterio MD puede ser más sencilla de entender si consideramos el ejemplo donde solo tenemos dos modelos posibles, $M_1$ y $M_2$. MD es proporcional a la suma del valor esperado de $ln(p_1/p_2)$ dado $M_1$ y el valor condicional esperado de  $ln(p_2/p_1)$ dado $M_2$. Entonces, buscamos un diseño que calcule una probabilidad alta a favor de $M_1$ si este es el modelo correcto; pero además que calcule lo mismo para $M_2$ si es el modelo correcto. En otras palabras, buscamos el valor de MD que señale el diseño correcto. 
+
+\section{Algoritmo de intercambio}
+En su artículo, \cite{mitchelldetmax} explica un algoritmo llamado 'DETMAX' para la construcción de diseños experimentales 'D-óptimos'. Lo siguiente es un resumen de dicho artículo. 
+
+Consideremos el modelo lineal usual $y = X \beta + \epsilon$ donde $y$ es un vector de observaciones de tamaño $n \times 1$, $X$ es una matriz de $n \times k$ de constantes, $\beta$ es el vector $k \times 1$ de coeficientes para ser estimados y $\epsilon$ es un vector de $n \times 1$ de variables aleatorias independientes e idénticamente distribuidas con una media $0$ y una varianza desconocida $\sigma^{2}$. El renglón i-ésimo de $X$ es $f(x_i)'$ donde $x_i$ es el i-ésimo punto de diseño y la función $f$ depende en el modelo. Sea $p$ el número de variables independientes y $\chi$ la región donde es factible realizar experimentos.
+
+El estimador de mínimos cuadrados de $\beta$ es $\hat{\beta} = (X'X)^{-1} X'y$, y la matriz de covarianza de $\hat{\beta}$ es $(X'X)^{-1} \sigma^{2}$. En cualquier punto $x \in \chi$, el valor estimado de la 'verdadera' respuesta es $\hat{y} (x) = f(x)' \beta$. Si el modelo es correcto, la esperanza de $\hat{y}(x)$ es la esperanza de la respuesta en el punto $x$. Es decir, el modelo predice correctamente $y$. La varianza de $\hat{y}(x)$ está dada por $v(x) = f(x)' (X'X)^{-1} f(x) \sigma^{2}$. En este caso, $\sigma^{2}$ puede ser tomada como $1$ sin pérdida de generalidad. 
+
+Uno de los diseños más populares para construir diseños óptimos es el de maximizar $|X'X|$ llamado diseño 'D-óptimos'.  El propósito del artículo de Mitchell es presentar un nuevo algoritmo llamado DETMAX para maximizar el determinante de la matriz $X'X$. 
+
+En primera instancia \val{Agregar que fue la referencia 5}, el algoritmo fue creado para intercambiar puntos de diseño de la siguiente manera. Empezando con un diseño elegido al azar de $n$ ensayos, el diseño original de $n$ ensayos se puede mejorar 
+
+\valinline{Se lee muy confuso, son puntos o ensayos?}
+
+\begin{enumerate}
+	\item Sumando un ensayo número $n+1$ elegido para que se alcance el incremento máximo posible de $|X'X|$. Después, 
+	\item Quitando el ensayo en el diseño resultante que resulte en la menor disminución en  $|X'X|$. 
+\end{enumerate}
+
+Estos dos pasos se llegan primero sumando al diseño original el punto donde $v(x)$ sea máximo y después restando del diseño con $n+1$ ensayos resultante el punto donde $v(x)$ es mínimo.
+
+\valinline{Aquí quiero agregar un pequeño diagrama} 
+
+Ahora bien, para tener mayor flexibilidad, este algoritmo básico fue modificado para permitir el reemplazamiento de más de un punto del diseño original en cada iteración. El requerimiento de que un diseño con $n+1$ puntos sea regresado inmediatamente a un diseño con $n$ puntos se relajo. Al algoritmo ahora se le permite hacer una 'excursión' donde se pueden construir diseños de varios tamaños que eventualmente regresan a un diseño de tamaño $n$.  
+
+Si no hay mejora en el determinante todos los diseños construidos en la excursión son eliminados y puestos en un conjunto de diseños fallidos llamado $F$. El conjunto $F$ es usado después para guiar la siguiente excursión, la cual siempre empieza con el mejor diseño actual de $n$ puntos. 
+Sea $D$ el diseño actual en cualquier punto durante una excursión. Las reglas para continuar con la excursión son las siguientes:
+
+\begin{enumerate}
+	\item Si el número de puntos en $D$ es mayor que $n$, quitar un punto si $D$ no está en $F$ y agregar un punto de lo contrario. 
+	
+	\item Si el número de puntos en $D$ es menor que $n$, agregar un punto si $D$ no está en $F$ y quitar un punto de otra manera. 
+\end{enumerate}
+
+Para determinar si algún $D$ está o no en $F$, solo se examina el determinante de $|X'X|$. A pesar de que esto no es un prueba de fuego (ya que dos diseños diferentes pueden tener el mismo determinante) parece ser una buena manera en probar equivalencias en poco tiempo. 
+
+Cada vez se vuelve más y más difícil tener un mejor diseño por lo que las excursiones se pueden alejar mucho de un nivel de $n$ puntos. Para parar el algoritmo, Mitchell propone pone límites en el mínimo y máximo número de puntos permitidos en la construcción de un diseño durante una excursión los cuales recomienda poner estén en $n \pm 6$. 
+
+Mitchell adopta el enfoque de Dykstra \val{Agregar referencia} en donde los puntos de diseño son seleccionados de una lista previamente especificada de candidatos. Esto trae facilidad de programación y el poder de excluir puntos que no son deseados o posibles. 
+
+Debido a la existencia de muchos diseños que son óptimos solo localmente, lo mejor es hacer varias intentos independientes en la solución. En cada intento, DETMAX empieza con un diseño completamente nuevo cuyos puntos son seleccionados aleatoriamente de una lista de candidatos. Él determina que diez intentos usualmente son suficientes para llegar al diseño óptimo. 
+
+
+
+
+\section{Metodología completa}
+\valinline{Donde pongo lod e bayesiana que la neta no entra en la tesis}
+
+La metodología que utilizan Meyer \val{Falta poner referencia} es que primero calculan las probabilidades posteriores de que los factores estén activos. Los factores con probabilidades cercanas a 1 son los considerados como activos. Además, usan un normal probability plot of contrasts para visualizar cuales son los efectos principales en la variable de respuesta \val{Falta arreglar esto}. Este análisis previo está fuera de los alcances de esta tesis por lo cual no serán explicados a mayor profundidad. 
+
+\valinline{Al final poner como todos los pasos que hace}
+
+\section{Comparación entre lenguajes}
+
+\valinline{Falta poner que las cosas se complican poquito con Python por la numeración }
+Ya que la tesis es para probar la eficiencia y funcionalidad de Julia en comparación con R y Python use el mismo código en los tres lenguajes para ver cual de los tres hace los cálculos de MD de la manera más rápida y eficiente. En R utilice el paquete BsMD2 hecho por Ana Patricia Vela Noyola y para Julia y Python utilice ese mismo código solo que adaptado a los diferentes lenguajes. Después, llamé a los códigos de Julia y Python en R para medir el tiempo que le toma a cada lenguaje ejecutar dos ejemplos distintos. No es extraño que en los dos paquetes haya comando que sirvan para efectuar las mismas tareas. Por lo tanto, la siguiente tabla es una lista de los comandos que utilicé en \texttt{JuliaCall} así como su simil en \texttt{reticulate}.
+
+\begin{tabular}{ |p{2cm}|p{2.5cm}|p{3cm}|p{3cm}|  }
+	\hline
+	JuliaCall & reticulate & Uso & Especificaciones\\
+	\hline
+	julia\_setup   & use\_python    & Es usado para especificar la dirección del programa (Julia o Python) &   use\_python no es necesario a menos que tengas varias versiones de Python instaladas\\
+	\hline
+	julia\_source &   source\_python  & Agregan las funciones que estén dentro de los archivos especificados   & Es necesario tener la terminación del archivo correcta\\
+	\hline
+	julia\_assign & r\_to\_py &  Convierte los objetos de R en objetos del programa externo &  JuliaCall no agrega los objetos al ambiente de R\\
+	\hline
+	julia\_eval y julia\_command  & repl\_python\(\) & Corren el lenguaje externo dentro de R&  Con repl\_python, la consola de R se convierte en una de Python\\
+
+	\hline
+\end{tabular}
+
+Para llamar Julia en R, utilice el paquete \texttt{JuliaCall}. Este paquete permite que Julia funcione dentro de R. Es decir, yo utilizo los objectos creados en R y los puedo trasladar a Julia para correr alguna función creada en Julia. El paquete es como un puente entre ambos lenguajes donde solamente hace la conexión más no los mezcla de ninguna otra forma.
+
+\valinline{Falta poner lo de julia setup}
+
+En primer lugar, para cada ejemplo creo los objetos que necesito como entrada de la función. Después, utilizo el comando \texttt{julia\_assign} para asignar los objetos creados en R a objetos nuevos en Julia. En caso de que la conversión de alguno de los objetos no sea la deseada, utilizo \texttt{julia\_command} para hacer la conversión dentro de Julia. Además, debo tener la función que quiero utilizar en un documento con terminación \textsf{.jl} guargado en la carpeta de mi directorio de trabajo. Para agregar la función en R, utilizo el comando \texttt{julia\_source} y dentro el nombre del documento. Finalmente, utilizo el comando \texttt{julia\_eval} para correr la función que con los parámetros ya que cree. 
+
+Para llamar Python en R utilice el paquete \texttt{reticulate}. Este paquete funciona más como una extensión de R ya que puedes transitar fácilmente entre ambos lenguajes sin necesidad de muchos comandos. Mas bien, lo que se necesitan son prefijos como \texttt{.r} o \texttt{py\$} para llamar los objetos de cada lenguaje.
+
+Para utilizar la función que escribí en Python, lo primero que hice (después de llamar al paquete, claro está) es guardarla en un archivo con terminación \textsf{.py} y guardarlo en la carpeta del directorio de trabajo. Después, utilice el comando \texttt{source\_python} para llamar el archivo. Con solamente llamar el archivo se cargan en R todas las funciones dentro de él. En este caso, yo solamente tenía una función pero en caso de tener varias, solo es necesario cargar el archivo una vez. Después, debo utilizar el comando \texttt{r\_to\_py} para convertir todos los objetos de R en objetos de Python. Una de las ventajas de este paquete es que crea el objeto de Python en el ambiente de R y si usas RStudio, puedes ver el objeto creado en la parte de \textsf{Environment} de tu pantalla. Para Julia esto no pasa lo cual puede llegar a ser confuso. 
+
+Posteriormente, si uno de los parámetros de la función es un entero te recomiendo que también los conviertas e un objeto de Python ya que en ocasiones el paquete los convierte automáticamente en objetos de tipo \texttt{Float} cuando son enteros y la función puede fallar. Finalmente, puedes llamar a tu función de Python en R sin ningún comando adicional; lo único que necesitas es usar el nombre de la función tal cual la usaste en Python y agregarle los parámetros que ya creaste. 
+
+\section{Ejemplos y resultados}
+
+\subsection{Proceso de moldeo por inyección}
+\valinline{Checar bien como se llama esto}
+
+El primer ejemplo que utilice fue el descrito por primera vez por Box, Hunter y Hunter en 1978 \val{falta poner la referencia}. El experimento es estudiar los efectos de ocho factores en el encojimiento de un proceso de moldeo por inyección. El plan experimental fue un $2^{84}$ factorial fraccionado con generadores $I = ABDH = ACEH = BCFH = ABCG$. Los datos para este ejemplo están en la tabla \ref{data_table1}. 
+
+\begin{center}
+	\begin{tabular}{ccccccccc|c}
+		Ensayo & A & B & C & D & E & F & G & H & Y \\
+		\hline
+		1 & -1 & -1 & -1 & 1 & 1 & 1 & -1 & 1 & 14.0 \\
+		
+		2 & 1 & -1 & -1 & -1 & -1 & 1 & 1 & 1 & 16.8 \\
+		
+		3 & -1 & 1 & -1 & -1 & 1 & -1 & 1 & 1 & 15.0 \\
+		
+		4 & 1 & 1 & -1 & 1 & -1 & -1 & -1 & 1 & 15.4 \\
+		
+		5 & -1 & -1 & 1 & 1 & -1 & -1 & 1 & 1 & 27.6 \\
+		
+		6 & 1 & -1 & 1 & -1 & 1 & -1 & -1 & 1 & 24.0 \\
+		
+		7 & -1 & 1 & 1 & -1 & -1 & 1 & -1 & 1 & 27.4 \\
+		
+		8 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 22.6 \\
+		
+		9 & 1 & 1 & 1 & -1 & -1 & -1 & 1 & -1 & 22.3 \\
+		
+		10 & -1 & 1 & 1 & 1 & 1 & -1 & -1 & -1 & 17.1 \\
+		
+		11 & 1 & -1 & 1 & 1 & -1 & 1 & -1 & -1 & 21.5 \\
+		
+		12 & -1 & -1 & 1 & -1 & 1 & 1 & 1 & -1 & 17.5 \\
+		
+		13 & 1 & 1 & -1 & -1 & 1 & 1 & -1 & -1 & 15.9 \\
+		
+		14 & -1 & 1 & -1 & 1 & -1 & 1 & 1 & -1 & 21.9 \\
+		
+		15 & 1 & -1 & -1 & 1 & 1 & -1 & 1 & -1 & 16.7 \\
+		
+		16 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & 20.3 \\
+		
+		17 & -1 & 1 & 1 & 1 & -1 & -1 & -1 & 1 & 29.4 \\
+		
+		18 & -1 & 1 & -1 & -1 & -1 & 1 & 1 & 1 & 19.7 \\
+		
+		19 & 1 & 1 & -1 & -1 & 1 & -1 & -1 & 1 & 13.6 \\
+		
+		20 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 24.7 \\
+		
+	\end{tabular}
+	\captionof{table}{Datos para el ejemplo 1} \label{data_table1}
+\end{center}
+
+
+\valinline{Los otros 4 follow up designs son los que dice que Box et al lo propuso para estimar cada uno de las 4 two-factor interactions pag 4 segunda columna}
+
+\valinline{Checar cuantos uso en el codigo si los 16 o los 20}
+
+Los resultados del análisis previo pudieron convertir un diseño de $2^{8-4}$ a un diseño $2^{4-1}$ usando solo los factores $A, C, E \text{ y } H$ con una relación $I = ACEH$. De los cinco modelos que resultan \val{Explicar más esto}, realmente no se puede distinguir cual es el mejor con los datos que tenemos. Necesitamos más ensayos para clarificar cuales son los factores activos y cuales no. Por lo tanto, hay que hacer ensayos adicionales. El objetivo del criterio MD es seleccionar cuales ensayos hacer para poder discriminar entre modelos.  
+
+\valinline{Aqui falta mucho que decir y explicar}
+
+\valinline{Corregir alineación del código}
+\begin{minted}{R}
+	# # # R paquete Patricia
+	library(BsMD2)
+	setwd("~/ITAM/Tesis/Julia con R/Code/MD-optimality")
+	
+	X <- as.matrix(BM93e3[1:16,c(1,2,4,6,9)]) #matriz de diseÃ±o inicial
+	y <- as.vector(BM93e3[1:16,10]) #vector de respuesta
+	p_mod <- c(0.2356,0.2356,0.2356,0.2356,0.0566) #probabilidad posterior de los 5 modelos
+	
+	fac_mod <- matrix(c(2,1,1,1,1,3,3,2,2,2,4,4,3,4,3,0,0,0,0,4),nrow=5,
+	dimnames=list(1:5,c("f1","f2","f3","f4")))
+	
+	Xcand <- matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	-1,-1,-1,-1,1,1,1,1,-1,-1,-1,-1,1,1,1,1,
+	-1,-1,1,1,-1,-1,1,1,-1,-1,1,1,-1,-1,1,1,
+	-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,-1,1,
+	-1,1,1,-1,1,-1,-1,1,1,-1,-1,1,-1,1,1,-1),
+	nrow=16,dimnames=list(1:16,c("blk","f1","f2","f3","f4"))
+	)
+	
+	
+	t <- Sys.time()
+	e3_R <- BsMD2::MDopt(X = X, y = y, Xcand = Xcand,
+	nMod = 5, p_mod = p_mod, fac_mod = fac_mod, 
+	nStart = 25)
+	Sys.time() - t
+	
+	# # #  Julia con R
+	library(JuliaCall)
+	julia_setup(JULIA_HOME = "C:/Users/Valeria/AppData/Local/Programs/Julia-1.6.3/bin")
+	
+	julia_source("MDopt.jl")
+	# Conversiones para los tipos de Julia
+	X_J <- as.data.frame(X)
+	julia_assign("X_J", X_J)
+	julia_assign("y_J", y)
+	julia_assign("p_mod_J", p_mod)
+	julia_assign("fac_mod_J", fac_mod)
+	julia_command("fac_mod_J = NamedArray(fac_mod_J)")
+	julia_eval("fac_mod_J = Int64.(fac_mod_J)")
+	julia_assign("Xcand_J", Xcand)
+	julia_command("Xcand_J = NamedArray(Xcand_J)")
+	julia_eval("Xcand_J = Int64.(Xcand_J)")
+	
+	t_J <- Sys.time()
+	julia_eval("MDopt(X = X_J, y = y_J, Xcand = Xcand_J, nMod = 5, 
+	p_mod = p_mod_J, fac_mod = fac_mod_J, nFDes = 4, max_int = 3, g = 2, Iter = 20, nStart = 10, top = 10)")
+	Sys.time() - t_J
+	
+	# Python con R
+	library(reticulate)
+	
+	source_python("MD_Python.py")
+	
+	X_P <- as.data.frame(X)
+	Xcand_P <- as.data.frame(Xcand)
+	fac_mod_P <- as.data.frame(fac_mod)
+	
+	X_P <- r_to_py(X_P)
+	y_P <- r_to_py(y) 
+	Xcand_P <- r_to_py(Xcand_P)
+	p_mod_P <- r_to_py(p_mod)
+	fac_mod_P <- r_to_py(fac_mod_P)
+	
+	nMod_P <- r_to_py(5L)
+	nFDes_P <- r_to_py(4L)
+	max_int_P <- r_to_py(3L)
+	g_P <- r_to_py(2L)
+	Iter_P <- r_to_py(20L)
+	nStart_P <- r_to_py(25L)
+	top_P <- r_to_py(10L)
+	
+	t_P <- Sys.time()
+	MD_Python(X = X_P, y = y_P, Xcand = Xcand_P, nMod = nMod_P, 
+	p_mod = p_mod_P, fac_mod = fac_mod_P, 
+	nFDes = nFDes_P, max_int = max_int_P, 
+	g = g_P, Iter = Iter_P, nStart = nStart_P, top = top_P)
+	Sys.time() - t_P
+\end{minted}
+
+En los tres lenguajes los resultados fueron los mismos y se muestran en la tabla \ref{results_ej1}
+
+\begin{center}
+	\begin{tabular}{cc|c}
+		Diseño & Puntos de diseño & MD \\
+		\hline
+		1 & 9, 9, 12, 15 & 85.67 \\
+		
+		2 & 9, 11, 12, 15 & 83.63 \\
+		
+		3 &  9, 11, 12, 12 & 82.18 \\
+		
+		4 & 9, 12, 15, 16 & 77.05 \\
+		
+		5 & 9, 12, 13, 15 & 76.74 \\
+		
+		6 & 9, 10, 11, 12 & 76.23 \\
+		
+		7 & 2, 9, 12, 15 & 71.23 \\
+		
+		8 & 5, 9, 12, 15 & 70.75 \\
+		
+		9 & 2, 9, 12, 12 & 67.69 \\
+		
+		10 & 9, 10, 12, 16 & 66.58 \\
+		
+	\end{tabular}
+	\captionof{table}{Resultados para el ejemplo 1} \label{results_ej1}
+\end{center}
+
+\subsection{title}
+En el ejemplo anterior, no había forma de replicar el experimento con los ensayos adicionales en las mismas condiciones en las que fue efectuado. El objetivo de este ejemplo, que también es tomado de Meyer \val{Falta referencia}, es evaluar la efectividad del criterio MD para generar datos que puedan identificar cuales son los factores activos. Los datos de este ejemplo están en la tabla \ref{data_table2}
+
+\begin{center}
+	\begin{tabular}{cccccc|c}
+		Ensayo & A & B & C & D & E & Y \\
+		\hline
+		1 & -1 & -1 & -1 & 1 & 1 & 44 \\
+		
+		2 & 1 & -1 & -1 & -1 & -1 & 53 \\
+		
+		3 & -1 & 1 & -1 & -1 & 1 & 70 \\
+		
+		4 & 1 & 1 & -1 & 1 & -1 & 93 \\
+		
+		5 & -1 & -1 & 1 & 1 & -1 & 66 \\
+
+		6 & 1 & -1 & 1 & -1 & 1 & 55 \\
+		
+		7 & -1 & 1 & 1 & -1 & -1 & 54 \\
+		
+		8 & 1 & 1 & 1 & 1 & 1 & 82 \\	
+		
+	\end{tabular}
+	\captionof{table}{Datos para el ejemplo 2} \label{data_table2}
+\end{center}
+
+
+Se uso el experimento de reactor de Box et al \val{Falta poner la referencia}. Obtuvieron ocho ensayos del experimento original correspondiente al $2^{5-2}$ Resolution III \val{Que es esto} con generadores $I = ABD = ACE$. Tratamos estos ensayos como el initial screening experiment \val{Tengo que corregir esto}. Por tanto, se puede simular cualquier diseño de seguimiento con factores fijos en los niveles usados por el diseño original extrayendo los ensayos correspondientes del experimento completo \val{Siento que falta aclarar}.
+
+El código para generar los resultados en los tres lenguajes es el siguiente.
+
+\begin{minted}{R}
+	library(BsMD2)
+	
+	setwd("~/ITAM/Tesis/Julia con R/Code/MD-optimality")
+	data(M96e2)
+	#print(M96e2)
+	
+	X <- as.matrix(cbind(blk = rep(-1, 8), M96e2[c(25,2,19,12,13,22,7,32), 1:5]))
+	y <- M96e2[c(25,2,19,12,13,22,7,32), 6]
+	
+	pp <- BsProb1(X = X[, 2:6], y = y, p = .25, gamma = .4, 
+	max_int = 3, max_fac = 5, top = 32)
+	
+	p <- pp@p_mod
+	facs <- pp@fac_mod
+	Xcand <- as.matrix(cbind(blk = rep(+1, 32), M96e2[, 1:5]))
+	t <- Sys.time()
+	e4_R <- BsMD2::MDopt(X = X, y = y, Xcand = Xcand, 
+	nMod = 32, p_mod = p, fac_mod = facs, 
+	g = 0.4, Iter = 10, nStart = 25, top = 5)
+	Sys.time() - t
+	
+	library(JuliaCall)
+	julia_setup(JULIA_HOME = "C:/Users/Valeria/AppData/Local/Programs/Julia-1.6.3/bin")
+	
+	julia_source("MDopt.jl")
+	
+	X <- as.matrix(cbind(blk = rep(-1, 8), M96e2[c(25,2,19,12,13,22,7,32), 1:5]))
+	y <- M96e2[c(25,2,19,12,13,22,7,32), 6]
+	
+	pp <- BsProb1(X = X[, 2:6], y = y, p = .25, gamma = .4, 
+	max_int = 3, max_fac = 5, top = 32)
+	
+	p <- pp@p_mod
+	facs <- pp@fac_mod
+	Xcand <- as.matrix(cbind(blk = rep(+1, 32), M96e2[, 1:5]))
+	
+	# Conversiones para los tipos de Julia
+	X <- as.data.frame(X)
+	julia_assign("X", X)
+	julia_assign("y", y)
+	julia_assign("p_mod", p)
+	julia_assign("fac_mod", facs)
+	julia_command("fac_mod = NamedArray(fac_mod)")
+	julia_eval("fac_mod = Int64.(fac_mod)")
+	julia_assign("Xcand", Xcand)
+	julia_command("Xcand = NamedArray(Xcand)")
+	julia_eval("Xcand = Int64.(Xcand)")
+	
+	t_J <- Sys.time()
+	julia_eval("MDopt(X = X, y = y, Xcand = Xcand, nMod = 32, p_mod = p_mod, 
+	fac_mod = fac_mod, nFDes = 4, max_int = 3, g = 0.4, Iter = 10, nStart = 25, top = 5)")
+	Sys.time() - t_J
+	
+	
+	# # # Python con R
+	library(reticulate)
+	
+	source_python("MD_Python.py")
+	
+	X_P <- as.data.frame(X)
+	Xcand_P <- as.data.frame(Xcand)
+	fac_mod_P <- as.data.frame(facs)
+	
+	X_P <- r_to_py(X_P)
+	y_P <- r_to_py(y) 
+	Xcand_P <- r_to_py(Xcand_P)
+	p_mod_P <- r_to_py(p)
+	fac_mod_P <- r_to_py(fac_mod_P)
+	
+	nMod_P <- r_to_py(32L)
+	nFDes_P <- r_to_py(4L)
+	max_int_P <- r_to_py(3L)
+	g_P <- r_to_py(0.4)
+	Iter_P <- r_to_py(10L)
+	nStart_P <- r_to_py(25L)
+	top_P <- r_to_py(5L)
+	
+	t_P <- Sys.time()
+	MD_Python(X = X_P, y = y_P, Xcand = Xcand_P, nMod = nMod_P, 
+	p_mod = p_mod_P, fac_mod = fac_mod_P, 
+	nFDes = nFDes_P, max_int = max_int_P, 
+	g = g_P, Iter = Iter_P, nStart = nStart_P, top = top_P)
+	Sys.time() - t_P
+\end{minted} 
+
+El análisis bayesiano de estos datos se resume en que ninguno de los factores parece ser activo. Por lo tanto, se creo un diseño de cuatro ensayos para encontrar el mejor subconjunto de cuatro entre los $2^{5} = 32$ candidatos de cinco factores en dos niveles. Los cinco mejores diseños son los siguientes se muestran en la tabla \ref{results_ej2}
+
+\begin{center}
+	\begin{tabular}{cc|c}
+		Diseño & Puntos de diseño & MD \\
+		\hline
+		1 & 4, 10, 11, 26 & 0.64 \\
+		
+		2 & 4, 10, 11, 28 & 0.63 \\
+		
+		3 & 4, 10, 12, 27 & 0.63 \\
+		
+		4 & 4, 10, 26, 27 & 0.63 \\
+		
+		5 & 4, 12, 26, 27 & 0.62 \\
+		
+	\end{tabular}
+	\captionof{table}{Resultados para el ejemplo 2} \label{results_ej2}
+\end{center}
+
+
+Después, volviendo a calcular las probabilidades $P_j$ usando los 12 ensayos podemos ahora ver claramente que los factores activos son $B, D \text{y} E$. Este ejemplo muestra que no se necesitan tantos ensayos para poder obtener el mejor modelo para los datos. 
+
+
+
+
+
+
+
+ 
+
+
