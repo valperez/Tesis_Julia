@@ -8,7 +8,7 @@
 
 @book{regression_other_stories, 
     author = {Gelman, Andrew and Hill, Jennifer and Vehtari, Aki}, 
-    year = {2021}, 
+    year = {2021},  
     title = {Regression and other Stories}, 
     publisher = {Cambridge University Press}
 }
@@ -53,6 +53,39 @@
   publisher={Elsevier}
 }
 
+% Para el factor sparsity
+@book{montgomery2017design,
+  title={Design and analysis of experiments},
+  author={Montgomery, Douglas C},
+  year={2017},
+  publisher={John wiley \& sons}
+}
+
+% Hill y Box 1967
+% Lo voy a dejar pero la neta es que no lo he usado
+@article{hillybox1967,
+  title={Discrimination among mechanistic models},
+  author={Box, George EP and Hill, WILLIAM J},
+  journal={Technometrics},
+  volume={9},
+  number={1},
+  pages={57--71},
+  year={1967},
+  publisher={Taylor \& Francis}
+}
+
+% Mitchell, DETMAX
+@article{mitchelldetmax,
+  title={An Algorithm for the Construction of "D-Optimal" Experimental Designs},
+  author={Toby J. Mitchell},
+  journal={Technometrics},
+  volume={16},
+  number={2},
+  pages={203--10},
+  year={1974},
+  publisher={Taylor \& Francis}
+}
+
 % Manual de Atom
 @misc{ATOM,
   title = {Atom Flight Manual},
@@ -64,14 +97,57 @@
 @article{worldScientificNews,         title={Moore-Penrose’s inverse and solutions of linear systems},     url={http://www.worldscientificn    ews.com/wp-content/uploads/2018/    04/WSN-101-2018-246-252.pdf},     journal={World Scientific News },     author={López-Bonilla, J. and     López-Vázquez, R and                Vidal-Beltrán, S.}, 
     year={2018}, 
     month={Jun}}
+    
+% Articulo laberintos e infinitos
+@article{laberintos, 
+title={Regresión Lineal. Aritmética inexacta y algoritmos numéricos estables}, 
+journal={Laberintos e Infinitos}, 
+author={Morgenstern, Ilan and Morales, José Luis}, year={2015}, 
+pages={25–34}}
+
+% Reporducible research
+@article{peng2021reproducible,
+  title={Reproducible Research: A Retrospective},
+  author={Peng, Roger D and Hicks, Stephanie C},
+  journal={Annual Review of Public Health},
+  volume={42},
+  pages={79--93},
+  year={2021},
+  publisher={Annual Reviews}
+}
+
+% Tesis Paty
+@thesis{tesis_paty,
+author = {Ana Patricia Vela Noyola},
+title = {Discriminación de Factores en Experimentos Factoriales},
+type = {Licenciatura},
+institution = {Instituto Tecnológico Autónomo de México},
+year = {2022}
+}
+
+
+
+% Meyer criterio MD
+@article{meyer1996,
+title={Follow-up designs to resolve confounding in multifactor experiments},
+author={Meyer, R Daniel and Steinberg, David M and Box, George},
+journal={Technometrics},
+volume={38},
+number={4},
+pages={303--313},
+year={1996},
+publisher={Taylor \& Francis}
+}
 
 % % ------ J U L I A --------- % %
 
 % Manual oficial de Julia
-@misc{Julia_manual,
-  title = {Julia 1.6 Documentation},
-  howpublished = {\url{https://docs.julialang.org/en/v1/}},
-  note = {Accessed: 2021-10-07}
+@article{manual_Julia,
+  title={Julia Language Documentation},
+  author={Bezanson, Jeff and Karpinski, Stefan and Shah, Viral and Edelman, Alan and others},
+  journal={The Julia Manual. http://docs. julialang. org/en/release-0.2/manual},
+  pages={1--261},
+  year={2014}
 }
 
 % Así es como oficialmente quieren que cites Julia
@@ -88,9 +164,19 @@
     url={https://epubs.siam.org/doi/10.1137/141000671}
 }
 
+% Manual GLM 
+@misc{glm_manual,
+ doi           = {10.5281/zenodo.3376013},
+ author        = {Douglas Bates, Simon Kornblith, Andreas Noack, Milan Bouchet-Valat, Michael Krabbe Borregaard and contributors},
+ year          = {2022},
+ url           = {https://zenodo.org/record/5896581#.YilCZHrMLrc},
+ month         = {Enero},
+ title         = {{JuliaStats/GLM.jl: v1.6.1}}
+}
+
 
 % Creo que este es para referenciar paquetes de Julia
-https://github.com/JuliaDocs/Documenter.jl
+%https://github.com/JuliaDocs/Documenter.jl
 
 
 %Multithreading de Julia
@@ -99,7 +185,8 @@ https://github.com/JuliaDocs/Documenter.jl
     url={https://julialang.org/blog/2019/07/multithreading/}, journal={The Julia Programming Language}, 
     author={Bezanson, Jeff and Nash, Jameson and Pamnany, Kiran}, 
     year={2019}, 
-    month={Jul}}
+    month={Jul}
+}
 
 % Manual oficial de Polynomials
 @misc{poly_manual,
@@ -108,5 +195,57 @@ https://github.com/JuliaDocs/Documenter.jl
   note = {Accessed: 2021-11-04}
 }
     
-%% Para las referencias, buen texto es:
-http://merkel.texture.rocks/Latex/natbib.php
+% % % ---- Python ----- % % % 
+
+% Libro
+@book{matthes2019python,
+  title={Python crash course: A hands-on, project-based introduction to programming},
+  author={Matthes, Eric},
+  year={2019},
+  publisher={no starch press}
+}
+
+% Documentación de Python 
+@misc{doc_python,
+OPTauthor = {Python Software Foundation},
+OPTtitle = {Python 3.10.2 documentation},
+OPThowpublished = {\url{https://docs.python.org/3/index.html}},
+OPTnote = {Accesado: 2021-03-15}
+}
+
+
+
+% Manual de NumPy
+@misc{numpy_manual,
+ author        = {La Comunidad NumPy},
+ year          = {2022},
+ url           = {https://numpy.org/doc/stable/numpy-user.pdf},
+ month         = {Enero},
+ title         = {{NumPy User Guide: Release 1.22.0}}
+}
+
+% Manual de pandas
+@misc{pandas_manual,
+ author        = {Wes McKinney y el Equipo de Desarrollo de Pandas},
+ year          = {2022},
+ url           = {https://pandas.pydata.org/docs/pandas.pdf},
+ month         = {Febrero},
+ title         = {{pandas: powerful Python data analysis toolkit}}
+}
+
+% Jupyter
+@misc{jupyter_page,
+OPTauthor = {Project Jupyter},
+OPTtitle = {Jupyter},
+OPThowpublished = {\url{https://jupyter.org/}},
+OPTannote = {Acesado: 2021-03-15}
+}
+
+% Anaconda documentation
+@misc{anaconda_doc,
+OPTauthor = {Anaconda Inc},
+OPTtitle = {Using the R programming language in Jupyter Notebook},
+OPThowpublished = {\url{https://docs.anaconda.com/anaconda/navigator/tutorials/r-lang/}},
+OPTannote = {Acesado: 2021-03-15}
+}
+
