@@ -1,0 +1,97 @@
+\chapter{Python}
+
+\say{Python es un lenguaje de programación que te permite trabajar rápido e integrar sistemas más eficientemente} es la primera frase que se lee en la página oficial de Python \url{https://www.python.org/}. \val{Lo puedo dejar así?} Guido van Rossum comenzó a crear el lenguaje a finales de los ochentas, pero lo hizo público hasta 1991. Empresas importantes como Youtube y Google han elogiado Python por su rapidez y constante desarrollo. Es un lenguaje más antiguo que Julia y con mucha mayor popularidad. Consecuentemente, hay muchos videos, artículos, blogs y libros sobre su uso y desarrollo. Decidí incluirlo en esta tesis ya que considero es un excelente punto de comparación con Julia no solo en rapidez sino también en la sencillez y facilidad de programación. En este capítulo voy a explicar los paquetes principales y la interfaz que utilice. 
+
+\section{Listas}
+\say{Una \textit{lista} es una colección de elementos en un orden particular} \citep{matthes2019python}. Las listas son el objeto principal y más básico de Python. La listas son una estructuras de datos por lo que se usan para almacenar varios elementos en una sola variable. Las listas se crear usando paréntesis cuadrados \texttt{[]}. Por ejemplo si quisiera hacer una lista de animales en el zoológico haría \texttt{animales = ["zebra", "león", "jirafa", "elefante"]}. Para accesar a un elemento de la lista hay que usar los paréntesis cuadrados. Por ejemplo, \texttt{animales[1]} me regresaría \texttt{"león"}. Uno de los aspectos más importantes es que a diferencia de R y Julia, las listas comienzan a numerar sus elementos desde el cero. 
+
+En esta tesis utilice las listas como estructura de datos ya que están ordenadas, pueden ser cambiadas y permiten valores duplicados. Por lo tanto, son fáciles y eficientes para trabajar. Como cada estructura, las listas tienen sus propios métodos que vienen en listas y explicados en la documentación de Python \cite{doc_python}. 
+
+
+\section{Paquetes}
+No es sorpresa que Python tenga muchos paquetes para hacer todo tipo de programación. Una característica que me gusta de este lenguaje es que para usar cualquier instrucción de un paquete tienes que primero nombrar su apodo y después llamar a la función. El apodo del paquete se lo otorga el usuario al momento de importarlo, por ejemplo \texttt{import numpy as np}. En este caso, \texttt{np} es el apodo del paquete \texttt{NumPy}. Si quisiera usar la función \texttt{array} del paquete \texttt{NumPy} tendría que poner \texttt{np.array}. Esto podría parecer tedioso pero lo considero una ventaja ya que siempre sabes el paquete que estás usando. 
+
+\subsection{NumPy}
+NumPy es el paquete fundamental para computación científica en Python ya que proporciona los objetos de matriz multidimensional.
+Hay varias diferentes entre matrices NumPy y secuencias del Python estándar. Algunas de ellas son que los arreglos de NumPy tienen dimensiones fijas en su creación que no se pueden cambiar; sus elementos deben ser del mismo tipo de dato; facilitan operaciones matemáticas en grandes cantidades de datos; y, finalmente, una gran parte de la comunidad que utiliza Python también usa arreglos de NumPy \citep{numpy_manual}. \val{Arreglar esto}
+
+En esta tesis use NumPy para crear y manipular arreglos y hacer un ajuste polinomial de mínimos cuadrados. A continuación está la lista completa de comandos que utilice con su explicación. A pesar de que ya maneje los comandos, la información viene del paquete oficial de \texttt{NumPy} \cite{numpy_manual}. 
+
+\begin{itemize}
+	\item np.array([lista]): Crea un arreglo con los valores de la lista.
+	
+	\item np.insert(arr, obj, values): Inserta los valores (values) en el arreglo arr antes de los indices obj.
+	
+	\item np.arange: Crea un arreglo con valores espaciados uniformemente desde start hasta el número antes de stop. 
+	
+	\item np.transpose(a): Transpone el objeto a.
+	
+	\item np.concatenate($a_1, a_2, \dots $): Une la secuencia de arreglos en uno existente.
+	
+	\item np.ones(shape): Crea una matriz de tamaño shape llena con unos.
+	
+	\item np.diag(v): Extrae la diagonal de la matriz v o crea una matriz diagonal de tamaño v.
+	
+	\item np.linalg.inv(a): Calcula la inversa multiplicativa de la matriz a. 
+	
+	\item np.random.choice(a, size = None, replace = True, p = None): Genera una muestra aleatoria de a de tamaño size con o sin reemplazo. 
+	
+	\item np.polyfit(x, y, deg): Hace un ajuste polinomial de grado deg a los puntos (x, y) usando el método de mínimos cuadrados. 
+	
+\end{itemize}
+
+
+\subsection{pandas}
+Pandas es el segundo paquete primordial y básico de Python ya que se enfoca en la manipulación y análisis de datos. Sus funciones se enfocan en el uso eficiente de dataframes, leer y escribir datos, agrupación y unión de varios conjuntos de datos, entre otros \citep{pandas_manual}. En esta tesis utilice los siguientes comandos de pandas. 
+
+\begin{itemize}
+	\item pd.read\_csv(filepath): Lee un archivo csv y lo convierte a DataFrame.
+	
+	\item pd.DataFrame(data): Crea un objeto de tipo dataframe con los datos data. 
+	
+	\item pd.get\_dummies(data): Convierte variables categóricas en variables indicadoras o dummie. 
+\end{itemize}
+
+\subsection{os}
+Otro paquete que utilice en este trabajo fue \texttt{os} ya que proporciona una manera de usar la funcionalidad dependiente del sistema operativo. En otras palabras es el paquete que permite hacer la conexión entre Python y los archivos de una computadora. Los comandos de este paquete que utilice son dos. El primero fue \texttt{os.chdir(path)} que permite seleccionar el directorio en el que estoy trabajando. El segundo fue \texttt{os.listdir(path)} que proporciona una lista de archivos en el path dado. 
+
+
+\subsection{scikit-learn}
+Scikit-learn es un paquete creado para hacer \textit{machine learning} o aprendizaje autómatico en Python. También es conocido como \texttt{sklearn} y proporciona herramientas simples y eficientes para la predicción en análisis de datos. Sus herramientas hacen clasificación, regresión, \textit{clustering} o agrupamiento, reducción de dimensiones y selección de modelos.
+
+Para este trabajo utilice la parte de regresiones lineales del paquete. El usuario puede importar el paquete completo usando \texttt{import sklearn} o solo la parte de modelos lineales con el comando \texttt{from sklearn import linear\_model}. 
+
+Con el paquete cargado, \texttt{regr = linear\_model.LinearRegression()} guarda en \texttt{reg} que busco ajustar un modelo linear definido como la ecuación \ref{eq_rlm} usando el método de mínimos cuadrados. Después, \texttt{model = regr.fit(x, y)} calcula los coeficientes $\beta$. 
+
+\subsection{itertools}
+Itertools es un módulo que implementa un conjeto de herramientas rápidas y eficientes en cuanto a la memoria \cite{doc_python}. Algunas de las herramientas que tiene este módulo se pueden recrear sin la necesidad del mismo, pero la ventaja de utilizar \texttt{itertools} es la velocidad en la que las genera. En este trabajo yo utilice \texttt{itertools.combinations()} para crear las combinaciones de posibles factores activos del problema del capítulo 7. \val{verificar que sí sea el capítulo de MDopt}
+
+
+\section{Jupyter}
+\say{Jupyter Notebook es la aplicación web original para crear y compartir documentos computacionales. Es un programa que existe para desarrollar software de manera pública en decenas de lenguajes de programación incluyendo R, Python y Julia} \cite{jupyter_page}. 
+
+La manera más fácil para obtener Jupyter es instalando Anaconda. Anaconda es una interfaz gráfica que permite manejar y administrar aplicaciones, paquetes, ambientes y canales sin necesidad de usar comandos en el \texttt{cmd}. Para instalar Anaconda en Windows hay que ir a la página \url{https://docs.anaconda.com/anaconda/install/windows/} y seguir las instrucciones de instalación. Esto puede tomar unos cuantos minutos. 
+
+La versatilidad de Jupyter en los tres lenguajes es la razón principal por la que decidí usarlo en esta tesis. Poder usar los tres lenguajes en un mismo software me permitió tener una mejor organización y permitió una traducción entre lenguajes más sencilla. 
+
+Uno de los prerequisitos para instalar Jupyter es tener Python. Por lo tanto, este lenguaje que ya viene sin necesidad de ninguna otra instalación. El caso de R y Julia no es igual. En las siguientes secciones explico como instalarlos.
+
+\subsection{Julia}
+
+El primer paso es haber instalado Julia en la computadora. Después, es necesario correr los comandos \texttt{using Pkg; Pkg.add('IJulia')}. Es decir, es necesario instalar el paquete \texttt{IJulia}. Esto solo se tiene que hacer una vez. Para confirmar que la instalación está bien hecha hay que abrir Jupyter, seleccionar \textsf{New} y debe aparecer la opción de \textsf{Julia 1.6.3} (o la versión de Julia que esté instalada en la computadora). 
+
+\subsection{R}
+
+Hay varias maneras de instalar R en Jupyter, pero la manera que viene en el manual de Anaconda \cite{anaconda_doc} es la que voy a exponer. 
+
+\begin{enumerate}
+	\item Abrir el Navegador de Anaconda (no confundir con el Jupyter Notebook).
+	
+	\item Selecciona \texttt{Environments} y después la opción de \texttt{Create} ubicada en la esquina inferior izquierda. 
+	
+	\item Aparecerá una ventana donde puedes nombrar el \texttt{Environment} como prefieras. Lo importante es seleccionar la versión de Python que tengas y también seleccionar la casilla al lado de R. Después pulsar la opción de \texttt{Create}. 
+	
+	\item Para usar el ambiente que acabas de crear en Jupyter debes seleccionar la flecha derecha al lado del nombre del ambiente que creaste en el paso anterior. Entre las opciones seleccionar la opción de \texttt{Open with Jupyter Notebook}. 
+	
+	\item Por último, selecciona el botón de \texttt{New} y después R para crear un archivo que trabaje con R. 
+\end{enumerate}

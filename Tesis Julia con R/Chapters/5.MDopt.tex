@@ -2,11 +2,33 @@
 
 Una de las razones por las que decidí estudiar matemáticas aplicadas es justamente por la parte de 'aplicadas'. Cuando en los cursos de estadística comencé a aprender sobre modelos que pueden describir información real, mi sorpresa y emoción fueron auténticas. Sin embargo, en esas clases también aprendí que hay muchos modelos posibles para un conjunto de datos y no hay una sola manera de elegir el \textit{mejor} modelo. Por lo tanto, para darle continuidad al tema de modelos lineales decidí abordar el problema de discriminación de modelos usando el método con el criterio MD, \textit{Model Discrimination} propuesto por Box y Hill. 
 
-En primer lugar, hay que discriminar entre las variables o factores que realmente afectan la variable de respuesta de las que no. Para esto se puede utilizar el método bayesiano descrito por Ana Patricia Vela Noyola \cite{tesis_paty}. Hay ocasiones donde utilizando este método es muy fácil determinar si un factor afecta o no la variable de respuesta. Sin embargo, hay ocasiones donde los resultados son ambiguos y pareciera que hay varios modelos que describen los datos. Por lo tanto, la estrategia que se usa es agregar ensayos adicionales específicos que, una vez agregados a los ensayos originales, darán una idea más clara sobre cuál es el mejor modelo. 
+En primer lugar, hay que discriminar entre las variables o factores que realmente afectan la variable de respuesta de las que no. Para esto se puede utilizar el método bayesiano descrito por Ana Patricia Vela \cite{tesis_paty}. Hay ocasiones donde utilizando este método es muy fácil determinar si un factor afecta o no la variable de respuesta. Sin embargo, hay ocasiones donde los resultados son ambiguos y pareciera que hay varios modelos que describen los datos. Por lo tanto, la estrategia que se usa es agregar ensayos adicionales específicos que, una vez agregados a los ensayos originales, darán una idea más clara sobre cuál es el mejor modelo. 
 
 Uno de estos métodos es el  que utiliza el criterio MD, de \textit{Model Discrimination}. La idea de este criterio es elegir ensayos que permitan la máxima discriminación posible entre los modelos probables \cite{meyer1996}. 
 
-\section{Explicación algoritmo completo o pseudocódigo}
+En primer lugar, expongo un resumen del método completo descrito por \cite{meyer1996} para la discriminación de modelos. Posteriormente, expongo la explicación detallada y matemática del criterio MD y el algoritmo de intercambio. Finalmente, hago la comparación entre los tres lenguajes con dos ejemplos. 
+
+\section{Metodología completa}
+
+El proceso de identificación de los factores activos de un modelo no es sencillo ya que incluye pasos que usan estadística bayesiana. La explicación detallada está fuera del alcance de este trabajo, pero se puede encontrar en \cite{meyer1996}. Sin embargo, daré un breve resumen para tener el contexto donde se usan el criterio MD y el algoritmo de intercambio. Los detalles matemáticos están explicados en las siguientes secciones. 
+
+Supongamos que voy a realizar un experimento. Para esto, tengo que hacer un diseño con los factores que voy a incluir, sus niveles y los ensayos que voy a hacer. Como experta en el experimento debo tener una idea de cuáles modelos son los más probables a describir el experimento. Este conocimiento a priori se le denomina $P(M_i)$. 
+
+Después, ya que realicé el experimento tengo los niveles que use para cada factor y la respuesta obtenida $Y$. Con esta nueva información puedo calcular la probabilidad de que cada modelo $M_i$ sea el correcto. Es decir, calculo $P(M_i | Y)$. Además, puedo calcular $P_j$, la probabilidad de que el factor $j$ esté activo. Las probabilidades más altas me indican cuáles son los posibles factores activos. 
+
+Si hay una clara diferencia entre las probabilidades $P_j$ de los factores entonces puedo separar los activos de los no activos. En cambio, si no hay una clara diferencia entre probabilidades $P_j$ \cite{Meyer} explica que se deben hacer más ensayos para discriminar entre los posibles modelos. 
+
+En la elección de esos ensayos es donde entra el criterio MD ya que es un número que indica cuales ensayos vale la pena repetir para obtener la mayor diferencia en el vector respuesta $Y$. Entre mayor sea la diferencia en $Y$, más fácil se puede discriminar entre modelos. El algoritmo de intercambio se usa para calcular el criterio MD para todos las posibles combinaciones de ensayos de forma efectiva. El diagrama \ref{diagrama_completo} muestra la explicación anterior. 
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[scale=0.5]{Imagenes/diagrama_completo.PNG}
+		\caption{Diagrama de metodología descrita por \cite{meyer1996}}
+		\label{diagrama_completo}
+	\end{center}
+\end{figure} 
+
+
 
 \section{Criterio MD}
 Lo siguiente es la explicación matemática que viene en el artículo de \cite{meyer1996}. 
@@ -27,27 +49,37 @@ Una vez observado el vector de datos \textbf{$Y$}, podemos actualizar las distri
 	\end{aligned}
 \end{equation*}
 
-\begin{equation*}
+\begin{equation} \label{betai}
 	\begin{aligned}
 		\hat{\beta_i} = (\Gamma_i + X_i' X_i)^{-1} X_i ' \textbf{Y}, 
 	\end{aligned}
-\end{equation*}
+\end{equation}
+
+\begin{equation} \label{gamma_i}
+	\begin{aligned}
+		\Gamma_i = \dfrac{1}{\gamma^{2}} 
+		\begin{pmatrix}
+			0 & 0 \\
+			0 & I_{t_i}
+		\end{pmatrix} 
+	\end{aligned}
+\end{equation}
 
 y 
 
-\begin{equation*}
+\begin{equation} \label{delta_i}
 	\begin{aligned}
 		S_i = (\textbf{Y} - X_i \hat{\beta_i})' (\textbf{Y} - X_i \hat{\beta_i}) + \hat{\beta_i}' \Gamma_i \hat{\beta_i}.
 	\end{aligned}
-\end{equation*}
+\end{equation}
 
 Es importante notar que las probabilidades $P(M_i | \textbf{Y})$ pueden ser sumadas sobre todos los modelos que inclutyan al factor $j$ para calcular la probabilidad posterior $P_j$ de que el factor $j$ está activo, 
 
-\begin{equation*}
+\begin{equation} \label{eq_pj}
 	\begin{aligned}
 		P_j = \sum_{M_i:factorjactivo} P(M_i | \textbf{Y})
 	\end{aligned}
-\end{equation*}
+\end{equation}
 
 El conjunto de probabilidades $\{ P_j \}$ da un resumen de la actividad de cada uno de los factores del experimento. 
 
@@ -116,28 +148,44 @@ Mitchell adopta el enfoque de Dykstra \val{Agregar referencia} en donde los punt
 
 Debido a la existencia de muchos diseños que son óptimos solo localmente, lo mejor es hacer varias intentos independientes en la solución. En cada intento, DETMAX empieza con un diseño completamente nuevo cuyos puntos son seleccionados aleatoriamente de una lista de candidatos. Él determina que diez intentos usualmente son suficientes para llegar al diseño óptimo. 
 
+\section{Función MDopt}
+\cite{tesis_paty} uso la información anterior para crear la función \texttt{MDopt} en la librería \texttt{BsMD2}. Yo utilicé esa función como referencia para crear funciones del mismo nombre en Julia y Python. 
+
+Esta función toma como entrada varios parámetros, pero los más relevantes son la matriz \texttt{X} y el número de interacciones entre factores llamado \texttt{max\_int}. Si el diseño tiene interacciones entre dos factores, la función crea una matriz \texttt{Xfac} con ellas. Lo mismo sucede si el diseño tiene interacciones entre tres factores. 
+
+Después, la función hace el cálculo de $\Gamma_k, \beta_k, \delta_k$ con las fórmulas \ref{gamma_i}, \ref{betai} y \ref{delta_i} respectivamente. Posteriormente, se define otra función (dentro de \texttt{MDopt}) llamada \texttt{MDr} que calcula el número MD con la fórmula \val{aquí falta}. Finalmente, \texttt{MDopt} usa la idea del algoritmo de intercambio para calcular el criterio MD para múltiples combinaciones de ensayos. 
+
+Es importante mencionar que la función \texttt{MDopt} escrita por Noyola devuelve el dataframe de todos los ensayos para los que calculo el valor de MD, la matriz X, la matriz de puntos candidatos, el vector de probabilidades para cada modelo considerado y las matrices con los factores activos para cada modelo. 
+
+En cambio, las funciones que yo hice en Julia y Python solamente devuelven el dataframe de todos los ensayos realizados con su valor MD ya que eso es lo que necesito para mostrar los resultados. El diagrama \val{falta} muestra lo anterior de manera visual. 
+
+\begin{figure}[h]
+	\begin{center}
+		\includegraphics[scale=0.5]{Imagenes/diagrama_MDopt.PNG}
+		\caption{Diagrama de la función MDopt}
+		\label{diagrama_mdopt}
+	\end{center}
+\end{figure} 
+
+El pseudocódido de la función \texttt{MDr} y el algoritmo de intercambio están en los apéndices de \cite{tesis_paty}.  
 
 
-
-\section{Metodología completa}
-\valinline{Donde pongo lod e bayesiana que la neta no entra en la tesis}
-
-La metodología que utilizan Meyer \val{Falta poner referencia} es que primero calculan las probabilidades posteriores de que los factores estén activos. Los factores con probabilidades cercanas a 1 son los considerados como activos. Además, usan un normal probability plot of contrasts para visualizar cuales son los efectos principales en la variable de respuesta \val{Falta arreglar esto}. Este análisis previo está fuera de los alcances de esta tesis por lo cual no serán explicados a mayor profundidad. 
-
-\valinline{Al final poner como todos los pasos que hace}
 
 \section{Comparación entre lenguajes}
 
-\valinline{Falta poner que las cosas se complican poquito con Python por la numeración }
-Ya que la tesis es para probar la eficiencia y funcionalidad de Julia en comparación con R y Python use el mismo código en los tres lenguajes para ver cual de los tres hace los cálculos de MD de la manera más rápida y eficiente. En R utilice el paquete BsMD2 hecho por Ana Patricia Vela Noyola y para Julia y Python utilice ese mismo código solo que adaptado a los diferentes lenguajes. Después, llamé a los códigos de Julia y Python en R para medir el tiempo que le toma a cada lenguaje ejecutar dos ejemplos distintos. No es extraño que en los dos paquetes haya comando que sirvan para efectuar las mismas tareas. Por lo tanto, la siguiente tabla es una lista de los comandos que utilicé en \texttt{JuliaCall} así como su simil en \texttt{reticulate}.
+Ya que la tesis es para probar la eficiencia y funcionalidad de Julia en comparación con R y Python use el mismo código en los tres lenguajes para ver cual de los tres hace los cálculos de MD de la manera más rápida y eficiente. En R utilice el paquete BsMD2 hecho por Ana Patricia Vela Noyola y el paquete BsMD elaborado por el profesor Ernesto Barrios. En Julia y Python utilice ese mismo código solo que adaptado a los diferentes lenguajes. Después, llamé a los códigos de Julia y Python en R para medir el tiempo que le toma a cada lenguaje ejecutar dos ejemplos distintos. 
+
+Es importante mencionar que fue más difícil traducir el código a Python ya que este lenguaje utiliza una enumeración diferente. Los objetos en Python comienzan a contarse desde el $0$ mientras que en R y Julia la numeración empieza en $1$. Puede ser un poco confuso hacer la transición. Además, los resultados también tienen numeración diferente y, a pesar de que son exactamente iguales que en los otros lenguajes, hay que tener cuidado con su presentación para evitar confusiones. 
+
+No es extraño que en los paquetes, \texttt{JuliaCall} y \texttt{reticulate}, existan comandos que sirvan para efectuar las mismas tareas. Por lo tanto, la siguiente tabla es una lista de los comandos que utilicé en \texttt{JuliaCall} así como su simil en \texttt{reticulate}.
 
 \begin{tabular}{ |p{2cm}|p{2.5cm}|p{3cm}|p{3cm}|  }
 	\hline
 	JuliaCall & reticulate & Uso & Especificaciones\\
 	\hline
-	julia\_setup   & use\_python    & Es usado para especificar la dirección del programa (Julia o Python) &   use\_python no es necesario a menos que tengas varias versiones de Python instaladas\\
+	julia\_setup   & use\_python    & Es usado para especificar la dirección del programa (Julia o Python) dentro de tu computadora &   use\_python no es necesario a menos que tengas varias versiones de Python instaladas\\
 	\hline
-	julia\_source &   source\_python  & Agregan las funciones que estén dentro de los archivos especificados   & Es necesario tener la terminación del archivo correcta\\
+	julia\_source &   source\_python  & Agregan a R las funciones que estén dentro de los archivos especificados   & Es necesario tener la terminación del archivo correcta\\
 	\hline
 	julia\_assign & r\_to\_py &  Convierte los objetos de R en objetos del programa externo &  JuliaCall no agrega los objetos al ambiente de R\\
 	\hline
@@ -146,24 +194,22 @@ Ya que la tesis es para probar la eficiencia y funcionalidad de Julia en compara
 	\hline
 \end{tabular}
 
+
 Para llamar Julia en R, utilice el paquete \texttt{JuliaCall}. Este paquete permite que Julia funcione dentro de R. Es decir, yo utilizo los objectos creados en R y los puedo trasladar a Julia para correr alguna función creada en Julia. El paquete es como un puente entre ambos lenguajes donde solamente hace la conexión más no los mezcla de ninguna otra forma.
 
-\valinline{Falta poner lo de julia setup}
-
-En primer lugar, para cada ejemplo creo los objetos que necesito como entrada de la función. Después, utilizo el comando \texttt{julia\_assign} para asignar los objetos creados en R a objetos nuevos en Julia. En caso de que la conversión de alguno de los objetos no sea la deseada, utilizo \texttt{julia\_command} para hacer la conversión dentro de Julia. Además, debo tener la función que quiero utilizar en un documento con terminación \textsf{.jl} guargado en la carpeta de mi directorio de trabajo. Para agregar la función en R, utilizo el comando \texttt{julia\_source} y dentro el nombre del documento. Finalmente, utilizo el comando \texttt{julia\_eval} para correr la función que con los parámetros ya que cree. 
+En primer lugar, justo después de cargar la librería de \texttt{JuliaCall} es necesario usar el comando \texttt{julia\_setup} y poner la dirección de la carpeta donde está instalado Julia en tu computadora. Después, para cada ejemplo creo los objetos que necesito como entrada de la función. Posteriormente, utilizo el comando \texttt{julia\_assign} para asignar los objetos creados en R a objetos nuevos en Julia. En caso de que la conversión de alguno de los objetos no sea la deseada, utilizo \texttt{julia\_command} para hacer la conversión dentro de Julia. Además, debo tener la función que quiero utilizar en un documento con terminación \textsf{.jl} guardado en la carpeta de mi directorio de trabajo. Para agregar la función en R, utilizo el comando \texttt{julia\_source} y dentro el nombre del documento. Finalmente, utilizo el comando \texttt{julia\_eval} para correr la función que con los parámetros ya que cree. 
 
 Para llamar Python en R utilice el paquete \texttt{reticulate}. Este paquete funciona más como una extensión de R ya que puedes transitar fácilmente entre ambos lenguajes sin necesidad de muchos comandos. Mas bien, lo que se necesitan son prefijos como \texttt{.r} o \texttt{py\$} para llamar los objetos de cada lenguaje.
 
 Para utilizar la función que escribí en Python, lo primero que hice (después de llamar al paquete, claro está) es guardarla en un archivo con terminación \textsf{.py} y guardarlo en la carpeta del directorio de trabajo. Después, utilice el comando \texttt{source\_python} para llamar el archivo. Con solamente llamar el archivo se cargan en R todas las funciones dentro de él. En este caso, yo solamente tenía una función pero en caso de tener varias, solo es necesario cargar el archivo una vez. Después, debo utilizar el comando \texttt{r\_to\_py} para convertir todos los objetos de R en objetos de Python. Una de las ventajas de este paquete es que crea el objeto de Python en el ambiente de R y si usas RStudio, puedes ver el objeto creado en la parte de \textsf{Environment} de tu pantalla. Para Julia esto no pasa lo cual puede llegar a ser confuso. 
 
-Posteriormente, si uno de los parámetros de la función es un entero te recomiendo que también los conviertas e un objeto de Python ya que en ocasiones el paquete los convierte automáticamente en objetos de tipo \texttt{Float} cuando son enteros y la función puede fallar. Finalmente, puedes llamar a tu función de Python en R sin ningún comando adicional; lo único que necesitas es usar el nombre de la función tal cual la usaste en Python y agregarle los parámetros que ya creaste. 
+Posteriormente, si uno de los parámetros de la función es un entero te recomiendo que también los conviertas en un objeto de Python ya que en ocasiones el paquete los convierte automáticamente en objetos de tipo \texttt{Float} cuando son enteros y la función puede fallar. Finalmente, puedes llamar a tu función de Python en R sin ningún comando adicional. Lo único que necesitas es usar el nombre de la función tal cual la usaste en Python y agregarle los parámetros que ya creaste. 
 
 \section{Ejemplos y resultados}
 
-\subsection{Proceso de moldeo por inyección}
-\valinline{Checar bien como se llama esto}
+\subsection{Ejemplo 1 - Proceso de moldeo por inyección}
 
-El primer ejemplo que utilice fue el descrito por primera vez por Box, Hunter y Hunter en 1978 \val{falta poner la referencia}. El experimento es estudiar los efectos de ocho factores en el encojimiento de un proceso de moldeo por inyección. El plan experimental fue un $2^{84}$ factorial fraccionado con generadores $I = ABDH = ACEH = BCFH = ABCG$. Los datos para este ejemplo están en la tabla \ref{data_table1}. 
+El primer ejemplo que utilice fue mencionado por \cite{meyer1996} quien lo tomo de un artículo escrito por Box, Hunter y Hunter en 1978. El experimento consiste en estudiar los efectos de ocho factores en el encojimiento de un proceso de moldeo por inyección. El plan experimental fue un $2^{8-4}$ factorial fraccionado con generadores $I = ABDH = ACEH = BCFH = ABCG$. Los datos para este ejemplo están en la tabla \ref{data_table1}. 
 
 \begin{center}
 	\begin{tabular}{ccccccccc|c}
@@ -201,39 +247,100 @@ El primer ejemplo que utilice fue el descrito por primera vez por Box, Hunter y 
 		
 		16 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & 20.3 \\
 		
-		17 & -1 & 1 & 1 & 1 & -1 & -1 & -1 & 1 & 29.4 \\
-		
-		18 & -1 & 1 & -1 & -1 & -1 & 1 & 1 & 1 & 19.7 \\
-		
-		19 & 1 & 1 & -1 & -1 & 1 & -1 & -1 & 1 & 13.6 \\
-		
-		20 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 24.7 \\
-		
 	\end{tabular}
 	\captionof{table}{Datos para el ejemplo 1} \label{data_table1}
 \end{center}
 
+No es el objetivo de esta tesis explicar el análisis previo que se hace en este tipo de experimentos, pero sí es importante destacar que se calcula la probabilidad posterior \val{explicar más esto} de los modelos. En este análisis se ve que los posibles modelos son los que se muestran en la tabla \cite{modelos_prob_post}. 
 
-\valinline{Los otros 4 follow up designs son los que dice que Box et al lo propuso para estimar cada uno de las 4 two-factor interactions pag 4 segunda columna}
+\begin{center}
+	\begin{tabular}{ccc}
+		Modelo & Factores & Probabiliad posterior \\
+		\hline
+		1 & A,C,E & 0.2356 \\
+		
+		2 & A,C,H & 0.2356 \\
+		
+		3 & A,E,H & 0.2356 \\
+		
+		4 & C,E,H & 0.2356 \\
+		
+		5 & A,C,E,H & 0.0566 \\
+		
+	\end{tabular}
+	\captionof{table}{Modelos con la probabilidad posterior más alta para el ejemplo 1} \label{modelos_prob_post}
+\end{center}
 
-\valinline{Checar cuantos uso en el codigo si los 16 o los 20}
+Además, calculando las probabilidades posteriores $P_j$ mencionadas en \ref{eq_pj}, los factores \textit{A, C, E, \text{ y } H} tienen una probabilidad posterior de $0.764$ mientras que los demás factores tienen una probabilidad de $0$. Por lo tanto, los factores \textit{A, C, E, \text{ y } H} son los que parecieran ser activos. Dado el análisis previo, el problema original con un diseño de $2^{8-4}$ paso a convertirse en un modelo con diseño $2^{4-1}$ por la reducción de factores. Con los ensayos que tenemos no es posible distinguir entre los cinco posibles modelos por lo que se necesitan ensayos adicionales para aclarar cuales son los factores activos. 
 
-Los resultados del análisis previo pudieron convertir un diseño de $2^{8-4}$ a un diseño $2^{4-1}$ usando solo los factores $A, C, E \text{ y } H$ con una relación $I = ACEH$. De los cinco modelos que resultan \val{Explicar más esto}, realmente no se puede distinguir cual es el mejor con los datos que tenemos. Necesitamos más ensayos para clarificar cuales son los factores activos y cuales no. Por lo tanto, hay que hacer ensayos adicionales. El objetivo del criterio MD es seleccionar cuales ensayos hacer para poder discriminar entre modelos.  
+La tabla \ref{extra_runs_ej1} muestra las predicciones de las respuestas para todas las combinaciones de factores \textit{A, C, E, \text{ y } H}. El propósito de esta tesis no es indagar mucho en el cálculo de estas probilidades \val{o sí?}, pero puedo decir que se calculan usando medias posteriores como estimadores de los efectos principales y sus interacciones. 
 
-\valinline{Aqui falta mucho que decir y explicar}
+\begin{center}
+	\begin{tabular}{cc|ccccc|ccccc}
+		Candidato & Ensayo & A & C & E & H & Y & 1 & 2 & 3 & 4 & 5 \\
+		\hline
+		1 & 14, 16 & -1 & -1 & -1 & -1 & 21.9, 20.3 & 21.08 & 21.08 & 21.08 & 21.08 & 21.09 \\
+		
+		2 & 1, 3 & -1 & -1 & 1 & 1 & 14.0, 15.0 & 14.58 & 14.58 & 14.58 & 14.58 & 14.54 \\
+		
+		3 & 5, 7 & -1 & 1 & -1 & 1 & 27.6, 27.4 & 27.38 & 27.38 & 27.38 & 27.38 & 27.44 \\
+		
+		4 & 10, 12 & -1 & 1 & 1 & -1 & 17.1, 17.5 & 17.34 & 17.34 & 17.34 & 17.34 & 17.32 \\
+		
+		5 & 2, 4 & 1 & -1 & -1 & 1 & 16.8, 15.4 & 16.16 & 16.16 & 16.16 & 16.16 & 16.13 \\
+		
+		6 & 13, 15 & 1 & -1 & 1 & -1 & 15.9, 16.7 & 16.35 & 16.35 & 16.35 & 16.35 & 16.33  \\
+		
+		7 & 9, 11 & 1 & 1 & -1 & -1 & 22.3, 21.5 & 21.87 & 21.87 & 21.87 & 21.87 & 21.88 \\
+		
+		8 & 6, 8 & 1 & 1 & 1 & 1 & 24.0, 22.6 & 23.25 & 23.25 & 23.25 & 23.25 & 23.27 \\
+		
+		9 &  & -1 & -1 & -1 & 1 &  & 21.08 & 14.58 & 27.38 & 16.16 & 19.75 \\
+		
+		10 &  & -1 & -1 & 1 & -1 &  & 14.58 & 21.08 & 17.34 & 16.35 & 19.75 \\
+		
+		11 &  & -1 & 1 & -1 & -1 &   & 27.38 & 17.34 & 21.08 & 21.87 & 19.75 \\
+		
+		12 &  & -1 & 1 & 1 & 1 &   & 17.34 & 27.38 & 14.58 & 23.25 & 19.75 \\
+		
+		13 &   & 1 & -1 & -1 & -1 &   & 16.16 & 16.35 & 21.87 & 21.08 & 19.75 \\
+		
+		14 &   & 1 & -1 & 1 & 1 &   & 16.35 & 16.16 & 23.25 & 14.58 & 19.75 \\
+		
+		15 &   & 1 & 1 & -1 & 1 &   & 21.87 & 23.25 & 16.16 & 27.38 & 19.75 \\
+		
+		16 &   & 1 & 1 & 1 & -1 &    & 23.25 & 21.87 & 16.35 & 17.34 & 19.75 \\
+		
+	\end{tabular}
+	\captionof{table}{Ejemplo 1, Colapsado en los factores A, C, E y H} \label{extra_runs_ej1}
+\end{center}
 
-\valinline{Corregir alineación del código}
+Considero importante explicar a detalle la tabla \ref{extra_runs_ej1}. Los datos de primeros ocho candidatos son los mismos datos de la tabla \ref{data_table1}, pero mostrando únicamente los factores \textit{A, C, E, \text{ y } H}. No es una sorpresa que la respuesta \text{Y} sea similar por candidato ya que los factores que creemos están activos se mantuvieron en los mismos niveles.
+
+Por otro lado, los siguiente ocho candidatos son todas las posibles combinaciones para los cuatro modelos con mayor probabilidad. Tomemos, por ejemplo, el modelo que dice que los factores activos son \textit{A, C, E}. Si ignoramos la columna H de la tabla \ref{extra_runs_ej1}, los 8 ensayos muestran todas las posibles combinaciones que puede tener un experimento con estos tres factores. Lo mismo pasa con los otros tres modelos con tres factores cada uno. Para el modelo final con cuatro factores activos, la tabla completa es todas las posibles combinaciones. 
+
+Además, es importante notar que para los primeros ocho candidatos la respuesta de los modelos es similar. Mientras, para los siguientes ocho ésta varia mucho más. La similitud en las respuestas de los primeros ocho candidatos refuerza la idea de que es muy complicado distinguir entre los cinco posibles modelos. La diferencia en los siguientes ocho candidatos ayudará a que ahora sí sea posible distinguir entre los posibles modelos. 
+
+Como se menciono anteriormente, no es posible realizar todos los ensayos posibles así que tendremos que elegir. En este caso, buscamos generar un diseño de seguimiento de cuatro ensayos usando el criterio MD. Hay $3,876$ posibles diseños que podemos generar de los 16 candidatos de la tabla \ref{extra_runs_ej1}. Se podría generar un código que calcule el valor MD para cada uno de esos diseños. Sin embargo, es mejor utilizar el algoritmo de intercambio ya que genera un diseño al azar de puntos candidatos y después los modifica hasta que un criterio de convergencia se satisface. 
+
+El código para el cálculo del criterio MD y el algoritmo de intercambio para R, Julia y Python es el siguiente. 
+
+
 \begin{minted}{R}
 	# # # R paquete Patricia
 	library(BsMD2)
 	setwd("~/ITAM/Tesis/Julia con R/Code/MD-optimality")
 	
-	X <- as.matrix(BM93e3[1:16,c(1,2,4,6,9)]) #matriz de diseÃ±o inicial
-	y <- as.vector(BM93e3[1:16,10]) #vector de respuesta
-	p_mod <- c(0.2356,0.2356,0.2356,0.2356,0.0566) #probabilidad posterior de los 5 modelos
+	# matriz de diseño inicial
+	X <- as.matrix(BM93e3[1:16,c(1,2,4,6,9)]) 
+	# vector de respuesta
+	y <- as.vector(BM93e3[1:16,10]) 
+	# probabilidad posterior de los 5 modelos
+	p_mod <- c(0.2356,0.2356,0.2356,0.2356,0.0566) 
 	
-	fac_mod <- matrix(c(2,1,1,1,1,3,3,2,2,2,4,4,3,4,3,0,0,0,0,4),nrow=5,
-	dimnames=list(1:5,c("f1","f2","f3","f4")))
+	fac_mod <- matrix(c(2,1,1,1,1,3,3,2,2,2,4,4,3,4,3,0,0,0,0,4),
+			nrow=5,
+			dimnames=list(1:5,c("f1","f2","f3","f4")))
 	
 	Xcand <- matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 	-1,-1,-1,-1,1,1,1,1,-1,-1,-1,-1,1,1,1,1,
@@ -249,6 +356,20 @@ Los resultados del análisis previo pudieron convertir un diseño de $2^{8-4}$ a
 	nMod = 5, p_mod = p_mod, fac_mod = fac_mod, 
 	nStart = 25)
 	Sys.time() - t
+	
+	# # # R paquete original
+	library(BsMD)
+	
+	s2 <- c(0.5815, 0.5815, 0.5815, 0.5815, 0.4412)
+	
+	t_RO <- Sys.time()
+	e3_RO <- BsMD::MD(X = X, y = y, nFac = 4, nBlk = 1, 
+						mInt = 3, g = 2, nMod = 5, 
+						p = p_mod, s2 = s2, 
+						nf = c(3, 3, 3, 3, 4), 
+	facs = fac_mod, nFDes = 4, Xcand = Xcand, mIter = 20, 
+	nStart = 25, top = 10)
+	Sys.time() - t_RO
 	
 	# # #  Julia con R
 	library(JuliaCall)
@@ -269,10 +390,11 @@ Los resultados del análisis previo pudieron convertir un diseño de $2^{8-4}$ a
 	
 	t_J <- Sys.time()
 	julia_eval("MDopt(X = X_J, y = y_J, Xcand = Xcand_J, nMod = 5, 
-	p_mod = p_mod_J, fac_mod = fac_mod_J, nFDes = 4, max_int = 3, g = 2, Iter = 20, nStart = 10, top = 10)")
+		p_mod = p_mod_J, fac_mod = fac_mod_J, nFDes = 4, 
+		max_int = 3, g = 2, Iter = 20, nStart = 10, top = 10)")
 	Sys.time() - t_J
 	
-	# Python con R
+	# # # Python con R
 	library(reticulate)
 	
 	source_python("MD_Python.py")
@@ -303,7 +425,7 @@ Los resultados del análisis previo pudieron convertir un diseño de $2^{8-4}$ a
 	Sys.time() - t_P
 \end{minted}
 
-En los tres lenguajes los resultados fueron los mismos y se muestran en la tabla \ref{results_ej1}
+Es importante notar que para R utilice el paquete elaborado por Patricia así como el paquete original \textbf{BsMD} elaborado por el profesor Ernesto Barrios. En los tres lenguajes los resultados fueron los mismos y se muestran en la tabla \ref{results_ej1}
 
 \begin{center}
 	\begin{tabular}{cc|c}
@@ -333,8 +455,16 @@ En los tres lenguajes los resultados fueron los mismos y se muestran en la tabla
 	\captionof{table}{Resultados para el ejemplo 1} \label{results_ej1}
 \end{center}
 
-\subsection{title}
-En el ejemplo anterior, no había forma de replicar el experimento con los ensayos adicionales en las mismas condiciones en las que fue efectuado. El objetivo de este ejemplo, que también es tomado de Meyer \val{Falta referencia}, es evaluar la efectividad del criterio MD para generar datos que puedan identificar cuales son los factores activos. Los datos de este ejemplo están en la tabla \ref{data_table2}
+En cuanto a tiempo, al paquete de Patricia le tomo 5.618191 segundos en hacer el cálculo; al paquete \textbf{BsMD} del profesor Barrios le tomó 0.03919315; Julia se tardó 34.85702 segundos; \val{Incluir aquí que falta el tiempo del setup} y a Python 51.05128 segundos. 
+
+Es importante mencionar que en el caso de Julia el tiempo va disminuyendo las ocasiones consecutivas que corres el código inclusive cambiando los parámetros de la función. La segunda ocasión solo le tomo 9 segundos y la tercera 5 segundos. Esto es útil cuando se esté corrigiendo la función o simplemente se quiera correr varias veces para distintos diseños. 
+
+
+\subsection{Ejemplo 2 }
+En el ejemplo anterior, no había forma de replicar el experimento con los ensayos adicionales en las mismas condiciones en las que fue efectuado. El objetivo de este ejemplo, que también es tomado de Meyer \cite{meyer1996}, es evaluar la efectividad del criterio MD para generar datos que puedan identificar cuales son los factores activos.
+
+Meyer utiliza datos de un experimento de reactor hecho por Box et al en 1978. Ese experimento es de tipo $2^{5}$ factorial lo que significa que hay 32 ensayos del mismo. Este ejemplo Meyer busca probar la efectividad de su diseño tomando solamente 8 de los 32 ensayos originales y encontrando de manera correcta los factores que están activos. La idea es tener un diseño de seguimiento que pueda tomar los ensayos adicionales necesarios del experimento original. 
+Los ocho ensayos elegidos están en el tabla \ref{data_table2}. 
 
 \begin{center}
 	\begin{tabular}{cccccc|c}
@@ -360,8 +490,7 @@ En el ejemplo anterior, no había forma de replicar el experimento con los ensay
 	\captionof{table}{Datos para el ejemplo 2} \label{data_table2}
 \end{center}
 
-
-Se uso el experimento de reactor de Box et al \val{Falta poner la referencia}. Obtuvieron ocho ensayos del experimento original correspondiente al $2^{5-2}$ Resolution III \val{Que es esto} con generadores $I = ABD = ACE$. Tratamos estos ensayos como el initial screening experiment \val{Tengo que corregir esto}. Por tanto, se puede simular cualquier diseño de seguimiento con factores fijos en los niveles usados por el diseño original extrayendo los ensayos correspondientes del experimento completo \val{Siento que falta aclarar}.
+En análisis bayesiano previo para los datos de la figura \ref{data_table2} no muestra de manera clara que algún factor esté activo. Por lo tanto, un diseño de cuatro ensayos fue creado para encontrar el mejor subconjunto de 4 de los 32 posibles candidatos de cinco factores en dos niveles. 
 
 El código para generar los resultados en los tres lenguajes es el siguiente.
 
@@ -372,7 +501,8 @@ El código para generar los resultados en los tres lenguajes es el siguiente.
 	data(M96e2)
 	#print(M96e2)
 	
-	X <- as.matrix(cbind(blk = rep(-1, 8), M96e2[c(25,2,19,12,13,22,7,32), 1:5]))
+	X <- as.matrix(cbind(blk = rep(-1, 8), 
+		M96e2[c(25,2,19,12,13,22,7,32), 1:5]))
 	y <- M96e2[c(25,2,19,12,13,22,7,32), 6]
 	
 	pp <- BsProb1(X = X[, 2:6], y = y, p = .25, gamma = .4, 
@@ -388,11 +518,13 @@ El código para generar los resultados en los tres lenguajes es el siguiente.
 	Sys.time() - t
 	
 	library(JuliaCall)
-	julia_setup(JULIA_HOME = "C:/Users/Valeria/AppData/Local/Programs/Julia-1.6.3/bin")
+	julia_setup(JULIA_HOME = "C:/Users/Valeria/AppData/
+				Local/Programs/Julia-1.6.3/bin")
 	
 	julia_source("MDopt.jl")
 	
-	X <- as.matrix(cbind(blk = rep(-1, 8), M96e2[c(25,2,19,12,13,22,7,32), 1:5]))
+	X <- as.matrix(cbind(blk = rep(-1, 8), 
+		M96e2[c(25,2,19,12,13,22,7,32), 1:5]))
 	y <- M96e2[c(25,2,19,12,13,22,7,32), 6]
 	
 	pp <- BsProb1(X = X[, 2:6], y = y, p = .25, gamma = .4, 
@@ -415,8 +547,9 @@ El código para generar los resultados en los tres lenguajes es el siguiente.
 	julia_eval("Xcand = Int64.(Xcand)")
 	
 	t_J <- Sys.time()
-	julia_eval("MDopt(X = X, y = y, Xcand = Xcand, nMod = 32, p_mod = p_mod, 
-	fac_mod = fac_mod, nFDes = 4, max_int = 3, g = 0.4, Iter = 10, nStart = 25, top = 5)")
+	julia_eval("MDopt(X = X, y = y, Xcand = Xcand, nMod = 32, 
+		p_mod = p_mod, fac_mod = fac_mod, nFDes = 4, max_int = 3, 
+		g = 0.4, Iter = 10, nStart = 25, top = 5)")
 	Sys.time() - t_J
 	
 	
@@ -451,7 +584,7 @@ El código para generar los resultados en los tres lenguajes es el siguiente.
 	Sys.time() - t_P
 \end{minted} 
 
-El análisis bayesiano de estos datos se resume en que ninguno de los factores parece ser activo. Por lo tanto, se creo un diseño de cuatro ensayos para encontrar el mejor subconjunto de cuatro entre los $2^{5} = 32$ candidatos de cinco factores en dos niveles. Los cinco mejores diseños son los siguientes se muestran en la tabla \ref{results_ej2}
+Igual que en el ejemplo anterior, para \textbf{R} utilice ambos paquetes \texttt{BsMD} y \texttt{BsMD2}. En los tres lenguajes los resultados fueron exactamente los mismo y se muestran en la tabla \ref{results_ej2}.
 
 \begin{center}
 	\begin{tabular}{cc|c}
@@ -471,8 +604,9 @@ El análisis bayesiano de estos datos se resume en que ninguno de los factores p
 	\captionof{table}{Resultados para el ejemplo 2} \label{results_ej2}
 \end{center}
 
+En cuanto a tiempo, al paquete \texttt{BsMD2} le tomo 9.573741 minutos obtener los resultados; el paquete \texttt{BsMD} hizo el cálculo en 0.4537661 segundos; Julia se tardó 50.54355 segundos; y, finalmente a Python le tomó 11.058 minutos.
 
-Después, volviendo a calcular las probabilidades $P_j$ usando los 12 ensayos podemos ahora ver claramente que los factores activos son $B, D \text{y} E$. Este ejemplo muestra que no se necesitan tantos ensayos para poder obtener el mejor modelo para los datos. 
+Es importante mencionar que este ejemplo es el más pesado computacionalmente que voy a mostrar en esta tesis. No es sorpresa que el paquete \texttt{BsMD} sea el más rápido, ya que utiliza Fortran para hacer sus cálculos. Lo que más sorprende es que Julia sea el lenguaje que quede en segundo lugar con semejante ventaja. En este caso, Julia es mínimo 10 veces más rápido que sus competidores. Incluso usando Python desde otra plataforma Julia es más rápido. Por lo tanto, este ejemplo termina demostrando la capacidad computacional que tiene Julia para este tipo de algoritmos. 
 
 
 
