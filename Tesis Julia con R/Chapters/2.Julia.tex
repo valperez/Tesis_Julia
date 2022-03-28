@@ -1,7 +1,7 @@
 \chapter{Julia}
 
-\say{\textsf{Julia} es un lenguaje de programación gratis y de código abierto desarrollado por Jeff Bezanson, Alan Edelman, Viral B. Shan y Stefan Karpinski en el MIT} \cite{Hackers}.  Su propósito general es ser tan rápido como \textsf{C}, pero manteniendo la facilidad de lenguaje de \textsf{R} o \textsf{Python}. Es una combinación de sintaxis simple con alto rendimiento computacional. Su slogan es \textsf{Julia} se ve como \textsf{Python}, se siente como \textsf{Lisp}, corre como \textsf{Fortran}" \cite{Hackers}. 
-Esta combinación de características hace que \textsf{Julia} sea un lenguaje de programación que ha tomado mucha fuerza últimamente en la comunidad científica. Ya que es un lenguaje poco conocida, en esta sección se explica como instalar \textsf{Julia} en una computadora con sistema operativo \textsf{Windows} y algunos de los básicos del lenguaje.
+\say{\textsf{Julia} es un lenguaje de programación gratis y de código abierto desarrollado por Jeff Bezanson, Alan Edelman, Viral B. Shan y Stefan Karpinski en el MIT}, \cite{Hackers}.  Su propósito general es ser tan rápido como \textsf{C}, mientras mantiene la facilidad de lenguaje de \textsf{R} o \textsf{Python}. Es una combinación de sintaxis simple con alto rendimiento computacional. Su slogan es \say{\textsf{Julia} se ve como \textsf{Python}, se siente como \textsf{Lisp}, corre como \textsf{Fortran}}, \cite{Hackers}. 
+Esta combinación de características hace que \textsf{Julia} sea un lenguaje de programación que ha tomado mucha fuerza  en la comunidad científica últimamente. Ya que es un lenguaje poco conocido, en esta sección se explica como instalar \textsf{Julia} en una computadora con sistema operativo \textsf{Windows} y algunos de los básicos del lenguaje.
 
 \section{Reproducibilidad}
 Antes de empezar, se enfatiza que esta tesis es completamente reproducible. Peng y Hicks del departamento de bioestadística en la Universidad John Hopkins definen \say{un análisis de datos publicado es reproducible si el conjunto de datos y el código utilizados para crear el análisis de datos está disponible para que otros lo analicen y estudien de manera independiente}, \cite{peng2021reproducible}. A pesar de que en el artículo enfatizan que esta definición puede ser un tanto ambigua, sí resaltan que la reproducibilidad es un medio para revisar y, posteriormente, confiar en el análisis de otros. 
@@ -9,30 +9,31 @@ Antes de empezar, se enfatiza que esta tesis es completamente reproducible. Peng
 Uno de los beneficios de tener un trabajo de investigación reproducible es que \say{los lectores obtienen los datos y el código computacional, los cuales son valiosos al grado de que pueden ser reutilizados o rediseñados para futuros estudios o investigaciones} \cite{peng2021reproducible}. El código programado para esta tesis se encuentra en la plataforma de GitHub, específicamente en la liga \url{https://github.com/valperez/Tesis_Julia}. Los datos utilizados también se pueden encontrar en la liga anterior o en la fuente que se indica al mencionarlos. 
 
 \section{Instalación}
-Este trabajo se explica como si fuera hecho en un ambiente de \textsf{Windows}. La instalación y uso en los sistemas \textsf{Mac} y \textsf{Linux} es muy similar y no se mencionará.  
+Este trabajo se presenta como si fuera hecho en un ambiente de \textsf{Windows}. La instalación y uso en los sistemas \textsf{Mac} y \textsf{Linux} es muy similar y no se mencionará.  
 
-Al momento de la escritura de esta tesis la versión de \textsf{Julia} disponible es la \textsf{v1.6.3}. El primer paso es descargar \textsf{Julia}, desde la página \url{https://julialang.org/downloads/}. 
+Al momento de la escritura de esta tesis la versión de \textsf{Julia} disponible es la \textsf{v1.6.3}. El primer paso es descargar \textsf{Julia} desde la página \url{https://julialang.org/downloads/}. 
 
-Para el sistema operativo \textsf{Windows} se tiene la opción de un instalador de 64-bits o uno de 32-bits. El tipo de sistema que tiene un ordenador se verifica en \textsf{Start} $>$ \textsf{Configuración} $>$ \textsf{Sistema} $>$ \textsf{Acerca de}. En esta opción se puede ver el tipo de sistema que tiene la computadora. Es importante seleccionar el \textsf{installer} y no el \textsf{portable}. Una vez descargado, se debe seleccionar el archivo \textsf{.exe} y seguir los pasos de instalación. 
+Para el sistema operativo \textsf{Windows} se tiene la opción de un instalador de 64-bits o uno de 32-bits. El tipo de sistema que tiene un ordenador se verifica en \textsf{Start} $>$ \textsf{Configuración} $>$ \textsf{Sistema} $>$ \textsf{Acerca de}. Se debe seleccionar el \textsf{installer} y no el \textsf{portable}. Una vez descargado, se debe seleccionar el archivo \textsf{.exe} y seguir los pasos de instalación. 
 
 \section{Símbolo del sistema}
-Una vez instalado, se puede ejecutar \textsf{Julia} desde el símbolo del sistema o desde alguna interfaz gráfica como \textsf{Atom}, \textsf{Visual Studio Code} o \textsf{Jupyter Notebook}. De este último se explicará más en el capítulo \ref{cap_jupyter}. 
+Una vez instalado, se puede ejecutar \textsf{Julia} desde el símbolo del sistema o desde alguna interfaz gráfica como \textsf{Atom}, \textsf{Visual Studio Code} o \textsf{Jupyter Notebook}. De este último se explica más en el capítulo \ref{cap_jupyter}. 
 
 Una de las ventajas de utilizar \textsf{Julia} desde el símbolo del sistema (también conocido como \textit{Command Prompt} o \texttt{cmd}) es que se pueden controlar algunos parámetros del lenguaje. Mi sugerencia es que se comience a usar \textsf{Julia} directo desde la interfaz nativa. Posteriormente, cuando se entienda lo básico y los programas generados requieran un mayor nivel computacional entonces se puede migrar a usar el \texttt{cmd} para correr \textsf{Julia}. 
 
 \subsection{\textit{Multithreading}}
-Una de las razones por la que \textsf{Julia} tiene gran velocidad es por su capacidad para multihilo (\textit{multithreading} en inglés). Esto significa que puede correr diferentes tareas de manera simultánea en varios hilos. Explicado de forma más simple, la meta de los autores de \textsf{Julia} fue crear un lenguaje de programación con un rendimiento tan alto que pudiera hacer varias cosas simultáneamente. Debido a que uno de los objetivos de esta tesis es mostrar la eficiencia y velocidad de \textsf{Julia}, es crucial conocer la característica del \textit{multithreading} y cómo utilizarla. 
+Una de las razones por la que \textsf{Julia} tiene gran velocidad es por su capacidad para multihilo (\textit{multithreading} en inglés). Esto significa que puede correr diferentes tareas de manera simultánea en varios hilos. Esto se debe a que la meta de los autores de \textsf{Julia} fue crear un lenguaje de programación con un rendimiento tan alto que pudiera hacer varias cosas simultáneamente. Debido a que uno de los objetivos de esta tesis es mostrar la eficiencia y velocidad de \textsf{Julia}, es crucial conocer la característica del \textit{multithreading} y cómo utilizarla. 
 
-Si se está ejecutando \textsf{Julia} por medio del \texttt{cmd} es necesario modificar la cantidad de hilos que se va a utilizar antes de ejecutar \textsf{Julia}.  En \textsf{Windows}, esto se modifica programando \texttt{set Julia\_ NUM\_ THREADS=4} \citep{manual_Julia}. Si se está trabajando con otro sistema operativo, esta página puede ser una guía para modificar la cantidad de hilos \url{https://docs.julialang.org/en/v1/manual/multi-threading/}. En este ejemplo, se cambiaron los hilos a 4, pero se puede asignar cualquier número. Sin embargo, se recomienda que éste no exceda de la cantidad de procesadores lógicos de la computadora.  
+Si se está ejecutando \textsf{Julia} por medio del \texttt{cmd} es necesario modificar la cantidad de hilos que se va a utilizar antes de ejecutar \textsf{Julia}.  En \textsf{Windows}, esto se modifica programando \texttt{set Julia\_NUM\_THREADS=4} \citep{manual_Julia}. Si se está trabajando con otro sistema operativo, esta página puede ser una guía para modificar la cantidad de hilos \url{https://docs.julialang.org/en/v1/manual/multi-threading/}. En este ejemplo, se cambiaron los hilos a 4, pero se puede asignar cualquier número. Sin embargo, se recomienda que éste no exceda de la cantidad de procesadores lógicos de la computadora.  
 
-Si se está usando \textsf{Julia} en algún editor de texto o programa externo la modificación del número de hilos se hace de forma diferente. Cada programa tiene su manera de hacerlo y usualmente las instrucciones vienen en el manual del mismo. Para observar que el cambio se ejecutó de manera correcta (en cualquier opción) basta con correr el comando \texttt{Threads.nthreads()} y observar que la respuesta sea el número deseado. 
+Si se está usando \textsf{Julia} en algún editor de texto o programa externo la modificación del número de hilos se hace de forma diferente. Cada programa tiene su manera de hacerlo y usualmente las instrucciones vienen en el manual del mismo. Para observar que el cambio se ejecutó de manera correcta (independientemente de la opción elegida) basta con correr el comando \texttt{Threads.nthreads()} y observar que la respuesta sea el número deseado. 
 
 \section{Básicos de Julia}
-\say{Como el compilador de \textsf{Julia} es diferente de los intérpretes usado para lenguajes como \textsf{Python} o \textsf{R} se puede percibir que el funcionamiento de \textsf{Julia} no es intuitivo en un principio. Una vez que se entienda como funciona \textsf{Julia}, es fácil escribir código que es casi tan rápido como \textsf{C}} \cite{manual_Julia}. En esta sección se da una introducción a la sintaxis del lenguaje que se tomó del manual oficial de \textsf{Julia} \cite{manual_Julia}. 
+\say{Como el compilador de \textsf{Julia} es diferente a los intérpretes usados para lenguajes como \textsf{Python} o \textsf{R} se puede percibir que el funcionamiento de \textsf{Julia} no es intuitivo en un principio. Una vez que se entienda como funciona \textsf{Julia}, es fácil escribir código que es casi tan rápido como \textsf{C}}, \cite{manual_Julia}. En esta sección se da una introducción a la sintaxis del lenguaje que se tomó del manual oficial de \textsf{Julia}, \cite{manual_Julia}. 
 
-En primer lugar, la asignación de variables se hace con un signo de igualdad $=$. El ejemplo más sencillo de esto es ejecutar 
+La asignación de variables se hace con un signo de igualdad $=$. El ejemplo más sencillo de esto es ejecutar 
 \begin{minted}{julia}
 	julia> x = 2
+	2
 \end{minted}
 
 \noindent donde se asigna a x el valor de 2. 
@@ -77,7 +78,7 @@ La tabla \ref{operaciones_basicas_julia} muestra la sintaxis usada para las oper
 
 
 \subsubsection{Operaciones básicas en vectores}
-En \textsf{Julia}, para cada operación binaria existe su correspondiente operación punto (\textit{dot operation} en inglés). Estas funciones están definidas para efectuarse elemento por elemento en vectores y matrices. Para llamarse basta agregar un punto antes del operador binario. Por ejemplo,
+En \textsf{Julia} cada operación binaria tiene su correspondiente operación punto (\textit{dot operation} en inglés). Estas funciones están definidas para efectuarse elemento por elemento en vectores y matrices. Para llamarse basta agregar un punto antes del operador binario. Por ejemplo,
 
 \begin{minted}{julia}
 	julia> [1 9 9 7] .^ 2
@@ -87,7 +88,7 @@ En \textsf{Julia}, para cada operación binaria existe su correspondiente operac
 
  \noindent eleva cada uno de los elementos del vector al cuadrado. 
 
-\textsf{Julia} maneja los números imaginarios utilizando el sufijo \texttt{im}. Sin embargo, no se utilizaron utilice en este trabajo así que se omitirá dar mayor explicación. 
+\textsf{Julia} maneja los números imaginarios utilizando el sufijo \texttt{im}. Sin embargo, no se utilizaron en este trabajo así que se omitirá dar mayor explicación. 
 
 \subsection{\textit{Strings} (secuencias de caracteres)} 
 
@@ -135,7 +136,7 @@ Además, se puede agregar la palabra \texttt{return} para que la función regres
 \end{minted}
 
 
-Para llamar a la función basta con escribir \texttt{numero\_mayor(x, y)} asignando o sustituyendo valores por $x$ y $y$. 
+Para llamar a la función basta con escribir \texttt{numero\_mayor(x, y)} asignando o sustituyendo valores por $x$ y $y$. Por ejemplo,
 
 \begin{minted}{julia}
 	julia> numero_mayor(4, 9)
@@ -168,7 +169,7 @@ En \textsf{Julia} para definir un vector columna se hace uso de los corchetes cu
 	7
 \end{minted}
 
-\noindent da como resultado un vector de 4 elementos de tipo Int64. \textsf{Julia} es un lenguaje exigente con los tipos de objetos por lo que aprender sus características y funciones singulares es un atributo de un buen usuario. 
+\noindent da como resultado un vector de 4 elementos de tipo Int64. \textsf{Julia} es un lenguaje exigente con los tipos de objetos, por lo que aprender sus características y funciones singulares es uno de los atributos que hacen a un buen usuario. 
 
 Si se quisiera definir un vector renglón se haría exactamente lo mismo excepto que se omitiría el uso de las comas. En este caso, \textsf{Julia} tomó el objeto \texttt{A} como una matriz, no como un vector. 
 
@@ -208,14 +209,14 @@ De manera análoga con los vectores, para llamar un solo elemento de la matriz s
 	5
 \end{minted}
 
-\textsf{Julia} necesita de la instalación del paquete \textsf{Linear Algebra} para hacer operaciones básicas y factorización de matrices. El catálogo de funciones es bastante extenso para incluirlo en este trabajo, pero se puede encontrar en \url{https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/}.
+\textsf{Julia} necesita de la instalación del paquete \textsf{LinearAlgebra} para hacer operaciones básicas y factorización de matrices. El catálogo de funciones es bastante extenso para incluirlo en este trabajo, pero se puede encontrar en \url{https://docs.julialang.org/en/v1/stdlib/LinearAlgebra/}.
 
 \subsection{Instalación de un paquete} \label{instalacion_paquete}
 
 
 Para cualquier otra operación fuera de lo básico que ya se mencionó, \textsf{Julia} necesita usar paquetes. Los paquetes son similar a las librerías en \textsf{R}. La lista completa de paquetes registrados en \textsf{Julia} se encuentra en \url{https://juliapackages.com/}. En esta sección se explica la instalación y uso de los mismos. 
 
-El único paquete que ya viene por default en la instalación de \textsf{Julia} es \texttt{Pkg}. Su función es instalar otros paquetes. El comando \texttt{using} activa un paquete ya descargado mientras que \texttt{Pkg.add()} agrega un paquete nuevo. A continuación se presenta la guía básica para descargar cualquier paquete en \textsf{Julia} usando como ejemplo al ya mencionado \texttt{LinearAlgebra}. 
+El único paquete que ya viene por default en la instalación de \textsf{Julia} es \texttt{Pkg} ya que su función es instalar otros paquetes. El comando \texttt{using} activa un paquete ya descargado mientras que \texttt{Pkg.add()} agrega un paquete nuevo. A continuación se presenta la guía básica para descargar cualquier paquete en \textsf{Julia} usando como ejemplo al ya mencionado \texttt{LinearAlgebra}. 
 
 
 \begin{minted}{julia}
@@ -224,7 +225,7 @@ El único paquete que ya viene por default en la instalación de \textsf{Julia} 
 	using LinearAlgebra
 \end{minted}
 
-La instalación de un paquete solo se debe hacer una vez. Si se requiere en alguna sesión posterior basta con usar el comando \texttt{using} y el nombre del paquete. En las siguientes secciones se explica y ejemplifica el uso de dos paquetes muy usados en esta tesis. 
+La instalación de un paquete solo se debe hacer una vez. Si se requiere usar en alguna sesión posterior basta con usar el comando \texttt{using} y el nombre del paquete. En las siguientes secciones se explica y ejemplifica el uso de dos paquetes muy usados en esta tesis. 
 
 \subsection{\textit{DataFrames}}
 
@@ -237,12 +238,12 @@ Los dataframes pueden ser usados para manejar grandes cantidades de información
 
 \begin{minted}{julia}
 	julia> using DataFrames
-    julia> df = DataFrame(id = 1:5, 
-   		nombre = ["Valeria", "Paula", "María José", 
-        		"Sofía", "Mónica"])
+	julia> df = DataFrame(id = 1:5, 
+   			nombre = ["Valeria", "Paula", 
+   			"María José", "Sofía", "Mónica"])
 \end{minted}
 
-Los nombres de las columnas de un dataframe se vuelven atributos de éste. Para referirse a la columna 'col' del dataframe 'df' basta escribir \texttt{df.col}. Si se quisiera agregar una columna nueva se deben asignar datos a \texttt{df.colNueva}. Por ejemplo, si quisiera agregar una columna llamada \texttt{color} al dataframe del ejemplo anterior, el código sería el siguiente: 
+Los nombres de las columnas de un dataframe se vuelven una especie de atributos. Para referirse a la columna 'col' del dataframe 'df' basta escribir \texttt{df.col}. Si se quisiera agregar una columna nueva se deben asignar datos a \texttt{df.colNueva}. Por ejemplo, si quisiera agregar una columna llamada \texttt{color} al dataframe del ejemplo anterior, el código sería el siguiente: 
 
 \begin{minted}{julia}
      julia> df.color = ["morado", "azul", "verde", "negro", "rojo"]
@@ -250,20 +251,19 @@ Los nombres de las columnas de un dataframe se vuelven atributos de éste. Para 
 
 \subsubsection{Importar datos en un dataframe}
 
-Como ya se mencionó, los dataframes son utilizados para contener grandes cantidades de información. Usualmente, esta información no es generada en \textsf{Julia} por lo que hay importarla. Una de las formas más rápidas es usando el paquete \texttt{CSV}. La descarga de este paquete se hace siguiendo  los pasos descritos en la sección \ref{instalacion_paquete}. 
+Como ya se mencionó, los dataframes son utilizados para contener grandes cantidades de información. Usualmente esta información no es generada en \textsf{Julia} por lo que hay importarla. Una de las formas más rápidas es usando el paquete \texttt{CSV}. La descarga de este paquete se hace siguiendo  los pasos descritos en la sección \ref{instalacion_paquete}. 
 
-Una vez instalado el programa, basta utilizar el comando \texttt{CSV.read} y la ruta de la ubicación del archivo para exportar los datos. 
+Una vez instalado el programa, se necesita utilizar el comando \texttt{CSV.read} y la ruta de la ubicación del archivo para exportar los datos. 
 
 \begin{minted}{julia}
-	julia> using CSV
-    julia> df = CSV.read("C:/Users/Valeria/Documents/ejemplo.csv", DataFrame)
+	julia> using CSV, DataFrames
+        julia> df = CSV.read("~/ejemplo.csv", DataFrame)
 \end{minted}
-
-\valinline{Tengo que arreglar esto sí o sí y falta ponerle caption}
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[scale=0.6]{Imagenes/insertar_df.JPG}
+\includegraphics[scale=0.6]{Imagenes/insertar_df.PNG}
+	\caption{Ejemplo de importación de un dataframe}
   \label{insertar_df}
 \end{center}
 \end{figure}
@@ -272,16 +272,16 @@ Los dataframes tienen una cantidad inmensa de funciones que incluyen agregar o e
 
 \subsection{Análisis de regresión} \label{cap_regresiones}
 
-Un análisis de regresión es una herramienta estadística para estudiar las relaciones entre distintas variables. Regresión es un método que permite a los investigadores resumir como predicciones o valores promedio de un resultado varían a través de variables individuales definidas como predictores o regresores \cite{regression_other_stories}. 
+Un análisis de regresión es una herramienta estadística para estudiar las relaciones entre distintas variables. \say{Regresión es un método que permite a los investigadores resumir como predicciones o valores promedio de un resultado varían a través de variables individuales definidas como predictores o regresores}, \cite{regression_other_stories}. 
 
-En otras palabras, la regresión es una expresión que intenta explicar como una variable depende otras. En \textsf{Julia}, esto se puede hacer con ayuda del paquete \texttt{GLM}, ya que facilita el ajuste de modelos lineales. Como todos los paquetes, primero se debe instalar con los pasos descritos en \ref{instalacion_paquete}. 
+En distintas palabras, la regresión es una expresión que intenta explicar como una variable depende otras. En \textsf{Julia}, esto se puede hacer con ayuda del paquete \texttt{GLM}, ya que facilita el ajuste de modelos lineales. Como todos los paquetes, primero se debe instalar con los pasos descritos en \ref{instalacion_paquete}. 
 
-En este paquete una de las funciones principales se llama \texttt{lm} que se utilizar para ajustar un modelo lineal a un conjunto de datos. En el manual oficial \cite{glm_manual} está descrita la manera en que se pueden generar modelos más avanzados. La función \texttt{lm} se utiliza en repetidas ocasiones en este trabajo por lo que se explica a continuación. \texttt{lm(formula, data, allowrankdeficient=false; [wts::AbstractVector], dropcollinear::Bool=true)} donde 
+En este paquete una de las funciones principales se llama \texttt{lm} que se utiliza para ajustar un modelo lineal a un conjunto de datos. En el manual oficial \cite{glm_manual} está descrita la manera en que se pueden generar modelos más avanzados. Esta función se utiliza en repetidas ocasiones en este trabajo por lo que se explica a continuación. La función es \texttt{lm(formula, data, allowrankdeficient=false; [wts::AbstractVector], dropcollinear::Bool=true)} donde 
 
 \valinline{FALTA}
 
 \begin{itemize}
-    \item \texttt{formula}: usa los nombres de las columnas del dataframe de datos para referirse a las variables predictoras. Además, debe ser un objeto de tipo \texttt{formula}. 
+    \item \texttt{formula}: usa los nombres de las columnas del dataframe de datos para referirse a las variables predictoras. Debe ser un objeto de tipo \texttt{formula}. 
     
     \item \texttt{data}: el dataframe que contenga los datos de los predictores de la fórmula.
     
@@ -303,11 +303,12 @@ El modelo de regresión lineal más simple es el que tiene un solo predictor
     \end{aligned}
 \end{equation*}
 
-Para ejemplificar este modelo de regresión se usaron los datos de \cite{regression_other_stories}. Dicha información fue recabada por Douglas Hibbs con el objetivo de predecir las elecciones de Estados Unidos basándose solamente en el crecimiento económico. Los datos se ven de la siguiente manera: \val{Arreglar esto}
+Para ejemplificar este modelo de regresión se usaron los datos de \cite{regression_other_stories}. Dicha información fue recabada por Douglas Hibbs con el objetivo de predecir las elecciones de Estados Unidos basándose solamente en el crecimiento económico. Los datos se ven de la siguiente manera: 
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.5]{Imagenes/elections_dataframe.JPG}
+\includegraphics[scale=0.5]{Imagenes/elections_dataframe.PNG}
+\caption{Encabezado de los datos sobre las elecciones en EUA recabados por Douglas Hibbs}
   \label{elections_dataframe}
 \end{center}
 \end{figure}
@@ -318,10 +319,10 @@ En este modelo se busca que el voto sea resultado del crecimiento económico. El
 	elections_lm = lm(@formula(vote ~ growth), elections)
 \end{minted}
 
-El resultado es una tabla con los coeficientes, la desviación estándar, el valor \textit{t}, el valor$-p$ y el intervalo de confianza del $95 \% $ para los coeficientes. En este ejemplo, el resultado que da \textsf{Julia} es \texttt{y = 46.3 + 3.1x} el cual coincide con los valores reportados en el libro.
+El resultado es una tabla con los coeficientes, la desviación estándar, el valor \textit{t}, el valor$-p$ y el intervalo de confianza del $95 \% $ para los coeficientes. En este ejemplo, el resultado que da \textsf{Julia} es \texttt{y = 46.3 + 3.1x}, el cual coincide con los valores reportados en el libro.
 
 \subsubsection{Regresión lineal múltiple}
-La regresión lineal simple es el caso específico de la regresión lineal múltiple. La diferencia es que en el segundo caso hay múltiples predictores que deben cumplir ciertos criterios. \cite{regression_other_stories} define este tipo de regresión como 
+La regresión lineal múltiple es el caso general de la regresión lineal simple. La diferencia es que en el primero hay múltiples predictores que deben cumplir ciertos criterios. \cite{regression_other_stories} define este tipo de regresión como 
 
 \begin{equation*}
     \begin{aligned}
@@ -343,17 +344,16 @@ Para ejemplificar este tipo de modelo se uso un ejemplo que consta de dos predic
 
 Se buscó determinar si existe una relación significativa entre la educación y el coeficiente de las madres con los resultados de los exámenes de sus hijos. Por lo tanto, los predictores son las variables en relación con la madre mientras que la respuesta es el desempeño de los niños. El código en \textsf{Julia} se ve de la siguiente manera
 
-\valinline{Como pongo el directorio de donde está mi base?}
 \begin{minted}{julia}
     julia> using DataFrames, GLM, CSV
     julia> data_kid = CSV.read("~/Tesis/data/kidiq.csv", DataFrame)
-	julia> fm = @formula(kid_score ~ mom_hs + mom_iq + mom_hs*mom_iq)
-	julia> kidscore_lm = lm(fm, data_kid)
+    julia> fm = @formula(kid_score ~ mom_hs + mom_iq + mom_hs*mom_iq)
+    julia> kidscore_lm = lm(fm, data_kid)
 \end{minted}
 
 Que da como resultado el modelo ajustado
 
-\texttt{kid\_score = -11.48 + 51.26* mom\_hs + 0.97*mom\_iq -0.48*mom\_hs*mom\_iq + $\epsilon$}
+\texttt{kid\_score = -11.48 + 51.26* mom\_hs + 0.97*mom\_iq - 0.48*mom\_hs*mom\_iq}
 
 Uno de los aspectos por resaltar en este ejemplo es que para incluir la relación entre dos predictores se usa un asterisco entre ellos al momento de definir la fórmula de la regresión. 
 
