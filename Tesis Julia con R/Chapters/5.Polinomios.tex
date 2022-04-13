@@ -182,7 +182,9 @@ Los resultados son $numCond_1 = 1.7679692504686805e15$ y $numCond_2 = 1.76796925
 
 Los resultados son $numCond_{R1} = numCond_{R2} = 1.767962e{15}$. En conclusión, en ambos lenguajes confirman que el número de condición de la matriz $X$ de \ref{eq_matricial} es bastante grande. Por lo tanto, por la definición \ref{def:condicionamiento} se puede decir que el problema está mal condicionado. Esto podría ocasionar muchas preguntas al lector, incluyendo si hubiera sido mejor utilizar otros datos o ajustar un polinomio de grado menor. 
 
-Se deben recordar dos temas. El primero es que los datos fueron generados en el Instituto Nacional de Estándares y Tecnología. Los datos y el problema propuestos fueron diseñados para presentar un alto nivel de dificultad de cálculo. El segundo punto es recordar que el objetivo de esta sección del trabajo es evaluar la precisión numérica de los lenguajes. Por lo tanto, no debe ser una sorpresa que el problema esté mal condicionado. Se espera encontrarse con dificultades de programación. De esta forma, cuando se encuentre un método de solución que obtenga los resultados similares a los presentados por NIST, se puede confiar en la precisión numérica. Las siguientes secciones presentan los métodos de solución en \textsf{Julia, R} y \textsf{Python}. 
+Se deben recordar dos cuestiones. La primera es que los datos fueron generados en el Instituto Nacional de Estándares y Tecnología. Los datos y el problema propuestos fueron diseñados para presentar un alto nivel de dificultad de cálculo. El segundo punto es recordar que el objetivo de esta sección del trabajo es evaluar la precisión numérica de los lenguajes. Por lo tanto, no debe ser una sorpresa que el problema esté mal condicionado. Se espera encontrarse con dificultades de programación. De esta forma, cuando se encuentre un método de solución que obtenga los resultados similares a los presentados por NIST, se puede confiar en la precisión numérica. 
+
+Sin embargo, la pregunta sobre la eficiencia de los métodos en polinomios de orden menor se consideró un excelente punto de comparación entre soluciones. Por lo tanto, se decidió extender el problema propuesto y ajustar los datos a polinomios de grado $k$, donde $k = 1, 2, \dots, 10$. En total, se calcularon 10 ajustes para cada uno de los 6 métodos presentados en las siguientes secciones. En \textsf{Julia} se desarrollaron 4 métodos de solución mientras que en \textsf{R} y \textsf{Python} solo fue necesario implementar uno en cada lenguaje. 
 
 \section{Solución usando Julia}
 
@@ -506,66 +508,51 @@ A pesar de que la función \texttt{fit} decepciona al no calcular los estimadore
 
 \section{Solución usando R}
 
-En \textsf{R} se utilizó la función \texttt{lm(formula, data)} explicada a mayor detalle en la sección \ref{explicacion_lm}. Este problema ya ha sido abordado por otros usuarios y resuelto por Brian Ripley. Ripley es un matemático británico que ha escrito muchos libros sobre programación y ha sido galardonado en múltiples ocasiones por sus aportaciones a la estadística. Sin duda, uno de sus mayores logros es la constante e importante aportación al desarrollo de \textsf{R}. Por lo tanto, el código que se utilizó para resolver este problema es el mismo que Ripley hizo público.
+Los problemas presentados por NIST tienen cierto grado de fama dentro de la comunidad científica. El problema propuesto en este capítulo no es la excepción. Ejemplo de ello es la solución que presentó Brian Ripley en el 2006. Ripley es un estadístico británico famoso por ser el autor de diversos libros de estadística y programación. Sus aportaciones son tales que, en diversas ocasiones, ha sido galardonado por universidades de sumo prestigio como es la Universidad de Cambridge. Tal vez su logro más conocido es haber sido parte del equipo creador de \textsf{R} llamado \textit{The R Core team}. 
 
-En \textsf{R} código es el siguiente
+Sin duda, Ripley es un gigante de la estadística en \textsf{R} por lo que en esta sección se utiliza la solución que él mismo propuso e hizo pública para el problema \ref{eq_matricial}. Dicha solución utiliza la función \texttt{lm(formula, data)} cuya explicación detallada se encuentra en la sección \ref{explicacion_lm}. Dado que el problema propuesto presenta un alto grado de sensibilidad, el argumento \texttt{tol} de la función \texttt{lm} debe ser modificado como se muestra en el siguiente código. 
+
+\valinline{Agregar que aqui se ponen todos los pols de los grados}
 
 \begin{lstlisting}[language=R]
 	# Para polinomio de grado = 1
-	start <- Sys.time()
-	lm_1 <- lm(y ~ x, data = data, x = TRUE)
-	end <- Sys.time()
+start <- Sys.time()
+lm_1 <- lm(y ~ x, data = data, x = TRUE)
+end <- Sys.time()
 	
-	`resultados_grado_ 1`$R <- lm_1$coefficients
-	row.names(`resultados_grado_ 1`) <- c("b0", "b1")
-	X_1 <- lm_1$x
+`resultados_grado_ 1`$R <- lm_1$coefficients
+row.names(`resultados_grado_ 1`) <- c("b0", "b1")
+X_1 <- lm_1$x
 	
-	time_vec <- c(end - start)
+time_vec <- c(end - start)
 	
 	# Para polinomios de grado > 1
-	
-	for (i in 2:10){
-		# Hacemos el modelo
-		model <- paste("y ~ x", paste("+ I(x^", 2:i, ")", 
-		sep='', collapse=''))
+for (i in 2:10){
+	# Se define el modelo
+	model <- paste("y ~ x", paste("+ I(x^", 2:i, ")", 
+	sep='', collapse=''))
 		
-		# Lo convertimos en formula
-		form <- formula(model)
+		# Se convierte en formula
+	form <- formula(model)
 		
-		# Ejecutamos el modelo
-		start <- Sys.time()
-		lm.plus <- lm(form, data = data, x = TRUE)
-		end <- Sys.time()
-		time <- end - start
-		time_vec <- c(time_vec, time)
-		
-		# Guardamos el df correspondiente a un auxiliar
-		resultados_aux <- get(paste("resultados_grado_", i))
-		# para unirle los coeficientes
-		resultados_aux$R <- lm.plus$coefficients
-		
-		nombres <- c("b0")
-		# Para el nombre de los renglones
-		for (k in 1:i){
-			nombres <- c(nombres, paste0("b", k))
-		}
-		row.names(resultados_aux) <- nombres
-		
-		#Finalmente, hago el df final
-		assign(paste("resultados_grado_", i), resultados_aux)
-		
-		assign(paste("X_", i), lm.plus$x)
+		# Ejecucion
+	start <- Sys.time()
+	lm.plus <- lm(form, data = data, x = TRUE)
+	end <- Sys.time()
+	time <- end - start
+		# Vector de tiempos
+	time_vec <- c(time_vec, time)
+}
 		
 	\end{lstlisting}
 
 \section{Solución usando Python}
 
-Por otro lado, en \textsf{Python} se uso la función \texttt{polyfit} de \texttt{NumPy} explicado con más profundidad en la sección \ref{seccion_numpy}. 
+Igual que en \textsf{R}, en \textsf{Python} se buscó solucionar el problema usando paquetes ya programados. Para esto, se utilizó la función \texttt{polyfit} del paquete \texttt{NumPy}. Como se explica en la sección \ref{seccion_numpy}, el objetivo de dicha función es ajustar un polinomio de orden especificado a un conjunto de datos. Para ejecutar \texttt{polyfit} en el ajuste de los diez polinomios se desarrolló una función en \textsf{Python}. Dicha función se nombró \texttt{polynomial\_fit} y sus objetivos son calcular las aproximaciones de los coeficientes $\beta$, guardar los resultados en un dataframe y medir el tiempo de ejecución. El código se muestra a continuación. 
 
-En \textsf{Python} se definió una función que calculara los coeficientes $\beta$, guardara los resultados en un dataframe y calculara el tiempo de ejecución. 
 
 \begin{lstlisting}[language=Python]
-	def polynomial_fit(grado_pol):
+def polynomial_fit(grado_pol):
 	start_time = time.time()
 	# Regresa el coeficiente de mayor potencia primero
 	python_fit = np.polyfit(x, y, deg = grado_pol)
@@ -595,36 +582,31 @@ En \textsf{Python} se definió una función que calculara los coeficientes $\bet
 	for grado in range(1, 11):
 	time_grado = polynomial_fit(grado)
 	time_grado = {'Grado': grado, 'Tiempos': time_grado}
-	tiempo_df = tiempo_df.append(time_grado, ignore_index = True)
+	tiempo_df = tiempo_df.append(time_grado, 
+		ignore_index = True)
 	
 \end{lstlisting}
 
+En la siguiente sección se presentan los resultados, con sus tiempos de ejecución, de todos los métodos en los tres lenguajes. Asimismo, se presenta la experiencia de usuario en la resolución de este problema. 
+
 \section{Resultados y Conclusiones} \label{sec_evalMetodos}
-Es natural preguntarse si tal vez lo que está mal es la implementación de los algoritmos y, debido a esto, no solucionan el problema de manera correcta. Por tanto, para probar que los métodos estén programados de la manera correcta fueron sometidos a una serie de pruebas.
 
-La primera prueba consistió en que, usando los datos \texttt{filip}, cada método ajustaba un polinomio de grado $k$ de $k = 1, 2, \dots, 10$. Al final, para cada polinomio de grado $k$ se tenían cuatro resultados de ajuste (uno por cada método). 
+El objetivo del problema propuesto es medir la precisión numérica por lo tanto, en esta sección se presentan los resultados de los 6 métodos sin redondear los decimales. NIST no presenta la estimación de coeficientes para los polinomios de grado $1, 2, \dots, 9$. Sin embargo, se considera que el ajuste para polinomios de orden menor requieren menos recursos computacionales. Por lo tanto, si las estimaciones de tres o más métodos coinciden, dichos cálculos se pueden considerar correctos. 
 
-La segunda prueba consistió en comparar los resultados con \textsf{R} y \textsf{Python}. En ambos lenguajes se usaron los mismos datos \texttt{filip} y se calcularon todos los polinomios  de grado $k$ de $k = 1, 2, \dots, 10$.
+Se decidió omitir las tablas con los resultados de todos los ajustes ya que se consideró innecesario. No obstante, las tablas presentadas contienen los resultados de mayor interés para el objetivo de este problema. En caso de requerir el resultado de un ajuste que no se presenta en esta sección, se puede consultar la carpeta \texttt{NIST} del repositorio de GitHub de este trabajo: \url{https://github.com/valperez/Tesis_Julia/tree/main/Tesis%20Julia%20con%20R/Code/NIST}. 
 
-
-
-Finalmente, la tercera prueba fue medir el tiempo que tomaba a ambos lenguajes ejecutar sus respectivas funciones con los parámetros especificados. 
-
-
-
-No se mostraran las tablas con los resultados de todos los ajustes ya que es innecesario. Las tablas que sí se muestran son las que se considera tienen los resultados más relevantes. 
-
-Todos los métodos obtienen los resultados correctos en los ajustes de los polinomios de grado uno al cinco. La tabla \ref{NIST_res_gr5} es evidencia de ello. 
+Ahora bien, se debe mencionar que todos los métodos obtienen los mismos resultados en los ajustes de los polinomios de orden 1 al 5. La tabla \ref{NIST_res_gr5} es evidencia de ello. 
 
 \begin{figure}[h]
-\begin{center}
-\includegraphics[scale=0.5]{Imagenes/NIST_grado5.PNG}
-\caption{Resultados del polinomio grado 5}
-\label{NIST_res_gr5}
-\end{center}
+	\begin{center}
+		\includegraphics[scale=0.5]{Imagenes/NIST_grado5.PNG}
+		\caption{Resultados del polinomio grado 5}
+		\label{NIST_res_gr5}
+	\end{center}
 \end{figure}
 
-Los problemas comienzan cuando se calcula el polinomio de grado 6. El primer método utilizado, \texttt{GLM}, comienza a fallar como se puede observar en la tabla \ref{NIST_res_gr6}. Esto es de especial interés ya que, en teoría, este paquete está hecho para calcular el ajuste a modelos lineales. Este método no se recupera con los polinomios de mayor grado y termina fallando rotundamente. 
+A partir de este punto, el método \texttt{GLM} comienza a presentar fallas. Los resultados del ajuste del polinomio de grado 6 difieren de los calculados con el resto de los métodos como se puede observar en la tabla \ref{NIST_res_gr6}. Esto es de especial interés ya que, en teoría, este paquete fue creado para ajustar a modelos lineales. Este método no se recupera con los polinomios de mayor grado y termina fallando rotundamente.
+
 
 \begin{figure}[h]
 \begin{center}
@@ -634,7 +616,9 @@ Los problemas comienzan cuando se calcula el polinomio de grado 6. El primer mé
 \end{center}
 \end{figure}
 
-En cambio, el resto de los métodos arrojan resultados correctos hasta el polinomio de grado 9. Cuando se busca calcular el polinomio de grado 10, solamente las columnas \texttt{Polynomials}, \texttt{R} y \texttt{Python} muestran los resultados correctos. 
+En cambio, el resto de los métodos obtienen resultados similares en los ajustes hasta el polinomio de grado 9. No obstante, cuando se busca calcular el polinomio de grado 10, solamente las columnas \texttt{Polynomials}, \texttt{R} y \texttt{Python} muestran los resultados correctos. 
+
+\valinline{Agregar columna de NISt y discutir los decimales diferentes en Polynomials}
 
 \begin{figure}[h]
 \begin{center}
@@ -644,7 +628,7 @@ En cambio, el resto de los métodos arrojan resultados correctos hasta el polino
 \end{center}
 \end{figure}
 
-Finalmente, se puede ver la tabla \ref{NIST_tiempos} que corresponde a los tiempos que le tomo a cada método hacer los cálculos. Cada columna corresponde al método utilizado mientras que los reglones representan el grado del polinomio. 
+En cuanto a los tiempos de ejecución, la tabla \ref{NIST_tiempos} presenta una comparación entre los métodos desarrollados. Las columnas correspondes al método utilizado mientras que los reglones representan el grado del polinomio. 
 
 
 \begin{figure}[h]
@@ -655,29 +639,13 @@ Finalmente, se puede ver la tabla \ref{NIST_tiempos} que corresponde a los tiemp
 \end{center}
 \end{figure}
 
-De los métodos programados en \textsf{Julia}, el más rápido es el hecho con el paquete \texttt{Polynomials}. \texttt{MoorePenrose} y \texttt{QRvEcon} no tardan mucho más, pero \texttt{GLM} es el que más tiempo toma. Aunque un tercio de segundo no sea mucho tiempo es mucho más del que le toma a los otros métodos. Como era de esperarse, los procedimientos hechos en \texttt{R} y \texttt{Python} toman muy poco tiempo. 
+De los métodos programados en \textsf{Julia}, el más rápido es el correspondiente al paquete \texttt{Polynomials}. \texttt{MoorePenrose} y \texttt{QRvEcon} no tardan mucho más, pero sí es notorio el salto que se da en el método \texttt{GLM}. A pesar de que un tercio de segundo no represente mucho tiempo, sí es mucho más del que le toma a los otros métodos. En cambio, los procedimientos hechos en \texttt{R} y \texttt{Python} toman muy poco tiempo. 
 
-Estos resultados dan pie a preguntarse la razón por la que la mitad de los método falla justo al hacer el cálculo del polinomio de grado 10, más no de los anteriores. En la siguiente sección se indaga más en este tema. 
+En cuanto a la experiencia de usuario, este ejercicio representó un reto algebraico mayor al resto. La tarea de encontrar cuatro formas diferentes de solución a un problema fue un desafío. Como usuaria de los tres lenguajes presentados, quedo insatisfecha con los resultados de \textsf{Julia}, especialmente con los paquetes \texttt{GLM} y \texttt{Polynomials}. Los paquetes deben ser una herramienta que presenten un algoritmo optimizado de la teoría algebraica. 
 
+El fracaso tan temprano del paquete \texttt{GLM} fue una sorpresa. Por otro lado, a pesar de que el paquete \texttt{Polynomials} obtiene una respuesta con alta precisión numérica, se siente la falta del cálculo de los estimadores. Esto no es una sorpresa ya que el enfoque del paquete es toda la teoría relacionada con polinomios, no con ajustes de modelos lineales. 
 
-\section{Opinión de la autora}
+\textsf{R} y \textsf{Python} no decepcionan ni sorprenden. Ambos son lenguajes que llevan más tiempo siendo desarrollados por lo que la verdadera sorpresa sería que no funcionaran. Aun así, en el caso de \textsf{R} es necesario el conocimiento del argumento que representa la tolerancia del ajuste. En cambio, en \textsf{Python} se obtienen los resultados de manera sencilla y con pocas líneas de código. Por lo tanto, si tuviera que escoger, \textsf{Python} sería el lenguaje que elegiría para hacer el ajuste de un modelo lineal. 
 
-Este ejercicio fue el primero que hice para la tesis y fue el más demandante 
-mentalmente. El reto para mí, como autora, fue buscar cuatro formas diferentes de resolver un problema que, por momentos, pareció imposible. 
-
-Como usuaria de \textsf{Julia} quedo muy insatisfecha con los resultados, especialmente con los paquetes \texttt{GLM} y \texttt{Polynomials}. Probablemente hay maneras numéricamente mejores para programar la descomposición QR de una matriz y el cálculo de la pseudo inversa de Moore Penrose.
-
-Sin embargo, los paquetes deben ser una herramienta para evitar hacer los cálculos que vienen directo del álgebra. El paquete \texttt{GLM} me decepcionó desde un inicio. Debió haber sido el primero en funcionar y por el contrario, fue el primero que falló. 
-
-Por otro lado, aunque el paquete \texttt{Polynomials} da la respuesta correcta en un tiempo muy corto, solamente da los resultados de los coeficientes. Este paquete se enfoca en todo lo relacionado con polinomios por lo que uno no debería esperar que haga un ajuste muy completo. Sin embargo, es el único que logró el resultado correcto. 
-
-\textsf{R} y \textsf{Python} no decepcionan ni sorprenden. Ambos son lenguajes que llevan mucho más tiempo siendo desarrollados por lo que la verdadera sorpresa sería que no funcionaran. Aun así, en el caso de \textsf{R} hay que saber tratar las variables de manera especial mientras que \textsf{Python} da los resultados muy fácil y con pocas líneas de código. 
-
-En conclusión, este ejercicio fue retador para mí y para \textsf{Julia}. En el futuro, si tuviera la opción de decidir en que lenguaje hacer el ajuste de un modelo lineal sin dudas elegiría a \textsf{Python}. 
-
-
-
-
-
-
+En el siguiente capítulo se retoma el enfoque en análisis de datos para desarrollar el ajuste de un modelo lineal usando una extensa cantidad de datos. 
 
