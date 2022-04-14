@@ -1,0 +1,328 @@
+\chapter{Modelos de Regresión Lineal}
+
+\say{Una actividad importante en estadística es la creación de modelos estadísticos que, se espera, reflejen aspectos importantes del objeto de estudio con algún grado de realismo. En particular, el objetivo del análisis de regresión es construir modelos matemáticos que describan o expliquen relaciones que pueden existir entre variables}, \cite{seber2003linear}. 
+
+El uso de la regresión como método para mostrar la relación entre dos o más variables se remonta al siglo XIX. En 1875 fue Sir Francis Galton quien, usando semillas de guisantes, hizo el primer análisis de regresión. Galton distribuyó paquetes de dichas semillas a sus amigos para que ellos las sembraran y se las regresaran. Los paquetes tenían casi el mismo peso, siendo \textit{casi} la palabra clave, ya que los paquetes tenían una variación pequeña de peso. Así, Galton pudo establecer una relación entre los pesos de las semillas \textit{madre} contra las semillas \textit{hija}, \cite{stanton2001galton}. 
+
+Ciertamente, el análisis de regresión se ha desarrollado de acuerdo a las demandas del tiempo. Hoy en día es posible diseñar una metodología que recabe información sobre los habitantes de un país sin la necesidad de obtener entrevistar a todos y cada uno de ellos. Se toma una muestra significativa para obtener conclusiones sobre las características socioeconómicas y culturales de la población. Sin embargo, cuando el país estudiado tiene cerca de 130 millones de habitantes (como lo es México), la muestra contiene información de 15 millones de personas. La demanda actual necesita el constante desarrollo de programas con la capacidad de leer, analizar y guardar extensas cantidades de información. 
+
+Los modelos de regresión lineal múltiple son de los más usados en la estadística como una primera aproximación a análisis más complejos. El propósito de este capítulo es mostrar el uso de la regresión lineal múltiple  en \textsf{Julia, R} y \textsf{Python} con un gran número de datos obtenidos del Censo de Población y Vivienda 2020.  
+
+
+\section{El modelo}
+En capítulos anteriores se habló de la regresión lineal múltiple cuyo modelo se vuelve a considerar en este capítulo. El modelo se define como 
+\begin{equation} \label{rlm_eq}
+    \begin{aligned}
+    y_i &= \beta_0 + \beta_i X_{i1} + \dots + \beta_k X_{ik} + \epsilon_i \text{, para } \\
+    i &= 1, \dots, n \\ 
+    k &= 1, \dots, p 
+	\text{ \cite[p.~146]{regression_other_stories}}
+    \end{aligned}
+\end{equation}
+
+\noindent donde $\epsilon_i$ representa el error del modelo que en el caso más elemental se supone sigue una distribución normal con media cero y desviación estándar $\sigma$. En este caso, $y_i$ se refiere a la respuesta al $i$-ésimo de los regresores; $x_{ik}$ es el $k$-ésimo regresor al $i$-ésimo nivel; $\beta_0$ y $\beta_k$ son los coeficientes del modelo.
+
+Es útil entender el modelo con un ejemplo. Imagine que trabaja en un laboratorio donde se estudia el crecimiento de girasoles. Se tienen 50 plantas que se exponen a diferentes cantidades de agua, luz solar y tierra con abono. Se busca relacionar el crecimiento de los girasoles con cambios en los factores ambientales. Por lo tanto, se tiene una tabla donde en la primera columna se documenta el crecimiento de cada planta medido en centímetros. La siguientes tres columnas registran las cantidades de agua, luz solar y tierra a la que se expone cada girasol. Por tanto, cada renglón representa uno de los 50 girasoles del experimento. 
+
+La variable respuesta $y_i$ se refiere al crecimiento del girasol $i$-ésimo. Como hay 50 plantas, $n = 50$. Por otro lado, los regresores son el agua, la luz solar y la tierra con abono. Sea el agua el primer regresor, $x_{9,1}$ representa el nivel de agua del girasol 9. Lo mismo sucede con la luz y tierra. En este caso, $k = 3$ ya que hay tres regresores. Finalmente, $\beta_k$ es el efecto que tienen los regresores en el crecimiento de los girasoles. 
+
+De manera matricial, \cite[p.~146]{regression_other_stories} define la expresión \ref{rlm_eq} como 
+
+\begin{equation*}
+    \begin{aligned}
+    y_i = X_i \beta + \epsilon_i \text{, para } i = 1, \dots, n
+    \text{ \cite[p.~146]{regression_other_stories}}
+    \end{aligned}
+\end{equation*}
+
+\noindent donde $X_i$ es el $i$-ésimo renglón de la matriz $X$ de dimensión $n \times k$. Adicionalmente, se pide que la matriz $X$ sea de rango completo cuyas razones no se discuten en este trabajo. 
+
+\section{Los datos}
+Siguiendo con la idea de \cite{seber2003linear} como ejemplo se decidió relacionar el ingreso del mexicano con factores que le influyen. La información se obtuvo del  Censo de Población y Vivienda (Censo) 2020 se publicó por el Instituto Nacional de Estadística y Geografía (INEGI) que se encuentra en la página \url{https://www.inegi.org.mx/programas/ccpv/2020/default.html}. En México, el Censo se captura cada 10 años y se busca tener una muestra de todo el territorio nacional. 
+
+De acuerdo al INEGI, el Censo es \say{es producir información sobre el volumen, la estructura y la distribución espacial de la población, así como de sus principales características demográficas, socioeconómicas y culturales; además de obtener la cuenta de las viviendas y sus características tales como los materiales de construcción, servicios y equipamiento, entre otros}, \ref{censo_ref}. \val{Arreglar esta referencia}
+
+Recabar la información anterior es una labor demandante que se divide en dos tipos de cuestionarios llamados \say{básico} y \say{ampliado}. En el cuestionario ampliado las preguntas incluyen especificaciones sobre los residentes del territorio nacional, las viviendas particulares y los migrantes internacionales. Mientras que el básico busca información general centrada en obtención de servicios públicos en el hogar y escolaridad de sus residentes. 
+
+En este trabajo los resultados que se utilizan provienen del cuestionario ampliado cuyas 103 preguntas resultan en cerca de 200 variables de estudio. Más aún, el Censo fue aplicado a 4 millones de viviendas a lo largo de la República Mexicana que resultó en la obtención de información de más de 15 millones de personas.
+
+En este ejercicio se eligió un tema de interés personal: los ingresos. Más específicamente, se usa la regresión lineal múltiple para observar el efecto de diferentes factores al ingreso de cada persona. Usualmente, los modelos se basan en una mezcla de teoría, lógica, experiencia y referencias. En este caso, el modelo propuesto es 
+
+\valinline{Se ve horrible, ayuda}
+\begin{equation} \label{modelo_final}
+    \begin{aligned}
+    	y =& \beta_0 + \beta_1*horas_{trabajadas} + \beta_2*sexo + \\
+    	&\beta_3*edad + \beta_4*escolaridad + \beta_5*entidad_{trabajo} + \\ &\beta_6*posicion_{laboral} + \beta_7*alfabetismo + \beta_8*aguinaldo + \\ &\beta_9*vacaciones + \beta_{10}*servicio_{medico}
+    \end{aligned}
+\end{equation}
+
+
+\section{Planteamiento del problema}
+En Censo mexicano cumple con el propósito de ser un estudio extensivo sobre la vida de sus residentes. Antes de hacer cualquier tipo de análisis se debe filtrar la información. Para esto, es necesario entender la estructura de las encuestas y la relación entre ellas. Por eso, el INEGI también proporciona el diccionario ampliado que se encuentra en la página \url{https://www.inegi.org.mx/programas/ccpv/2020/default.html#Microdatos} dentro del apartado \textsf{Documentación de la base de datos}. La información que aporta el diccionario es clave ya que expone como los códigos y las nomenclaturas que permiten entender como se paso de tener respuestas en hojas de papel a tenerlas en una base de datos.
+
+Los resultados del Censo se presentan en tres partes: Viviendas, Personas y Migrantes. En esta ocasión, se utilizó la base de datos correspondientes a Personas ya que contiene la información necesaria para hacer el ajuste. La cantidad de datos con la que se está trabajando es extensa, por lo que el primer paso es seleccionar las columnas necesarias y desechar el resto. Después, se agregaron los siguientes filtros 
+
+\begin{enumerate}
+    \item Se seleccionaron solamente las personas que tienen un trabajo remunerado. Es decir, no se consideró a las personas que
+    se ocupan de las labores del hogar, son jubiladas o pensionadas, son estudiantes o tienen alguna incapacidad que les impida tener un sueldo. 
+    
+    \item Se descartó a las personas que viven y trabajan fuera de la República Mexicana. 
+    
+    \item Se obtuvieron a las personas que especificaron horas trabajadas e ingreso ganado.
+    
+    \item Cada regresor viene de una pregunta hecha y tiene una variable asignada. Si el entrevistado decide no responder a alguna pregunta se marca la respuesta como \texttt{No especificado}. En este caso, se eliminaron a las personas que no respondieron alguna de las preguntas que corresponden a los regresores. 
+\end{enumerate}
+
+Con los filtros anteriores la cantidad de datos con los que se trabaja pasa de ser cerca de 15 millones a poco más de 3.5 millones. Más aún, todo el proceso dura alrededor de 20 minutos para ejecutarse por lo que se recomienda guardar la base de datos filtrada para evitar hacer estos comandos constantemente. La selección de información se ejecutó en \textsf{Julia} y se guardó para utilizarla posteriormente en \textsf{R} y \textsf{Python}. El código de lectura de la base de datos y los comandos para los filtros es el siguiente. Se debe notar que a pesar de ser un código largo, está debidamente comentado. 
+
+\begin{minted}{julia}
+	julia> using CSV, DataFrames, StatsBase, 
+	GLM, Random, CategoricalArrays
+
+	# Equivalente a set.seed de R
+	julia> Random.seed!(99)
+
+	# Leer la base de datos 
+	# (toma alrededor de 4 minutos en cargar)
+	julia> personas = CSV.read("Personas00.csv", DataFrame)
+
+	# Lista con columnas necesarias para el ajuste
+	julia> col_sel = ["ID_PERSONA","ENT","SEXO", "EDAD", 
+	"NIVACAD", "ALFABET", "INGTRMEN","HORTRA", "CONACT", 
+	"SITTRA", "ENT_PAIS_TRAB", "AGUINALDO", "VACACIONES", 
+	"SERVICIO_MEDICO", "UTILIDADES", "INCAP_SUELDO", 
+	"SAR_AFORE", "CREDITO_VIVIENDA"]
+         
+	# Se seleccionan de la base de datos 
+	julia> personas_filt = personas[:, col_sel]    
+
+	# # # FILTRO 1
+	julia> cond_act = [10, 13, 14, 15, 16, 17, 18, 19, 20]
+	julia> personas_filt = subset(personas_filt, 
+		:CONACT => ByRow(in(cond_act)), 
+		skipmissing = true)
+
+	# # # FILTRO 2
+	julia> personas_filt = subset(personas_filt, 
+		:ENT_PAIS_TRAB => ByRow(<(33)), 
+		skipmissing = true)
+
+	julia> personas_filt = subset(personas_filt, 
+		:ENT => ByRow(<(33)), skipmissing = true)
+
+	# # # FILTRO 3
+	julia> personas_filt = subset(personas_filt, 
+		:HORTRA => ByRow(!=(999)), skipmissing = true)
+
+	julia> personas_filt = subset(personas_filt, 
+		:INGTRMEN => ByRow(!=(999999)), 
+		skipmissing = true)
+
+	# # # FILTRO 4
+	julia> function diferente_a(dataframe, columna, condicion)
+    	dataframe = subset(dataframe, 
+    	columna => ByRow(!=(condicion)), skipmissing = true)
+    
+    	return dataframe
+	end
+
+	julia> categorias_9 = ["SEXO", "AGUINALDO", "VACACIONES", 
+	"SERVICIO_MEDICO", "UTILIDADES",
+	"INCAP_SUELDO", "SAR_AFORE",
+	"CREDITO_VIVIENDA", "ALFABET", 
+	"SITTRA"]
+
+	julia> categorias_99 = ["NIVACAD"]
+
+	julia> for i = 1:length(categorias_9)
+    	personas_filt = diferente_a(personas_filt, 
+    	categorias_9[i], 9)
+	end
+
+	julia> for i = 1:length(categorias_99)
+    	personas_filt = diferente_a(personas_filt, 
+    	categorias_99[i], 99)
+	end
+
+	# Finalmente, guardo el nuevo dataframe
+	julia> CSV.write("personas_filtradas.csv", personas_filt)
+\end{minted}
+
+
+\section{Regresiones} \label{reg_categorias}
+\valinline{No estoy segura de como ponerle de nombre a esta seccion}
+
+Lo primero que se debe verificar es que la lectura de datos haya clasificado las variables de manera correcta.  En este caso, la mayoría de las variables del ajuste son categóricas, pero \textsf{Julia} las lee como \textsf{Int64}. Por lo tanto, se deben transformar esas columnas del dataframe como se muestra a continuación. 
+
+\begin{minted}{julia}
+	julia> using DataFrames
+	julia> data = CSV.read("personas_filtradas.csv", DataFrame)
+
+	# Vector con todas las categorias
+	julia> categorias = ["SEXO", "AGUINALDO", "VACACIONES", 
+	"SERVICIO_MEDICO", "UTILIDADES", "ALFABET",
+	"NIVACAD", "ENT_PAIS_TRAB", "ENT", 
+	"SITTRA"]
+
+	julia> transform!(data, 
+		names(data, vector_categorias) .=> categorical, 
+		renamecols=false)
+\end{minted}
+
+Si se omitiera el paso anterior la regresión no sería correcta ya que se considerarían a las regresores de tipo categórico como variables continuas. Por tanto, no proporcionarían el efecto de cada categoría en la variable de respuesta.
+
+El objetivo de esta tesis es mostrar las capacidades de los lenguajes de programación por lo que se tomó la ecuación \ref{modelo_final} y se quitaron algunas variables. Se puede pensar como que se tomaron diferentes subconjuntos de variables y, con ellas, se hizo el análisis de regresión para notar si había cambios en la precisión del ajuste. La variable de respuesta se mantuvo igual en todos los ahora denominados \textit{sub-ajustes}.
+
+Para el primer \textit{sub-ajuste} se tomaron las primeras 5 variables de la ecuación \ref{modelo_final} y se le nombró \textsf{fit5} (ya que tiene 5 regresores). Es decir, la ecuación \textsf{fit5} es 
+
+\begin{equation*}
+    \begin{aligned}
+    ingresos \sim horas_{trabajadas} + sexo + edad + escolaridad + entidad_{residencia}
+    \end{aligned}
+\end{equation*}
+
+
+El segundo \textit{sub-ajuste} llamado \textsf{fit6} tiene los mismos 5 regresores que \textsf{fit5} más uno extra, la posición laboral. Por tanto, la ecuación \textsf{fit6} queda de la siguiente manera
+
+\begin{equation*}
+    \begin{aligned}
+    ingresos \sim horas_{trabajadas} + sexo + edad + escolaridad + entidad_{residencia} + posicion_{laboral}
+    \end{aligned}
+\end{equation*}
+
+Las ecuaciones \textsf{fit5} y \textsf{fit6} siguen el mismo orden que \ref{modelo_final}. Esto no es una coincidencia. El orden de los regresores en la ecuación \ref{modelo_final} está pensado precisamente para que cada variable sumada se agregue al conjunto de variables anterior y cree una nueva ecuación \textsf{fit}.
+
+\subsection{Implementación del modelo}
+\valinline{Tampoco sé como nombrar esta seccion}
+
+Si Galton pudiera ver los alcances que tiene su experimento de semillas probablemente se desmayaría de la emoción. Él mismo estaría de acuerdo con que no es lo mismo hacer un ajuste con 5 observaciones a hacer uno con 5 millones de ellas. Tal vez el código es el mismo, pero en el trabajo de máquina se observan cambios en tiempo de ejecución y precisión numérica. En esta sección se explica como se midieron los cambios en ambos factores. 
+
+Cada una de las ecuaciones \textsf{fit} ya mencionadas se ejecutaron con muestras de 500, 5 mil, 50 mil, 500 mil y 2.5 millones de observaciones. Es decir, se usaron cada una de las ecuaciones \textsf{fit} para el ajuste de modelos con las cinco cantidades antes mencionadas. La elección de observaciones se hizo al azar usando el comando \texttt{sample} en \textsf{Julia}. Una vez seleccionadas, se guardaba el dataframe generado para usar exactamente los mismos datos en \textsf{R}, \textsf{Python} y todos los ajustes. Guardar las muestras generadas tiene el propósito de poder utilizar la misma información en los ajustes y obtener así, un punto de comparación en la precisión del cálculo de los coeficientes. 
+
+La ejecución de los anterior es repetitivo por lo que se buscó fuera hecho de la manera más rápida y eficiente posible. Se desarrolló una función para cada \textsf{fit} cuyos argumentos fueran la cantidad de observaciones que se está utilizaron y el nombre con el que se guarda el archivo. El nombre de las funciones coinciden con la cantidad de regresores que se están utilizando. 
+
+Si ya se tiene conocimiento de programación, se puede notar que crear una función para cada modelo resulta repetitivo. Se pudo haber desarrollado una sola función que también tomara como argumento la formula a utilizarse en el ajuste. Sin embargo, se decidió no hacer de esa forma ya que se consideró de suma importancia tener la fórmula escrita en cada función. 
+
+Debido a la similitud entre funciones y su ejecución se muestran solamente lo correspondiente a \textsf{fit5} y \textsf{fit10} a manera de ejemplo. El código para la función \textsf{fit5} es el siguiente.
+
+\begin{minted}{julia}
+	### FIT BASE ###
+	julia> function fit5(cantidad_sample, nombre_facil)
+    	nombre_fit = "fit5"
+    
+    	sample_rows = sample(1:nrow(data), 
+    		cantidad_sample, replace=false)
+
+    	df_sample = data[sample_rows, :]
+    
+    	nombre_completo = nombre_facil*"_"*nombre_fit*".csv"
+    	# Guardamos el documentos para usarlo en R y Python
+    	CSV.write(nombre_completo, df_sample)
+
+    	# Se hace el ajuste
+    	sample_fit = lm(@formula(INGTRMEN ~ HORTRA + SEXO + 
+    		EDAD + NIVACAD + ENT_PAIS_TRAB), df_sample)
+
+    	aux = "res_"
+    	nombre_completo = aux*nombre_completo
+    	CSV.write(nombre_completo, coeftable(sample_fit))
+	end 
+
+	# Se aplica la función para las observaciones
+	julia> fit5(500, "500")
+	julia> fit5(5000, "5mil")
+	julia> fit5(50000, "50mil")
+	julia> fit5(500000, "500mil")
+	julia> fit5(2500000, "2500mil")
+
+\end{minted}
+
+Por otro lado, el código para \textsf{fit10} es el siguiente. 
+
+\begin{minted}{julia}
+	### FIT 10###
+	julia> function fit10(cantidad_sample, nombre_facil)
+    	nombre_fit = "fit10"
+    
+    	sample_rows = sample(1:nrow(data), cantidad_sample, 
+    		replace=false)
+
+    	df_sample = data[sample_rows, :]
+    
+    	nombre_completo = nombre_facil*"_"*nombre_fit*".csv"
+    	# Guardamos el documentos para usarlo en R
+    	CSV.write(nombre_completo, df_sample)
+
+    	# Hacemos el fit
+    	sample_fit = lm(@formula(INGTRMEN ~ HORTRA + SEXO + 
+    		EDAD + NIVACAD + ENT_PAIS_TRAB + SITTRA + 
+    		ALFABET + AGUINALDO + VACACIONES +
+    		SERVICIO_MEDICO), df_sample)
+
+    	aux = "res_"
+    	nombre_completo = aux*nombre_completo
+    	CSV.write(nombre_completo, coeftable(sample_fit))
+	end 
+
+	# Fit 10: Fit 5 + SITTRA + ALFABET + AGUINALDO + 
+	# VACACIONES + SERVICIO_MEDICO
+	julia> fit10(500, "500")
+	julia> fit10(5000, "5mil")
+	julia> fit10(50000, "50mil")
+	julia> fit10(500000, "500mil")
+	julia> fit10(2500000, "2500mil")
+
+\end{minted}
+
+\section{Resultados y Conclusiones}
+
+Independientemente del modelo \textsf{fit} que se utilice, la mayoría de las variables son categóricas por lo cual tienen diferentes niveles. Por ejemplo, la variable \textsf{NIVACAD} correspondiente al último nivel educativo aprobado por una persona tiene 14 niveles, desde \textsf{Preescolar} hasta \textsf{Doctorado}. De la misma manera, la variable \textsf{ENT\_PAIS\_TRAB}  corresponde a la entidad donde la persona trabajó más recientemente tiene 32 posibles respuestas (niveles) que corresponden a cada uno de los estados de la república. Si se cuentan los niveles de cada factor, al final en el modelo con más variables \textsf{fit10} se tiene un total de 54 regresores. La tabla \ref{res_fit10_2500mil} es una muestra resumida de los resultados obtenidos usando 2.5 millones de observaciones en el modelo \textsf{fit10}.  
+
+
+\valinline{Alguna idea para arreglar esta tabla?}
+\begin{center}
+	\begin{tabular}{|c|c|c|c|c|c|c|} 
+		\hline
+		Nombre & Coeficiente & Error estándar & t & Pr($>|t|$) & 95\% inferior & 95\% superior \\ 
+		\hline 
+		Ordenada al origen & 4133.26 & 125.42 & 32.95 & $4.16e^{-238}$ & 3887.43 & 4379.09\\ 
+		
+		SEXO:3 & -1407.49 & 20.27 & -69.42 & 0 & -1447.23 & -1367.76 \\ 
+		
+		EDAD & 33.30 & 0.72 & 46.12 & 0 & 31.88 & 34.71 \\ 
+		
+		NIVACAD:1 & 208.16 & 209.00 & 0.99 & 0.32 & -201.48 & 617.80 \\
+		
+		NIVACAD:2 & 287.16 & 68.59 & 4.18 & $2.38e^{-05}$ & 152.72 & 421.60 \\
+		
+		NIVACAD:3 & 629.53 & 71.20 & 8.84 & $9.42e^{-19}$ & 489.98 & 769.08 \\
+		
+		\vdots \\
+		
+		SITTRA:3 & -692.44 & 32.10 & -21.57 & $3.30e^{-103}$ & -755.35 & -629.53 \\
+		
+		ALFABET:3 & -544.43 & 66.47 & -8.19 & $2.59e^{-16}$ & -674.70 & -414.16 \\
+		
+		AGUINALDO:2 & -459.48 & 34.30 & -13.39 & $6.51e^{-41}$ & -526.71 & -392.25 \\
+		
+		VACACIONES:4 & -843.60 & 38.65 & -21.83 & $1.31e^{-105}$ & -919.35 & 7678.85 \\
+		
+		SERVICIO\_MEDICO: 6 & -1110.25 & 34.21 & -32.46 & $4.91e^{-231}$ & -1177.30 & -1043.21 \\
+	
+		\hline
+	\end{tabular} 
+	\captionof{table}{Resultados para el modelo fit10 con 2.5 millones de observaciones en Julia} \label{res_fit10_2500mil}
+\end{center}
+
+\valinline{Pongo una tabla donde se comparen los coeficientes de Julia, R y Python para algún ajuste? o solo con que diga como se programo en R y Python es suficiente?}
+
+Como se observa en la tabla \ref{res_fit10_2500mil}, \textsf{Julia} no solo da el cálculo de los coeficientes, también da indicadores como lo son el error estándar y el intervalo de confianza. 
+
+En \textsf{R} se utilizó la función \texttt{lm} para hacer los ajustes mientras que en \textsf{Python} la función \texttt{LinearRegression()} del paquete \texttt{sklearn} explicado a detalle en la sección \ref{sec_sklearn}. En los tres lenguajes los ajustes fueron rápidos \val{agrego tabla de tiempos?} y los resultados mostraron la misma precisión. 
+
+En este ejercicio el paquete \texttt{GLM} de \textsf{Julia} cumple su propósito de ajustar el modelo de manera correcta. Más aún, el paquete también proporciona los estimadores necesarios para un análisis completo de regresión. La función \texttt{lm} de \textsf{R} también presenta la tabla de estimadores mientras que en \textsf{Python} si bien no se presenta como tabla, existen los comandos para obtener los estimadores. 
+
+En resumen, los tres lenguajes \textsf{Julia, R} y \textsf{Python} proporcionan herramientas que permiten hacer leer un conjunto de datos extenso y ajustar un modelos lineal. Más aún, los lenguajes ofrecen herramientas para calcular los estimadores clave para hacer un análisis de regresión. Encontrar que \textsf{Julia} sí puede utilizarse para hacer un análisis de regresión fue una grata sorpresa, ya que el ejercicio del capítulo anterior disminuyó mi confianza en la capacidad de análisis de datos del lenguaje. Sin embargo, investigando sobre las capacidades de \textsf{Julia} se encontró en repetidas ocasiones que es un lenguaje con un propósito muy claro: ser  el lenguaje más eficiente con la mayor cantidad de aplicaciones posible. Por lo tanto, en el siguiente capítulo se cambia el enfoque de análisis de regresión para presentar un problema de discriminación de modelos en diseños de experimentos. 
+
+
+
