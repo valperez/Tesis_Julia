@@ -48,7 +48,7 @@ En este trabajo los resultados que se utilizan provienen del cuestionario amplia
 
 En este ejercicio se eligió un tema de interés personal: los ingresos. Más específicamente, se usa la regresión lineal múltiple para observar el efecto de diferentes factores al ingreso de cada persona. Usualmente, los modelos se basan en una mezcla de teoría, lógica, experiencia y referencias. En este caso, el modelo propuesto es 
 
-\valinline{Se ve horrible, ayuda}
+
 \begin{equation} \label{modelo_final}
     \begin{aligned}
     	y =& \beta_0 + \beta_1*horas_{trabajadas} + \beta_2*sexo + \\
@@ -58,9 +58,9 @@ En este ejercicio se eligió un tema de interés personal: los ingresos. Más es
 
 
 \section{Planteamiento del problema}
-En Censo mexicano cumple con el propósito de ser un estudio extensivo sobre la vida de sus residentes. Antes de hacer cualquier tipo de análisis se debe filtrar la información. Para esto, es necesario entender la estructura de las encuestas y la relación entre ellas. Por eso, el INEGI también proporciona el diccionario ampliado que se encuentra en la página \url{https://www.inegi.org.mx/programas/ccpv/2020/default.html#Microdatos} dentro del apartado \textsf{Documentación de la base de datos}. La información que aporta el diccionario es clave ya que expone como los códigos y las nomenclaturas que permiten entender como se paso de tener respuestas en hojas de papel a tenerlas en una base de datos.
+En Censo mexicano es un estudio extensivo sobre la vida de sus habitantes. El área de interés determina el filtro de información y la selección de columnas. Para esto, es necesario entender la estructura de las encuestas y la relación entre ellas. Para ello, el INEGI también proporciona el diccionario ampliado que se encuentra en la página \url{https://www.inegi.org.mx/programas/ccpv/2020/default.html#Microdatos} dentro del apartado \textsf{Documentación de la base de datos}. La información que aporta el diccionario es clave ya que expone como los códigos y las nomenclaturas que permiten entender como se paso de tener respuestas en hojas de papel a tenerlas en una base de datos.
 
-Los resultados del Censo se presentan en tres partes: Viviendas, Personas y Migrantes. En esta ocasión, se utilizó la base de datos correspondientes a Personas ya que contiene la información necesaria para hacer el ajuste. La cantidad de datos con la que se está trabajando es extensa, por lo que el primer paso es seleccionar las columnas necesarias y desechar el resto. Después, se agregaron los siguientes filtros 
+Los resultados del Censo se dividen en tres partes: Viviendas, Personas y Migrantes. Para este trabajo, se utilizó la base de datos correspondientes a Personas ya que contiene la información necesaria para llevar a cabo el ajuste del modelo de ingresos propuesto en \ref{modelo_final}. El volumen de datos con el que se trabajo es amplio por lo que lo primero fue seleccionar los regresos necesarios de la base de datos. Posteriormente, se agregaron los siguientes filtros:
 
 \begin{enumerate}
     \item Se seleccionaron solamente las personas que tienen un trabajo remunerado. Es decir, no se consideró a las personas que
@@ -68,16 +68,18 @@ Los resultados del Censo se presentan en tres partes: Viviendas, Personas y Migr
     
     \item Se descartó a las personas que viven y trabajan fuera de la República Mexicana. 
     
-    \item Se obtuvieron a las personas que especificaron horas trabajadas e ingreso ganado.
+    \item Se seleccionaron a las personas que especificaron horas trabajadas e ingreso ganado.
     
-    \item Cada regresor viene de una pregunta hecha y tiene una variable asignada. Si el entrevistado decide no responder a alguna pregunta se marca la respuesta como \texttt{No especificado}. En este caso, se eliminaron a las personas que no respondieron alguna de las preguntas que corresponden a los regresores. 
+    \item Cada regresor es resultado de una pregunta hecha y tiene una variable asignada. Si el entrevistado decide no responder a alguna pregunta se marca la respuesta como \texttt{No especificado}. En este caso, se eliminaron a las personas que no respondieron alguna de las preguntas que corresponden a los regresores. 
 \end{enumerate}
 
-Con los filtros anteriores la cantidad de datos con los que se trabaja pasa de ser cerca de 15 millones a poco más de 3.5 millones. Más aún, todo el proceso dura alrededor de 20 minutos para ejecutarse por lo que se recomienda guardar la base de datos filtrada para evitar hacer estos comandos constantemente. La selección de información se ejecutó en \textsf{Julia} y se guardó para utilizarla posteriormente en \textsf{R} y \textsf{Python}. El código de lectura de la base de datos y los comandos para los filtros es el siguiente. Se debe notar que a pesar de ser un código largo, está debidamente comentado. 
+Con los filtros anteriores la cantidad de datos con los que se trabaja se reduce de 15 a 3.5 millones. Este proceso toma alrededor de 20 minutos en ejecutarse y, posteriormente, se guarda la nueva base de datos. El filtrado de la información se ejecutó en \textsf{Julia} y se guardó para utilizarla posteriormente en \textsf{R} y \textsf{Python}. El código de lectura de la base de datos y los comandos utilizados para la selección de información son los siguientes. A pesar de ser un código largo, está debidamente documentado. 
+
 
 \begin{minted}{julia}
+	# # # Inicio de código para filtrado de datos
 	julia> using CSV, DataFrames, StatsBase, 
-	GLM, Random, CategoricalArrays
+		GLM, Random, CategoricalArrays
 
 	# Equivalente a set.seed de R
 	julia> Random.seed!(99)
@@ -87,11 +89,10 @@ Con los filtros anteriores la cantidad de datos con los que se trabaja pasa de s
 	julia> personas = CSV.read("Personas00.csv", DataFrame)
 
 	# Lista con columnas necesarias para el ajuste
-	julia> col_sel = ["ID_PERSONA","ENT","SEXO", "EDAD", 
-	"NIVACAD", "ALFABET", "INGTRMEN","HORTRA", "CONACT", 
-	"SITTRA", "ENT_PAIS_TRAB", "AGUINALDO", "VACACIONES", 
-	"SERVICIO_MEDICO", "UTILIDADES", "INCAP_SUELDO", 
-	"SAR_AFORE", "CREDITO_VIVIENDA"]
+	julia> col_sel = ["ID_PERSONA", "SEXO", "EDAD", 
+	"NIVACAD", "ALFABET", "INGTRMEN","HORTRA", "SITTRA", 
+	"ENT_PAIS_TRAB", "AGUINALDO", "VACACIONES", 
+	"SERVICIO_MEDICO", "CONACT", "ENT"]
          
 	# Se seleccionan de la base de datos 
 	julia> personas_filt = personas[:, col_sel]    
@@ -127,10 +128,7 @@ Con los filtros anteriores la cantidad de datos con los que se trabaja pasa de s
 	end
 
 	julia> categorias_9 = ["SEXO", "AGUINALDO", "VACACIONES", 
-	"SERVICIO_MEDICO", "UTILIDADES",
-	"INCAP_SUELDO", "SAR_AFORE",
-	"CREDITO_VIVIENDA", "ALFABET", 
-	"SITTRA"]
+	"SERVICIO_MEDICO", "ALFABET", "SITTRA"]
 
 	julia> categorias_99 = ["NIVACAD"]
 
@@ -144,15 +142,14 @@ Con los filtros anteriores la cantidad de datos con los que se trabaja pasa de s
     	categorias_99[i], 99)
 	end
 
-	# Finalmente, guardo el nuevo dataframe
+	# Finalmente, se guarda el nuevo dataframe
 	julia> CSV.write("personas_filtradas.csv", personas_filt)
 \end{minted}
 
 
-\section{Regresiones} \label{reg_categorias}
-\valinline{No estoy segura de como ponerle de nombre a esta seccion}
+\section{Factores y Sub-ajustes} \label{reg_categorias}
 
-Lo primero que se debe verificar es que la lectura de datos haya clasificado las variables de manera correcta.  En este caso, la mayoría de las variables del ajuste son categóricas, pero \textsf{Julia} las lee como \textsf{Int64}. Por lo tanto, se deben transformar esas columnas del dataframe como se muestra a continuación. 
+Lo primero que se debe verificar es que la lectura de datos haya clasificado las variables de manera correcta. En el modelo presentada en \ref{modelo_final}, la mayoría de las variables del ajuste son categoría o factores, pero \textsf{Julia} las lee como \textsf{Int64}. Por ejemplo, la variable \texttt{NIVACAD} responde a la pregunta sobre el último año o grado aprobado por el entrevistado. Hay 15 respuestas que corresponden a todos los niveles académicos posibles, desde no haber recibido ningún tipo de educación formal hasta haber obtenido un doctorado. Cada respuesta se identifica con un número que va del 0 al 14. Por lo tanto, en el modelo propuesto \ref{modelo_final}, el regresor \texttt{NIVACAD} es de tipo categórico y tiene 15 niveles. Ya que las respuestas son número, el comando \texttt{CSV.read} de \textsf{Julia} identifica incorrectamente la columna como tipo \textsf{Int64}. Esto sucede con todos los factores del modelo compilados en la lista \texttt{categorias} del código mostrado a continuación. Además, se muestra la manera en la que se convirtieron las variables a factores. 
 
 \begin{minted}{julia}
 	julia> using DataFrames
@@ -160,69 +157,69 @@ Lo primero que se debe verificar es que la lectura de datos haya clasificado las
 
 	# Vector con todas las categorias
 	julia> categorias = ["SEXO", "AGUINALDO", "VACACIONES", 
-	"SERVICIO_MEDICO", "UTILIDADES", "ALFABET",
-	"NIVACAD", "ENT_PAIS_TRAB", "ENT", 
-	"SITTRA"]
+	"SERVICIO_MEDICO", "ALFABET", "NIVACAD", "ENT_PAIS_TRAB", 
+	"ENT", "SITTRA"]
 
 	julia> transform!(data, 
 		names(data, vector_categorias) .=> categorical, 
 		renamecols=false)
 \end{minted}
 
-Si se omitiera el paso anterior la regresión no sería correcta ya que se considerarían a las regresores de tipo categórico como variables continuas. Por tanto, no proporcionarían el efecto de cada categoría en la variable de respuesta.
+Si se omitiera el paso anterior el resultado del ajuste no tendría sentido ya que se considerarían a los regresores de tipo categórico como variables continuas. Por tanto, no proporcionarían el efecto de cada categoría en la variable de respuesta.
 
-El objetivo de esta tesis es mostrar las capacidades de los lenguajes de programación por lo que se tomó la ecuación \ref{modelo_final} y se quitaron algunas variables. Se puede pensar como que se tomaron diferentes subconjuntos de variables y, con ellas, se hizo el análisis de regresión para notar si había cambios en la precisión del ajuste. La variable de respuesta se mantuvo igual en todos los ahora denominados \textit{sub-ajustes}.
+Uno de los objetivos de este trabajo es ilustrar las capacidades de los tres lenguajes de programación por lo que se tomó el modelo \ref{modelo_final} y se retiraron algunas variables. Se puede pensar como que se tomaron diferentes subconjuntos de variables y, con ellas, se hizo el ajuste de las regresiones para notar si había cambios en la precisión del ajuste. La variable de respuesta es la misma en todos los ahora denominados \textit{sub-ajustes}.
 
-Para el primer \textit{sub-ajuste} se tomaron las primeras 5 variables de la ecuación \ref{modelo_final} y se le nombró \textsf{fit5} (ya que tiene 5 regresores). Es decir, la ecuación \textsf{fit5} es 
+El primer \textit{sub-ajuste} se definió con los primeros 5 regresores del modelo \ref{modelo_final} se nombró como \textsf{fit5} (por la cantidad de regresores). Es decir, el modelo \textsf{fit5} es 
 
 \begin{equation*}
     \begin{aligned}
-    ingresos \sim horas_{trabajadas} + sexo + edad + escolaridad + entidad_{residencia}
+ 	y =& \beta_0 + \beta_1*horas_{trabajadas} + \beta_2*sexo + \\
+    	&\beta_3*edad + \beta_4*escolaridad + \beta_5*entidad_{trabajo} 
     \end{aligned}
 \end{equation*}
 
 
-El segundo \textit{sub-ajuste} llamado \textsf{fit6} tiene los mismos 5 regresores que \textsf{fit5} más uno extra, la posición laboral. Por tanto, la ecuación \textsf{fit6} queda de la siguiente manera
+El segundo \textit{sub-ajuste} llamado \textsf{fit6} tiene los 5 regresores incluidos en \textsf{fit5} y uno extra, la posición laboral. Por tanto, el modelo \textsf{fit6} queda de la siguiente manera: 
 
 \begin{equation*}
     \begin{aligned}
-    ingresos \sim horas_{trabajadas} + sexo + edad + escolaridad + entidad_{residencia} + posicion_{laboral}
+    	y =& \beta_0 + \beta_1*horas_{trabajadas} + \beta_2*sexo + \\
+    	&\beta_3*edad + \beta_4*escolaridad + \beta_5*entidad_{trabajo} + \\
+    	& \beta_6*posicion_{laboral}
     \end{aligned}
 \end{equation*}
 
-Las ecuaciones \textsf{fit5} y \textsf{fit6} siguen el mismo orden que \ref{modelo_final}. Esto no es una coincidencia. El orden de los regresores en la ecuación \ref{modelo_final} está pensado precisamente para que cada variable sumada se agregue al conjunto de variables anterior y cree una nueva ecuación \textsf{fit}.
+Las ecuaciones \textsf{fit5} y \textsf{fit6} siguen el mismo orden que \ref{modelo_final}. Esto no es una coincidencia. El orden de los regresores del modelo \ref{modelo_final} está pensado precisamente para que cada variable sumada se agregue al conjunto de variables anterior y cree un nuevo modelo \textsf{fit}.
 
-\subsection{Implementación del modelo}
-\valinline{Tampoco sé como nombrar esta seccion}
+\subsection{Código en Julia}
 
-Si Galton pudiera ver los alcances que tiene su experimento de semillas probablemente se desmayaría de la emoción. Él mismo estaría de acuerdo con que no es lo mismo hacer un ajuste con 5 observaciones a hacer uno con 5 millones de ellas. Tal vez el código es el mismo, pero en el trabajo de máquina se observan cambios en tiempo de ejecución y precisión numérica. En esta sección se explica como se midieron los cambios en ambos factores. 
+Sería interesante ver la reacción de Galton si supiera los alcances a los que ha llegado su experimento de semillas. Él mismo estaría de acuerdo con que no es lo mismo hacer un ajuste con 5 observaciones a hacer uno con 5 millones de ellas. El código es el mismo, pero en el trabajo de máquina se observan cambios en tiempo de ejecución y precisión numérica. Ambos factores son las razones por las que se eligió este ejercicio. En esta sección se muestra como se midieron dichos cambios.
 
-Cada una de las ecuaciones \textsf{fit} ya mencionadas se ejecutaron con muestras de 500, 5 mil, 50 mil, 500 mil y 2.5 millones de observaciones. Es decir, se usaron cada una de las ecuaciones \textsf{fit} para el ajuste de modelos con las cinco cantidades antes mencionadas. La elección de observaciones se hizo al azar usando el comando \texttt{sample} en \textsf{Julia}. Una vez seleccionadas, se guardaba el dataframe generado para usar exactamente los mismos datos en \textsf{R}, \textsf{Python} y todos los ajustes. Guardar las muestras generadas tiene el propósito de poder utilizar la misma información en los ajustes y obtener así, un punto de comparación en la precisión del cálculo de los coeficientes. 
+Cada una de las ecuaciones \textsf{fit} ya mencionadas se ejecutaron con muestras de 500, 5 mil, 50 mil, 500 mil y 2.5 millones de observaciones. Es decir, se usaron cada una de las ecuaciones \textsf{fit} para el ajuste de modelos con los volúmenes de información antes mencionados. La elección de observaciones se hizo al azar usando el comando \texttt{sample} en \textsf{Julia}. Una vez seleccionadas, se guardaba el dataframe generado para usar exactamente los mismos datos en \textsf{R}, \textsf{Python} y todos los ajustes. Guardar las muestras generadas tiene el propósito de poder utilizar la misma información en los ajustes y obtener así, un punto de comparación en la precisión del cálculo de los coeficientes. 
 
-La ejecución de los anterior es repetitivo por lo que se buscó fuera hecho de la manera más rápida y eficiente posible. Se desarrolló una función para cada \textsf{fit} cuyos argumentos fueran la cantidad de observaciones que se está utilizaron y el nombre con el que se guarda el archivo. El nombre de las funciones coinciden con la cantidad de regresores que se están utilizando. 
+La ejecución de lo anterior es repetitivo por lo que se buscó fuera hecho de la manera más rápida y eficiente posible. Se desarrolló una función para cada \textsf{fit} cuyos argumentos fueran la cantidad de observaciones que se está utilizaron y el nombre con el que se guarda el archivo. El nombre de las funciones coinciden con la cantidad de regresores que se están utilizando. 
 
-Si ya se tiene conocimiento de programación, se puede notar que crear una función para cada modelo resulta repetitivo. Se pudo haber desarrollado una sola función que también tomara como argumento la formula a utilizarse en el ajuste. Sin embargo, se decidió no hacer de esa forma ya que se consideró de suma importancia tener la fórmula escrita en cada función. 
+Inclusive con este acercamiento, se puede notar que crear una función para cada modelo resulta repetitivo. Se pudo haber desarrollado una sola función que también tomara como argumento la fórmula a utilizarse en el ajuste. Sin embargo, se decidió no hacerlo de esa forma ya que se consideró de suma importancia tener la fórmula escrita en cada función. 
 
-Debido a la similitud entre funciones y su ejecución se muestran solamente lo correspondiente a \textsf{fit5} y \textsf{fit10} a manera de ejemplo. El código para la función \textsf{fit5} es el siguiente.
+Debido a la similitud entre funciones y su ejecución se muestran solamente las correspondientes a \textsf{fit5} y \textsf{fit10} a manera de ejemplo. El código para la función \textsf{fit5} es el siguiente.
 
 \begin{minted}{julia}
 	### FIT BASE ###
 	julia> function fit5(cantidad_sample, nombre_facil)
     	nombre_fit = "fit5"
-    
+    # Selección aleatoria de datos
     	sample_rows = sample(1:nrow(data), 
     		cantidad_sample, replace=false)
-
     	df_sample = data[sample_rows, :]
-    
+    # Generación de nombre para el archivo de salida
     	nombre_completo = nombre_facil*"_"*nombre_fit*".csv"
-    	# Guardamos el documentos para usarlo en R y Python
+    # Guardar la muestra para usarla en R y Python
     	CSV.write(nombre_completo, df_sample)
 
-    	# Se hace el ajuste
+    # Se hace el ajuste
     	sample_fit = lm(@formula(INGTRMEN ~ HORTRA + SEXO + 
     		EDAD + NIVACAD + ENT_PAIS_TRAB), df_sample)
-
+	# Se guardan los resultados en otro archivo
     	aux = "res_"
     	nombre_completo = aux*nombre_completo
     	CSV.write(nombre_completo, coeftable(sample_fit))
@@ -243,29 +240,28 @@ Por otro lado, el código para \textsf{fit10} es el siguiente.
 	### FIT 10###
 	julia> function fit10(cantidad_sample, nombre_facil)
     	nombre_fit = "fit10"
-    
+    # Selección aleatoria de datos
     	sample_rows = sample(1:nrow(data), cantidad_sample, 
     		replace=false)
-
     	df_sample = data[sample_rows, :]
-    
+    # Generación de nombre para el archivo de salida
     	nombre_completo = nombre_facil*"_"*nombre_fit*".csv"
-    	# Guardamos el documentos para usarlo en R
+    # Guardar la muestra para usarla en R y Python
     	CSV.write(nombre_completo, df_sample)
 
-    	# Hacemos el fit
+    # Se hace el ajuste
     	sample_fit = lm(@formula(INGTRMEN ~ HORTRA + SEXO + 
     		EDAD + NIVACAD + ENT_PAIS_TRAB + SITTRA + 
     		ALFABET + AGUINALDO + VACACIONES +
     		SERVICIO_MEDICO), df_sample)
-
+	# Se guardan los resultados en otro archivo
     	aux = "res_"
     	nombre_completo = aux*nombre_completo
     	CSV.write(nombre_completo, coeftable(sample_fit))
 	end 
 
-	# Fit 10: Fit 5 + SITTRA + ALFABET + AGUINALDO + 
-	# VACACIONES + SERVICIO_MEDICO
+	# # # Fit 10: Fit 5 + SITTRA + ALFABET + AGUINALDO + 
+	# # # VACACIONES + SERVICIO_MEDICO
 	julia> fit10(500, "500")
 	julia> fit10(5000, "5mil")
 	julia> fit10(50000, "50mil")
@@ -276,14 +272,14 @@ Por otro lado, el código para \textsf{fit10} es el siguiente.
 
 \section{Resultados y Conclusiones}
 
-Independientemente del modelo \textsf{fit} que se utilice, la mayoría de las variables son categóricas por lo cual tienen diferentes niveles. Por ejemplo, la variable \textsf{NIVACAD} correspondiente al último nivel educativo aprobado por una persona tiene 14 niveles, desde \textsf{Preescolar} hasta \textsf{Doctorado}. De la misma manera, la variable \textsf{ENT\_PAIS\_TRAB}  corresponde a la entidad donde la persona trabajó más recientemente tiene 32 posibles respuestas (niveles) que corresponden a cada uno de los estados de la república. Si se cuentan los niveles de cada factor, al final en el modelo con más variables \textsf{fit10} se tiene un total de 54 regresores. La tabla \ref{res_fit10_2500mil} es una muestra resumida de los resultados obtenidos usando 2.5 millones de observaciones en el modelo \textsf{fit10}.  
+En cualquiera de los \textit{sub-ajustes}, la mayoría de los regresores son de tipo categórico por lo cual tiene diferentes niveles. La variable \textsf{NIVACAD} comentada en la sección anterior es un ejemplo de ello. Otro ejemplo es la variable llamada \textsf{ENT\_PAIS\_TRAB} que corresponde a la entidad mexicana donde el entrevistado trabajó más recientemente. Ya que México se divide en 32 entidades federativas, cada estado representa un nivel del regresor.  Si se cuentan los niveles de cada factor, al final en el modelo con más variables \textsf{fit10} se tiene un total de 54 regresores. La tabla \ref{res_fit10_2500mil} es una muestra resumida de los resultados obtenidos en \textsf{Julia} usando 2.5 millones de observaciones en el modelo \textsf{fit10}.  
 
 
 \valinline{Alguna idea para arreglar esta tabla?}
 \begin{center}
-	\begin{tabular}{|c|c|c|c|c|c|c|} 
+	\begin{tabular}{|S|c|c|c|c|c|c|} 
 		\hline
-		Nombre & Coeficiente & Error estándar & t & Pr($>|t|$) & 95\% inferior & 95\% superior \\ 
+		Nombre & Coeficiente & \multicolumn{1}{M}{Error estándar}  & \multicolumn{1}{M}{t} & Pr($>|t|$) & \multicolumn{1}{M}{95\% inferior}  & \multicolumn{1}{M}{95\% superior} \\ 
 		\hline 
 		Ordenada al origen & 4133.26 & 125.42 & 32.95 & $4.16e^{-238}$ & 3887.43 & 4379.09\\ 
 		
@@ -297,7 +293,7 @@ Independientemente del modelo \textsf{fit} que se utilice, la mayoría de las va
 		
 		NIVACAD:3 & 629.53 & 71.20 & 8.84 & $9.42e^{-19}$ & 489.98 & 769.08 \\
 		
-		\vdots \\
+		\vdots & \vdots & \vdots & \vdots & \vdots & \vdots & \vdots \\
 		
 		SITTRA:3 & -692.44 & 32.10 & -21.57 & $3.30e^{-103}$ & -755.35 & -629.53 \\
 		
@@ -307,22 +303,61 @@ Independientemente del modelo \textsf{fit} que se utilice, la mayoría de las va
 		
 		VACACIONES:4 & -843.60 & 38.65 & -21.83 & $1.31e^{-105}$ & -919.35 & 7678.85 \\
 		
-		SERVICIO\_MEDICO: 6 & -1110.25 & 34.21 & -32.46 & $4.91e^{-231}$ & -1177.30 & -1043.21 \\
+		SERVICIO \_MEDICO:6 & -1110.25 & 34.21 & -32.46 & $4.91e^{-231}$ & -1177.30 & -1043.21 \\
 	
 		\hline
 	\end{tabular} 
 	\captionof{table}{Resultados para el modelo fit10 con 2.5 millones de observaciones en Julia} \label{res_fit10_2500mil}
 \end{center}
 
-\valinline{Pongo una tabla donde se comparen los coeficientes de Julia, R y Python para algún ajuste? o solo con que diga como se programo en R y Python es suficiente?}
-
 Como se observa en la tabla \ref{res_fit10_2500mil}, \textsf{Julia} no solo da el cálculo de los coeficientes, también da indicadores como lo son el error estándar y el intervalo de confianza. 
 
-En \textsf{R} se utilizó la función \texttt{lm} para hacer los ajustes mientras que en \textsf{Python} la función \texttt{LinearRegression()} del paquete \texttt{sklearn} explicado a detalle en la sección \ref{sec_sklearn}. En los tres lenguajes los ajustes fueron rápidos \val{agrego tabla de tiempos?} y los resultados mostraron la misma precisión. 
+En \textsf{R} se utilizó la función \texttt{lm} para hacer los ajustes mientras que en \textsf{Python} la función \texttt{LinearRegression()} del paquete \texttt{sklearn} explicado a detalle en la sección \ref{sec_sklearn}. El código completo en ambos lenguajes se encuentra en el apéndice \ref{apendice_censo}. 
 
-En este ejercicio el paquete \texttt{GLM} de \textsf{Julia} cumple su propósito de ajustar el modelo de manera correcta. Más aún, el paquete también proporciona los estimadores necesarios para un análisis completo de regresión. La función \texttt{lm} de \textsf{R} también presenta la tabla de estimadores mientras que en \textsf{Python} si bien no se presenta como tabla, existen los comandos para obtener los estimadores. 
+Los tres lenguajes hacen el ajuste de manera correcta y con le mismo nivel de precisión. En la tabla \ref{comparacion_precision} se presenta una comparativa de los resultados obtenidos en los tres lenguajes usando el \textit{sub-ajuste} \textsf{fit10} con 2.5 millones de datos. A manera de ejemplo, se seleccionaron todos los regresores continuos y un nivel de cada regresor categórico. Asimismo, en la tabla se omitió redondear los resultados del ajuste para observar que el nivel de precisión. En este caso, la precisión numérica se mantuvo igual en los tres lenguajes. 
 
-En resumen, los tres lenguajes \textsf{Julia, R} y \textsf{Python} proporcionan herramientas que permiten hacer leer un conjunto de datos extenso y ajustar un modelos lineal. Más aún, los lenguajes ofrecen herramientas para calcular los estimadores clave para hacer un análisis de regresión. Encontrar que \textsf{Julia} sí puede utilizarse para hacer un análisis de regresión fue una grata sorpresa, ya que el ejercicio del capítulo anterior disminuyó mi confianza en la capacidad de análisis de datos del lenguaje. Sin embargo, investigando sobre las capacidades de \textsf{Julia} se encontró en repetidas ocasiones que es un lenguaje con un propósito muy claro: ser  el lenguaje más eficiente con la mayor cantidad de aplicaciones posible. Por lo tanto, en el siguiente capítulo se cambia el enfoque de análisis de regresión para presentar un problema de discriminación de modelos en diseños de experimentos. 
+\begin{center}
+	\begin{tabular}{|c|c|c|c|} 
+		\hline
+		Regresor & Julia & R  & Python  \\ 
+		\hline 
+		Ordenada al origen & 4044.00297 & 4044.00297 & 4044.00297 \\ 
+		
+		HORTRA & 41.12933 & 41.12933 & 41.12933 \\
+		
+		SEXO:3 & -1403.30415 & -1403.30415 & -1403.30415 \\ 
+		
+		EDAD & 34.34650 & 34.34650 & 34.34650 \\ 
+		
+		NIVACAD:9 & 4276.80672 & 4276.80672 & 4276.80672 \\
+		
+		ENT\_PAIS\_TRAB:13 & -671.72888 & -671.72888 & -671.72888 \\
+		
+		SITTRA:2 & -668.43938 & -668.43938 & -668.43938 \\
+		
+		ALFABET:3 & -534.68337 & -534.68337 & -534.68337 \\
+		
+		AGUINALDO:2 & -483.42688 & -483.42688 & -483.42688 \\
+		
+		VACACIONES:4 & -812.44030 & -812.44030 & -812.44030 \\
+		
+		SERVICIO\_MEDICO: 6 & -1118.54895 & -1118.54895 & -1118.54895 \\
+		
+		\hline
+	\end{tabular} 
+	\captionof{table}{Comparación de resultados para el modelo fit10 con 2.5 millones de observaciones en R, Julia y Python} \label{comparacion_precision}
+\end{center}
 
+\valinline{Agrego las tablas de tiempos en el apéndice?}
+En cuanto a tiempos, los tres lenguajes presentan un aumento de tiempo a medida que aumenta el volumen de observaciones a ajustar. Sin embargo, el aumento de regresores no parece tener un efecto en el tiempo de ejecución del ajuste. El lenguaje que ejecuta el cálculo de los coeficientes más rápidamente es \textsf{Julia} con un tiempo máximo de 14.19 segundos. Sin embargo, el desempeño del código completo toma más tiempo ya que a \textsf{Julia} le toma una cantidad considerable de tiempo guardar los resultados en un archivo de tipo \textsf{CSV}. 
 
+Por otro lado, el tiempo máximo que le toma \textsf{Python} calcular un ajuste es de 18.31 segundos. Sin embargo, la diferencia de 4 segundos entre \textsf{Python} y \textsf{Julia} se compensa con la rapidez que le toma a \textsf{Python} ejecutar el código completo. Por tanto, \textsf{Julia} hace el ajuste más rápido mientras que \textsf{Python} ejecuta el código entero en la menor cantidad de tiempo. 
+
+En cambio, \textsf{R} es el lenguaje más lento de la triada de lenguajes. Su tiempo mínimo de ejecución es de 34.16 segundos mientras que el tiempo máximo es de 1.75 minutos. Adicionalmente, el lenguaje presenta dificultades al manejar grandes cantidades de datos. Se presentó una sensación de entorpecimiento en la ejecución del código ya que los cálculos eran lentos y, en ocasiones, se presentaba un mensaje que pedía reiniciar la sesión de \textsf{R}.   
+
+En suma, en este ejemplo el paquete \texttt{GLM} de \textsf{Julia} cumple su propósito de ajustar el modelo de manera correcta y rápida. Más aún, el paquete también proporciona los estimadores necesarios para un análisis completo de regresión. En cambio, si bien las funciones utilizadas en \textsf{R} y \textsf{Python} no presentan dicha tabla, sí existen los comandos para obtener los estimadores. 
+
+Los tres lenguajes \textsf{Julia, R} y \textsf{Python} proporcionan herramientas que permiten leer una base de datos y ajustar un modelos lineal de manera precisa. Además, los lenguajes ofrecen herramientas para calcular los estimadores clave para hacer un análisis de regresión. Las diferencias entre los lenguajes se presentan al considerar el tiempo de ejecución y el rendimiento. \textsf{Julia} y \textsf{Python} realizan el ajuste de manera rápida y fluida, sin saturaciones de memoria o falta de respuesta del lenguaje. En cambio, \textsf{R} presenta complicaciones en el manejo de bases de datos extensas. En consecuencia, es el lenguaje más lento en realizar el ajuste y pide el constante reinicio de la sesión en la que se está trabajando. 
+
+Los obstáculos presentados con \textsf{R} dieron pie a la realización de que, hasta este punto, la ejecución de \textsf{Julia} nunca ha presentado fallas. Investigando sobre las capacidades de \textsf{Julia} se encontró en repetidas ocasiones que tiene un propósito muy claro: ser  el lenguaje más eficiente con la mayor cantidad de aplicaciones posible. Por lo tanto, en el siguiente capítulo se cambia el enfoque de análisis de regresión para ilustrar un ejemplo de discriminación de modelos en diseños de experimentos. El objetivo del problema es mostrar la capacidad de los lenguajes de ejecutar una función que conlleva una gran cantidad de cálculos complejos. 
 

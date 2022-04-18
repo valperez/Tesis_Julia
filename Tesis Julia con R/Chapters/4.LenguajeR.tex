@@ -1,37 +1,35 @@
 \chapter{R}
 
-\say{Ross Ihaka y Robert Gentleman, del departamento de Estadística de Auckland University, en Nueva Zelanda, estaban interesados en el cómputo estadístico y reconocieron la necesidad de un mejor ambiente de cálculo del que tenían. Ninguno de los productos comerciales les convencía, por lo que decidieron desarrollar uno propio} \cite{laberintos_historiaR}. 
+\say{Ross Ihaka y Robert Gentleman, del departamento de Estadística de Auckland University en Nueva Zelanda estaban interesados en el cómputo estadístico y reconocieron la necesidad de un mejor ambiente de cálculo del que tenían. Ninguno de los productos comerciales les convencía, por lo que decidieron desarrollar uno propio}, \cite{laberintos_historiaR}. 
 
-\textsf{R} nació de la necesidad de que hubiera una transición de usuario a desarrollador. Los creadores buscaron crear un lenguaje que podría usarse para hacer un análisis de datos de manera interactiva y, además, para escribir programas más largos \cite{peng_programming}. Uno de los puntos a favor de \textsf{R} es la facilidad para crear gráficos bien diseñados y con calidad de publicación que pueden incluir símbolos matemáticos y fórmulas en caso de ser necesarios \cite{pagina_r}. 
+\textsf{R} nació de la necesidad de tener una transición de usuario a desarrollador. \cite{peng_programming} explica que los creadores buscaron crear un lenguaje que podría usarse para hacer un análisis de datos de manera interactiva que además fuera capaz de escribir programas más largos. Una de las principales cualidades de \textsf{R} es la facilidad para crear gráficos bien diseñados y con calidad de publicación que pueden incluir símbolos matemáticos y fórmulas en caso de ser necesarios \cite{pagina_r}. 
 
-\textsf{R} se considera como uno de los lenguajes más sencillos para comenzar a aprender a trabajar métodos estadísticos en la computadora. Es un lenguaje muy sencillo de entender y perdona especificaciones que \textsf{Julia} y \textsf{Python} no. Además, es uno de los más conocidos a nivel mundial por lo que hay muchos libros, artículos y páginas web que abordan casi cualquier tema que se le relacione. Las razones anteriores son el motivo por el cual se decidió incluir el lenguaje en este trabajo. 
+\textsf{R} se considera como uno de los lenguajes más sencillos para comenzar a aprender a trabajar métodos estadísticos computacionales. La sencillez de su sintaxis permite que inclusivo un usuario nuevo navegue de manera fluida por el código. Es conocido como uno de los lenguajes más usados para análisis y graficación. Su popularidad en la comunidad científica ha impulsado el desarrollo del lenguaje y la creación de todo tipo de materiales de apoyo. Las razones anteriores son el motivo por el cual se decidió incluir el lenguaje en este trabajo. 
 
-Además, por ser el lenguaje más común y su inclusión en los temarios de las universidades, se parte de que el lector ya tiene los conocimientos básicos para entender el código de esta sección. Asimismo, la propia versatilidad de las funciones del lenguaje permitieron que los ejercicios de esta tesis funcionaran con pocas funciones. En el último ejercicio se utiliza un paquete ya programado, mientras que los primeros dos se enfocan en la función \texttt{lm} explicada a continuación. 
+Debido a la popularidad ya mencionada, en este trabajo se parte de la primicia de que el lector ya cuenta con los conocimientos básicos para entender el código que se presenta. El avanzado desarrollo del lenguaje permitió que los ejercicios de este trabajo se hicieran con pocas funciones. En el último ejercicio se utiliza un paquete ya programado, mientras que los primeros dos se enfocan en la función \texttt{lm} explicada a continuación. 
 
-\section{lm} \label{explicacion_lm}
+\section{Función lm} \label{explicacion_lm}
 
-\texttt{lm} es una función usada para ajustar modelos lineales. Su fórmula es \texttt{lm(formula, data, subset, weights, na.action, method = 'qr', model = TRUE, x = FALSE, y = FALSE, qr = TRUE, singular.ok = TRUE, contrasts = NULL, offset, ...)}. Con esto se puede observar que la función puede ajustar modelos muy simples o más avanzados, dependiendo de los parámetros que se utilicen.
+La función \texttt{lm} es usada para analizar modelos lineales. La manera de llamarla es con el comando \texttt{lm(formula, data, subset, weights, na.action, method = 'qr', model = TRUE, x = FALSE, y = FALSE, qr = TRUE, singular.ok = TRUE, contrasts = NULL, offset, ...)}. Con esto se puede observar que la función cuenta con muchos argumentos lo cual la hace muy versátil. De hecho, en el capítulo \ref{cap_polinomios} es necesario modificar el argumento \texttt{tol} para poder resolver el problema de manera exitosa. 
 
-
-El caso más sencillo es el modelo de regresión lineal ya que el parámetro de \texttt{formula} se ve de la manera 
-\begin{lstlisting}[language=R]
-	y ~ x_1 + x_2 + ... + x_n
-\end{lstlisting}
-
-Es decir, se pone la variable de respuesta $y$ seguido de una virgulilla y después los $n$ predictores que se estén utilizando. 
-
-El caso de las regresiones que utilicen variables con grado mayor a uno tiene una sintaxis un poco más complicada. La fórmula comienza como en el caso anterior, con la variable $y$ y la virgulilla. Sin embargo, para elevar el regresor $x$ a la potencia $k$ se debe escribir dentro de \texttt{I(...)}. Por ejemplo, si se quisiera ajustar un conjunto de datos a un modelo $y \sim x^{2}$ el comando es
+El modelo de regresión lineal multivariada debe tener como argumento de \texttt{formula} la ecuación 
 
 \begin{lstlisting}[language=R]
-	y ~ I(x^2)
+	y ~ x_1 + x_2 + ... + x_k
 \end{lstlisting}
 
-La función \texttt{I(...)} se usa para cambiar la clase de un objeto para indicar que el objeto debería ser tratado de la forma 'como si fuera'. Esta instrucción se usa especialmente para los operadores especiales de fórmula como es el caso de \texttt{$\wedge$}. En el ejemplo anterior, \textsf{R} entiende que se debe tomar $x^{2}$ como una variable y no como la interacción de segundo orden de $x$. 
+Se indica la variable de respuesta $y$ seguido de una virgulilla y después los $n$ predictores que se estén utilizando. La virgulilla juega el papel de un signo de igualdad si se tratara de escribir la \texttt{formula} como ecuación.
 
-Por otro lado, uno de los parámetros que tiene la fórmula de \texttt{lm} es \texttt{tol}, la tolerancia del ajuste. Cada método de cómputo estadístico tiene su tolerancia default, pero en ocasiones se puede modificar. En el ejercicio que se presenta en el capítulo \ref{cap_polinomios} dicha tolerancia tuvo que ser modificada para lograr el resultado correcto. Usualmente este parámetro no necesita ser cambiado, pero es útil tomarlo en cuenta para las ocasiones donde los datos son extremadamente sensibles y se busca un ajuste preciso. 
+La función \texttt{lm} también permite analizar modelos con variables cuyo grado es mayor a uno. En este caso, se debe utilizar la función llamada interpretación inhibida, mejor conocida como \texttt{I(...)}. El argumento \texttt{formula} comienza como en el caso anterior, con la variable $y$ y la virgulilla. Después, se eleva el regresor $x$ a la potencia $k$ dentro de la función \texttt{I(...)}. Por ejemplo, si se quisiera ajustar un modelo  $y = \beta_0 + \beta_1 x + \beta_2 x^{2}$ el comando es
 
+\begin{lstlisting}[language=R]
+	y ~ x + I(x^2)
+\end{lstlisting}
 
-\valinline{Esta parte ya la dije en la introducción, la vuelvo a decir?}
+La función \texttt{I(...)} se usa para cambiar la clase de un objeto para indicar que el objeto debería ser tratado de la forma 'como si fuera'. Esta instrucción se usa especialmente para los operadores especiales de fórmula como es el caso de \texttt{$\wedge$}. En el ejemplo anterior, la función de interpretación inhibida da la instrucción de tomar $x^{2}$ como una variable y no como la interacción de segundo orden de $x$. 
+
+Por otro lado, uno de los argumentos que tiene la función \texttt{lm} es \texttt{tol}, la tolerancia del ajuste. En este caso, la tolerancia determina si las columnas de una matriz son linealmente independientes o no. Cuando se tiene una matriz con valores muy pequeños (como es el caso del ejercicio presentado en el capítulo \ref{cap_polinomios}) se necesita la tolerancia para determinar cuando un valor se considera como cero. En dicho ejercicio el argumento \texttt{tol} tuvo que ser modificado para lograr el resultado correcto. Usualmente este parámetro no necesita ser cambiado, pero es útil tomarlo en cuenta para las ocasiones donde los datos son extremadamente sensibles y se busca un ajuste preciso. 
+
 La segunda parte de la tesis comienza en el siguiente capítulo. En esta parte se exponen tres ejercicios diferentes en los tres lenguajes ya descritos (\textsf{R, Julia} y \textsf{Python}). El primer ejercicio es el ajuste de un modelo lineal de grado diez con datos extremadamente sensibles. En este ejercicio se mide la precisión de los cálculos de los tres lenguajes. El segundo ejercicio es el ajuste de modelos lineales de distintos órdenes usando grandes cantidades de datos. El objetivo fue ilustrar y comparar el manejo y análisis de datos. Finalmente, el tercer ejercicio es sobre la discriminación de modelos en diseños de experimentos. El punto de comparación fue la rapidez en la que los lenguajes hacen muchos cálculos intensivos. 
 
 
