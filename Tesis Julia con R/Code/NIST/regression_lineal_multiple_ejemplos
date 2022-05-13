@@ -1,7 +1,0 @@
-using DataFrames, GLM, CSV
-
-data_kid = CSV.read("C:/Users/Valeria/Documents/ITAM/Tesis/Julia con R/Regression_and_other_stories/ROS-Examples-master/ROS-Examples-master/KidIQ/data/kidiq.csv", DataFrame)
-
-fm = @formula(kid_score ~ mom_hs + mom_iq + mom_hs*mom_iq)
-
-kidscore_lm = lm(fm, data_kid)
