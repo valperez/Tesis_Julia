@@ -3,9 +3,9 @@ title: "NIST_comparacionR_resultados"
 author: "Valeria Perez"
 date: "19/11/2021"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -46,6 +46,20 @@ myfiles <- myfiles[-2]
 for (i in 1:10){
   assign(paste("resultados_grado_", i), myfiles[[i]])
 }
+
+# Python
+setwd("~/ITAM/Tesis/Julia con R/Code/NIST/Python")
+
+arc_python <- list.files(pattern = "res_python")
+files_pyt <- lapply(arc_python, read.csv)
+
+files_pyt[[11]] <- files_pyt[[2]]
+files_pyt <- files_pyt[-2]
+
+for (i in 1:10){
+  assign(paste("res_python_gr_", i), files_pyt[[i]])
+}
+
 ```
 Ahora para los tiempos de cada método
 
@@ -56,8 +70,8 @@ myfiles <- lapply(temp, read.csv)
 myfiles[[11]] <- myfiles[[2]]
 myfiles <- myfiles[-2]
 
+# Falta modificar esto por el dataframe que tenga el promedio de tiempos
 df_tiempos <- data.frame()
-
 for (i in 1:10){
   df_tiempos <- rbind(df_tiempos, myfiles[[i]])
 }
@@ -68,8 +82,18 @@ for (k in 1:i){
   nombres <- c(nombres, paste0("k_", k))
 }
   row.names(df_tiempos) <- nombres
+  
 ```
 
+```{r}
+runs <- seq(1, 5)
+tiempos_r <- data.frame(matrix(ncol = 6, nrow = 10))
+nombres <- c()
+for (i in runs){
+  nombres <- c(nombres, paste("Tiempo_", i))
+}
+colnames(tiempos_r) <- c("Grado", nombres)
+```
 
 
 Después, hago el código para el polinomio de grado 1. 
@@ -77,15 +101,23 @@ Después, hago el código para el polinomio de grado 1.
 ```{r}
 # Para polinomio de grado = 1
 
-start <- Sys.time()
-lm_1 <- lm(y ~ x, data = data, x = TRUE)
-end <- Sys.time()
+time_vec <- c(1)
+
+for (i in runs){
+  start <- Sys.time()
+  lm_1 <- lm(y ~ x, data = data, x = TRUE)
+  end <- Sys.time()
+  time_vec <- c(time_vec, end - start)
+}
+
+tiempos_r[1, ] <- time_vec
 
 `resultados_grado_ 1`$R <- lm_1$coefficients
 row.names(`resultados_grado_ 1`) <- c("b0", "b1")
 X_1 <- lm_1$x
 
-time_vec <- c(end - start)
+# Python
+`resultados_grado_ 1`$Python <- `res_python_gr_ 1`$Python
 ```
 
 Finalmente, el código para los polinomios de grado > 1
@@ -99,19 +131,26 @@ for (i in 2:10){
   
   # Lo convertimos en formula
   form <- formula(model)
+  time_vec <- c(i)
   
   #Ejecutamos el modelo
-  start <- Sys.time()
-  lm.plus <- lm(form, data = data, x = TRUE, tol = 1e-10)
-  end <- Sys.time()
-  time <- end - start
-  time_vec <- c(time_vec, time)
+  for (j in runs){
+    start <- Sys.time()
+    lm.plus <- lm(form, data = data, x = TRUE, 
+                  tol = 1e-10)
+    end <- Sys.time()
+    time_vec <- c(time_vec, end - start)
+  }
+  
+  tiempos_r[i, ] <- time_vec
   
   # Guardo el df correspondiente a un auxiliar
   resultados_aux <- get(paste("resultados_grado_", i))
   # para unirle los coeficientes
   resultados_aux$R <- lm.plus$coefficients
-  
+  python_aux <- get(paste("res_python_gr_", i))
+  resultados_aux$Python <- python_aux$Python
+
   nombres <- c("b0")
   # Para el nombre de los renglones
   for (k in 1:i){
@@ -131,7 +170,22 @@ Agrego una columna vacía en el dataframe de los tiempos.
 ```{r}
 df_tiempos <- df_tiempos %>%
   mutate(R = time_vec)
+
+# Python 
+Python <- c(0.068188, 0.001999, 0.000544, 0.000000, 
+                 0.000000, 0.001147, 0.000000, 0.002000, 
+                 0.000000, 0.000000)
+
+df_tiempos <- cbind(df_tiempos, Python)
+
 kable(df_tiempos, caption = "Tiempos de ejecución de los métodos")
+```
+
+Vamos a cargar a la última tabla los resultados de NIST
+```{r}
+resultados_NIST <- read_excel("Resultados_NIST.xlsx")
+`resultados_grado_ 10` <- `resultados_grado_ 10` %>%
+  mutate(NIST = resultados_NIST$Estimate)
 ```
 
 
@@ -142,7 +196,7 @@ kable(`resultados_grado_ 1`, caption = "Polinomio grado 1")
 #kable(`resultados_grado_ 2`, caption = "Polinomio grado 2")
 #kable(`resultados_grado_ 3`, caption = "Polinomio grado 3")
 #kable(`resultados_grado_ 4`, caption = "Polinomio grado 4")
-#kable(`resultados_grado_ 5`, caption = "Polinomio grado 5")
+kable(`resultados_grado_ 5`, caption = "Polinomio grado 5")
 kable(`resultados_grado_ 6`, caption = "Polinomio grado 6")
 #kable(`resultados_grado_ 7`, caption = "Polinomio grado 7")
 #kable(`resultados_grado_ 8`, caption = "Polinomio grado 8")
