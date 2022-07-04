@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(stringr)
 library(knitr)
+library(tidyverse)
 ```
 
 ### Regresión Lineal En Julia y en R
@@ -40,37 +41,36 @@ Para no saturar el espacio, se presenta una tabla de resultados al azar. Sin emb
 
 ```{r cars}
 setwd("~/ITAM/Tesis/Julia con R/Code/Censo/Resultados_Julia")
-temp <- list.files(pattern = "*.csv")
-
-myfiles <- lapply(temp, read.csv)
+fnames <- list.files(pattern = "*.csv")
+temp <- lapply(fnames, read_csv)
 ```
 Reemplazamos los nombres para que se vea más bonito
 ```{r}
-n = length(temp)
+n = length(fnames)
 
 for (i in 1:n){
-  temp[i] <- str_replace(temp[i], ".csv", "")
+  fnames[i] <- str_replace(fnames[i], ".csv", "")
 }
 ```
 
 
 Primero vamos a leer todos los csv donde haya datos. 
 ```{r}
-n = length(myfiles)
+n = length(temp)
 
 for (i in 1:n){
-  assign(temp[i], myfiles[[i]])
+  assign(fnames[i], temp[[i]])
 }
 ```
 
 Vamos a editar los dataframes de resultados.
 ```{r}
 for (i in (n/2 + 1):n){
-  aux <- get(temp[i])
+  aux <- get(fnames[i])
   aux <- aux %>% 
     select(Name, `Coef.`) %>%
     rename(Julia = `Coef.`)
-  assign(temp[i], aux)
+  assign(fnames[i], aux)
 }
 ```
 
@@ -80,14 +80,21 @@ Vamos a hacer una función para que todo sea más eficiente.
 union_resultados <- function(vec_strings, fm){
   for (i in 1:(k/2)){
     aux <- get(vec_strings[i])
+    
+    t1 <- Sys.time()
     ajuste <- lm(fm, aux)
+    t2 <- Sys.time()
+    dif <- difftime(t2, t1, units = "secs")
+    
     coeficientes <- ajuste$coefficients
     remove(aux)  #Para vaciar un poco de la memoria
 
     res_aux <- get(vec_strings[(k/2) + i])
     res_aux <- res_aux %>%
       mutate(R = coeficientes)
-    return (res_aux)
+    
+    resultados <- list("coef" = res_aux, "tiempo" = dif)
+    return (resultados)
   }
 }
 ```
@@ -95,16 +102,25 @@ union_resultados <- function(vec_strings, fm){
 
 Fit 5 (base)
 ```{r}
-fm_5 <- formula(INGTRMEN ~ as.factor(SEXO) + EDAD + as.factor(NIVACAD) + 
-                  HORTRA +   as.factor(ENT_PAIS_TRAB))
+fm_5 <- formula(INGTRMEN ~ HORTRA + as.factor(SEXO) + EDAD + as.factor(NIVACAD) + as.factor(ENT_PAIS_TRAB))
 
-fit5_strings <- temp[str_detect(temp, "fit5")]
+fit5_strings <- fnames[str_detect(fnames, "fit5")]
 
 k <- length(fit5_strings)
+fit5 <- c()
 
 for (i in (k/2 +1):k){
-  assign(fit5_strings[i], union_resultados(fit5_strings, fm_5))
+  results <- union_resultados(fit5_strings, fm_5)
+  assign(fit5_strings[i], results$coef)
+  fit5 <- c(fit5, results$tiempo)
 }
+
+fit5_strings <- str_remove(fit5_strings, "_fit5")
+
+nombres <- fit5_strings[1:(k/2)]
+names(fit5) <- nombres
+tiempos_df <- as.data.frame(fit5)
+
 ```
 
 ```{r}
@@ -115,16 +131,22 @@ kable(res_2500mil_fit5, caption = "Fit 5, 2.5 millones observaciones")
 Fit 6
 
 ```{r}
-fm_6 <- formula(INGTRMEN ~ as.factor(SEXO) + EDAD + as.factor(NIVACAD) + 
-                  HORTRA +   as.factor(ENT_PAIS_TRAB) + as.factor(SITTRA))
+fm_6 <- formula(INGTRMEN ~ HORTRA + as.factor(SEXO) + EDAD + as.factor(NIVACAD) +  as.factor(ENT_PAIS_TRAB) + as.factor(SITTRA))
 
-fit6_strings <- temp[str_detect(temp, "fit6")]
+fit6_strings <- fnames[str_detect(fnames, "fit6")]
 
 k <- length(fit6_strings)
+fit6 <- c()
 
 for (i in (k/2 +1):k){
-  assign(fit6_strings[i], union_resultados(fit6_strings, fm_6))
+  results <- union_resultados(fit6_strings, fm_6)
+  assign(fit6_strings[i], results$coef)
+  fit6 <- c(fit6, results$tiempo)
 }
+
+tiempos_df$fit6 <- fit6
+
+
 ```
 
 ```{r}
@@ -138,13 +160,21 @@ fm_7 <- formula(INGTRMEN ~ as.factor(SEXO) + EDAD + as.factor(NIVACAD) +
                   HORTRA +   as.factor(ENT_PAIS_TRAB) + as.factor(SITTRA) + 
                   as.factor(ALFABET))
 
-fit7_strings <- temp[str_detect(temp, "fit7")]
+fit7_strings <- fnames[str_detect(fnames, "fit7")]
 
 k <- length(fit7_strings)
 
+fit7 <- c()
+
 for (i in (k/2 +1):k){
-  assign(fit7_strings[i], union_resultados(fit7_strings, fm_7))
+  results <- union_resultados(fit7_strings, fm_7)
+  assign(fit7_strings[i], results$coef)
+  fit7 <- c(fit7, results$tiempo)
 }
+
+tiempos_df$fit7 <- fit7
+
+
 ```
 
 ```{r}
@@ -158,13 +188,19 @@ fm_8 <- formula(INGTRMEN ~ as.factor(SEXO) + EDAD + as.factor(NIVACAD) +
                   HORTRA +   as.factor(ENT_PAIS_TRAB) + as.factor(SITTRA) + 
                   as.factor(ALFABET) + as.factor(AGUINALDO))
 
-fit8_strings <- temp[str_detect(temp, "fit8")]
+fit8_strings <- fnames[str_detect(fnames, "fit8")]
 
 k <- length(fit8_strings)
+fit8 <- c()
 
 for (i in (k/2 +1):k){
-  assign(fit8_strings[i], union_resultados(fit8_strings, fm_8))
+  results <- union_resultados(fit8_strings, fm_8)
+  assign(fit8_strings[i], results$coef)
+  fit8 <- c(fit8, results$tiempo)
 }
+
+tiempos_df$fit8 <- fit8
+
 ```
 
 ```{r}
@@ -178,13 +214,17 @@ fm_9 <- formula(INGTRMEN ~ as.factor(SEXO) + EDAD + as.factor(NIVACAD) +
                   HORTRA +   as.factor(ENT_PAIS_TRAB) + as.factor(SITTRA) + 
                   as.factor(ALFABET) + as.factor(AGUINALDO) + as.factor(VACACIONES))
 
-fit9_strings <- temp[str_detect(temp, "fit9")]
+fit9_strings <- fnames[str_detect(fnames, "fit9")]
 
-k <- length(fit9_strings)
+fit9 <- c()
 
 for (i in (k/2 +1):k){
-  assign(fit9_strings[i], union_resultados(fit9_strings, fm_9))
+  results <- union_resultados(fit9_strings, fm_9)
+  assign(fit9_strings[i], results$coef)
+  fit9 <- c(fit9, results$tiempo)
 }
+
+tiempos_df$fit9 <- fit9
 ```
 
 ```{r}
@@ -194,21 +234,32 @@ kable(res_50mil_fit9, caption = "Fit 9, 50 mil observaciones")
 Fit10
 
 ```{r}
-fm_10 = formula(INGTRMEN ~ as.factor(SEXO) + EDAD + as.factor(NIVACAD) + 
-                  HORTRA +   as.factor(ENT_PAIS_TRAB) + as.factor(SITTRA) +
+fm_10 = formula(INGTRMEN ~ HORTRA+ as.factor(SEXO) + EDAD + as.factor(NIVACAD) + as.factor(ENT_PAIS_TRAB) + as.factor(SITTRA) +
                   as.factor(ALFABET) + as.factor(AGUINALDO) + 
                   as.factor(VACACIONES) + as.factor(SERVICIO_MEDICO))
 
-fit10_strings <- temp[str_detect(temp, "fit10")]
+fit10_strings <- fnames[str_detect(fnames, "fit10")]
 
 k <- length(fit10_strings)
 
+fit10 <- c()
+
 for (i in (k/2 +1):k){
-  assign(fit10_strings[i], union_resultados(fit10_strings, fm_10))
+  results <- union_resultados(fit10_strings, fm_10)
+  assign(fit10_strings[i], results$coef)
+  fit10 <- c(fit10, results$tiempo)
 }
+
+tiempos_df$fit10 <- fit10
+
 ```
 
 ```{r}
 kable(res_2500mil_fit10, caption = "Fit 10, 2.5 millones observaciones")
+```
+
+
+```{r}
+write.csv(tiempos_df, "tiempos_R_CENSO.csv")
 ```
 

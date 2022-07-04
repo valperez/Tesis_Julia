@@ -1,3 +1,11 @@
+# Para guardar los tiempos
+tiempos_df <- data.frame(matrix(nrow = 5, ncol = 4))
+colnames(tiempos_df) <- c("BsMD2", "BsMD", "JuliaCall", "reticulate")
+row.names(tiempos_df) <- seq(1, 5)
+
+runs <- seq(1, 5)
+
+
 library(BsMD2)
 
 setwd("~/ITAM/Tesis/Julia con R/Code/MD-optimality")
@@ -13,11 +21,18 @@ pp <- BsProb1(X = X[, 2:6], y = y, p = .25, gamma = .4,
 p <- pp@p_mod
 facs <- pp@fac_mod
 Xcand <- as.matrix(cbind(blk = rep(+1, 32), M96e2[, 1:5]))
-t <- Sys.time()
-e4_R <- BsMD2::MDopt(X = X, y = y, Xcand = Xcand, 
-                     nMod = 32, p_mod = p, fac_mod = facs, 
-                     g = 0.4, Iter = 10, nStart = 25, top = 5)
-Sys.time() - t
+
+times <- c()
+for (i in runs){
+  t <- Sys.time()
+  e4_R <- BsMD2::MDopt(X = X, y = y, Xcand = Xcand, 
+                       nMod = 32, p_mod = p, fac_mod = facs, 
+                       g = 0.4, Iter = 10, nStart = 25, top = 5)
+  t_final <- Sys.time() - t
+  
+  times <- c(times, t_final)
+}
+
 
 # # # R paquete original 
 library(BsMD)
@@ -27,12 +42,18 @@ reactor8.BsProb <- BsProb(X = X, y = y, blk = 1, mFac = 5, mInt = 3,
 nf <- reactor8.BsProb$nftop
 s2 <- reactor8.BsProb$sigtop
 
-t_RO <- Sys.time()
-ej4_RO <- BsMD::MD(X = X, y = y, nFac = 5, nBlk = 1, mInt = 3, 
-                   g = 0.40, nMod = 32, p = p, s2 = s2, nf = nf, 
-                   facs = facs, nFDes = 4, Xcand = Xcand, 
-                   mIter = 20, nStart = 25, top = 5)
-Sys.time() - t_RO
+times <- c()
+for (i in runs){
+  t_RO <- Sys.time()
+  ej4_RO <- BsMD::MD(X = X, y = y, nFac = 5, nBlk = 1, mInt = 3, 
+                     g = 0.40, nMod = 32, p = p, s2 = s2, nf = nf, 
+                     facs = facs, nFDes = 4, Xcand = Xcand, 
+                     mIter = 20, nStart = 25, top = 5)
+  t_final <- Sys.time() - t_RO
+  
+  times <- c(times, t_final)
+}
+tiempos_df["BsMD"] <- times
 
 
 library(JuliaCall)
@@ -62,11 +83,16 @@ julia_assign("Xcand", Xcand)
 julia_command("Xcand = NamedArray(Xcand)")
 julia_eval("Xcand = Int64.(Xcand)")
 
-t_J <- Sys.time()
-julia_eval("MDopt(X = X, y = y, Xcand = Xcand, nMod = 32, p_mod = p_mod, 
+times <- c()
+for (i in runs){
+  t <- Sys.time()
+  julia_eval("MDopt(X = X, y = y, Xcand = Xcand, nMod = 32, p_mod = p_mod, 
     fac_mod = fac_mod, nFDes = 4, max_int = 3, g = 0.4, Iter = 10, nStart = 25, top = 5)")
-Sys.time() - t_J
-
+  t_final <- Sys.time() - t
+  
+  times <- c(times, t_final)
+}
+tiempos_df["JuliaCall"] <- times
 
 # # # Python con R
 library(reticulate)
@@ -91,10 +117,19 @@ Iter_P <- r_to_py(10L)
 nStart_P <- r_to_py(25L)
 top_P <- r_to_py(5L)
 
-t_P <- Sys.time()
-MD_Python(X = X_P, y = y_P, Xcand = Xcand_P, nMod = nMod_P, 
-          p_mod = p_mod_P, fac_mod = fac_mod_P, 
-          nFDes = nFDes_P, max_int = max_int_P, 
-          g = g_P, Iter = Iter_P, nStart = nStart_P, top = top_P)
-Sys.time() - t_P
+times <- c()
+for (i in runs){
+  t <- Sys.time()
+  MD_Python(X = X_P, y = y_P, Xcand = Xcand_P, nMod = nMod_P, 
+            p_mod = p_mod_P, fac_mod = fac_mod_P, 
+            nFDes = nFDes_P, max_int = max_int_P, 
+            g = g_P, Iter = Iter_P, nStart = nStart_P, top = top_P)
+  t_final <- Sys.time() - t
+  
+  times <- c(times, t_final)
+}
+tiempos_df["reticulate"] <- times
+
+write.csv(tiempos_df, "tiempos_MD_ej4.csv")
+
 

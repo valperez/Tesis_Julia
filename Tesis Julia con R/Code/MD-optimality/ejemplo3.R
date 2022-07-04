@@ -1,3 +1,10 @@
+# Para guardar los tiempos
+tiempos_df <- data.frame(matrix(nrow = 5, ncol = 4))
+colnames(tiempos_df) <- c("BsMD2", "BsMD", "JuliaCall", "reticulate")
+row.names(tiempos_df) <- seq(1, 5)
+
+runs <- seq(1, 5)
+
 # # # R tesis Paty
 library(BsMD2)
 setwd("~/ITAM/Tesis/Julia con R/Code/MD-optimality")
@@ -17,24 +24,37 @@ Xcand <- matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
                 nrow=16,dimnames=list(1:16,c("blk","f1","f2","f3","f4"))
 )
 
+times <- c()
+for (i in runs){
+  t <- Sys.time()
+  e3_R <- BsMD2::MDopt(X = X, y = y, Xcand = Xcand,
+                       nMod = 5, p_mod = p_mod, fac_mod = fac_mod, 
+                       nStart = 25)
+  t_final <- Sys.time() - t
+  
+  times <- c(times, t_final)
+}
+tiempos_df["BsMD2"] <- times
 
-t <- Sys.time()
-e3_R <- BsMD2::MDopt(X = X, y = y, Xcand = Xcand,
-                     nMod = 5, p_mod = p_mod, fac_mod = fac_mod, 
-                     nStart = 25)
-Sys.time() - t
 
 # # # R paquete original
 library(BsMD)
 
 s2 <- c(0.5815, 0.5815, 0.5815, 0.5815, 0.4412)
 
-t_RO <- Sys.time()
-e3_RO <- BsMD::MD(X = X, y = y, nFac = 4, nBlk = 1, mInt = 3, g = 2, 
-          nMod = 5, p = p_mod, s2 = s2, nf = c(3, 3, 3, 3, 4), 
-          facs = fac_mod, nFDes = 4, Xcand = Xcand, mIter = 20, 
-          nStart = 25, top = 10)
-Sys.time() - t_RO
+times <- c()
+for (i in runs){
+  t_RO <- Sys.time()
+  e3_RO <- BsMD::MD(X = X, y = y, nFac = 4, nBlk = 1, mInt = 3, g = 2, 
+                    nMod = 5, p = p_mod, s2 = s2, nf = c(3, 3, 3, 3, 4), 
+                    facs = fac_mod, nFDes = 4, Xcand = Xcand, mIter = 20, 
+                    nStart = 25, top = 10)
+  t_final <- Sys.time() - t_RO
+  
+  times <- c(times, t_final)
+}
+tiempos_df["BsMD"] <- times
+
 
 # # #  Julia con R
 library(JuliaCall)
@@ -53,10 +73,19 @@ julia_assign("Xcand_J", Xcand)
 julia_command("Xcand_J = NamedArray(Xcand_J)")
 julia_eval("Xcand_J = Int64.(Xcand_J)")
 
-t_J <- Sys.time()
-julia_eval("MDopt(X = X_J, y = y_J, Xcand = Xcand_J, nMod = 5, 
+
+times <- c()
+for (i in runs){
+  t <- Sys.time()
+  julia_eval("MDopt(X = X_J, y = y_J, Xcand = Xcand_J, nMod = 5, 
     p_mod = p_mod_J, fac_mod = fac_mod_J, nFDes = 4, max_int = 3, g = 2, Iter = 20, nStart = 10, top = 10)")
-Sys.time() - t_J
+  t_final <- Sys.time() - t
+  
+  times <- c(times, t_final)
+}
+tiempos_df["JuliaCall"] <- times
+
+
 
 # Python con R
 library(reticulate)
@@ -81,10 +110,19 @@ Iter_P <- r_to_py(20L)
 nStart_P <- r_to_py(25L)
 top_P <- r_to_py(10L)
 
-t_P <- Sys.time()
-MD_Python(X = X_P, y = y_P, Xcand = Xcand_P, nMod = nMod_P, 
-          p_mod = p_mod_P, fac_mod = fac_mod_P, 
-          nFDes = nFDes_P, max_int = max_int_P, 
-          g = g_P, Iter = Iter_P, nStart = nStart_P, top = top_P)
-Sys.time() - t_P
+times <- c()
+for (i in runs){
+  t <- Sys.time()
+  MD_Python(X = X_P, y = y_P, Xcand = Xcand_P, nMod = nMod_P, 
+            p_mod = p_mod_P, fac_mod = fac_mod_P, 
+            nFDes = nFDes_P, max_int = max_int_P, 
+            g = g_P, Iter = Iter_P, nStart = nStart_P, top = top_P)
+  t_final <- Sys.time() - t
+  
+  times <- c(times, t_final)
+}
+tiempos_df["reticulate"] <- times
+
+write.csv(tiempos_df, "tiempos_MD_ej3.csv")
+
 
