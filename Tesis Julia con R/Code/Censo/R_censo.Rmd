@@ -77,14 +77,20 @@ for (i in (n/2 + 1):n){
 Vamos a hacer una función para que todo sea más eficiente. 
 ```{r}
 #Función para unir los resultados de R con los de Julia
-union_resultados <- function(vec_strings, fm){
+union_resultados <- function(vec_strings, fm, runs){
   for (i in 1:(k/2)){
     aux <- get(vec_strings[i])
     
-    t1 <- Sys.time()
-    ajuste <- lm(fm, aux)
-    t2 <- Sys.time()
-    dif <- difftime(t2, t1, units = "secs")
+    tiempos <- c()
+    for (i in 1:runs){
+      t1 <- Sys.time()
+      ajuste <- lm(fm, aux)
+      t2 <- Sys.time()
+      dif <- difftime(t2, t1, units = "secs")
+      tiempos <- c(tiempos, dif)
+    }
+    
+    tiempos_df <- as.data.frame(tiempos)
     
     coeficientes <- ajuste$coefficients
     remove(aux)  #Para vaciar un poco de la memoria
@@ -93,7 +99,7 @@ union_resultados <- function(vec_strings, fm){
     res_aux <- res_aux %>%
       mutate(R = coeficientes)
     
-    resultados <- list("coef" = res_aux, "tiempo" = dif)
+    resultados <- list("coef" = res_aux, "tiempo" = tiempos_df)
     return (resultados)
   }
 }
@@ -107,20 +113,20 @@ fm_5 <- formula(INGTRMEN ~ HORTRA + as.factor(SEXO) + EDAD + as.factor(NIVACAD) 
 fit5_strings <- fnames[str_detect(fnames, "fit5")]
 
 k <- length(fit5_strings)
-fit5 <- c()
+n_runs <- 5
+n_fits <- 6
+fit5 <- data.frame(matrix(NA, nrow = n_runs, ncol = n_fits))
 
 for (i in (k/2 +1):k){
-  results <- union_resultados(fit5_strings, fm_5)
+  results <- union_resultados(fit5_strings, fm_5, runs = n_runs)
   assign(fit5_strings[i], results$coef)
-  fit5 <- c(fit5, results$tiempo)
+  fit5[, i - k/2] <- results$tiempo
 }
 
 fit5_strings <- str_remove(fit5_strings, "_fit5")
 
 nombres <- fit5_strings[1:(k/2)]
-names(fit5) <- nombres
-tiempos_df <- as.data.frame(fit5)
-
+colnames(fit5) <- nombres
 ```
 
 ```{r}
