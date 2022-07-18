@@ -61,30 +61,6 @@ for (i in 1:10){
 }
 
 ```
-Ahora para los tiempos de cada método
-
-```{r}
-temp <- list.files(pattern = "tiempos_grado_")
-myfiles <- lapply(temp, read.csv)
-
-myfiles[[11]] <- myfiles[[2]]
-myfiles <- myfiles[-2]
-
-# Falta modificar esto por el dataframe que tenga el promedio de tiempos
-df_tiempos <- data.frame()
-for (i in 1:10){
-  df_tiempos <- rbind(df_tiempos, myfiles[[i]])
-}
-
-nombres <- c()
-
-for (k in 1:i){
-  nombres <- c(nombres, paste0("k_", k))
-}
-  row.names(df_tiempos) <- nombres
-  
-```
-
 ```{r}
 runs <- seq(1, 5)
 tiempos_r <- data.frame(matrix(ncol = 6, nrow = 10))
@@ -165,20 +141,13 @@ for (i in 2:10){
 }
 ```
 
-Agrego una columna vacía en el dataframe de los tiempos. 
+```{r}
+tiempos_r["Promedio"] <- rowMeans(tiempos_r[, 2: ncol(tiempos_r)])
+```
+
 
 ```{r}
-df_tiempos <- df_tiempos %>%
-  mutate(R = time_vec)
-
-# Python 
-Python <- c(0.068188, 0.001999, 0.000544, 0.000000, 
-                 0.000000, 0.001147, 0.000000, 0.002000, 
-                 0.000000, 0.000000)
-
-df_tiempos <- cbind(df_tiempos, Python)
-
-kable(df_tiempos, caption = "Tiempos de ejecución de los métodos")
+write.csv(tiempos_r, "C:/Users/Valeria/Documents/ITAM/Tesis/Julia con R/Code/NIST/Resultados/tiempos_NIST_R_Condensado.csv")
 ```
 
 Vamos a cargar a la última tabla los resultados de NIST
