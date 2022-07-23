@@ -28,10 +28,12 @@ for (i in runs){
   e4_R <- BsMD2::MDopt(X = X, y = y, Xcand = Xcand, 
                        nMod = 32, p_mod = p, fac_mod = facs, 
                        g = 0.4, Iter = 10, nStart = 25, top = 5)
-  t_final <- Sys.time() - t
+  t_2 <- Sys.time()
+  t_final <- difftime(t_2, t, unit = "secs")
   
   times <- c(times, t_final)
 }
+tiempos_df["BsMD2"] <- times
 
 
 # # # R paquete original 
@@ -49,8 +51,8 @@ for (i in runs){
                      g = 0.40, nMod = 32, p = p, s2 = s2, nf = nf, 
                      facs = facs, nFDes = 4, Xcand = Xcand, 
                      mIter = 20, nStart = 25, top = 5)
-  t_final <- Sys.time() - t_RO
-  
+  t_2 <- Sys.time() 
+  t_final <- difftime(t_2, t_RO, unit = "secs")
   times <- c(times, t_final)
 }
 tiempos_df["BsMD"] <- times
@@ -88,7 +90,8 @@ for (i in runs){
   t <- Sys.time()
   julia_eval("MDopt(X = X, y = y, Xcand = Xcand, nMod = 32, p_mod = p_mod, 
     fac_mod = fac_mod, nFDes = 4, max_int = 3, g = 0.4, Iter = 10, nStart = 25, top = 5)")
-  t_final <- Sys.time() - t
+  t_2 <- Sys.time()
+  t_final <- difftime(t_2, t, unit = "secs")
   
   times <- c(times, t_final)
 }
@@ -124,7 +127,8 @@ for (i in runs){
             p_mod = p_mod_P, fac_mod = fac_mod_P, 
             nFDes = nFDes_P, max_int = max_int_P, 
             g = g_P, Iter = Iter_P, nStart = nStart_P, top = top_P)
-  t_final <- Sys.time() - t
+  t_2 <- Sys.time()
+  t_final <- difftime(t_2, t, unit = "secs")
   
   times <- c(times, t_final)
 }
