@@ -158,23 +158,6 @@ resultados_NIST <- read_excel("Resultados_NIST.xlsx")
 ```
 
 
-
-Los resultados estan en las siguientes tablas. 
-```{r}
-kable(`resultados_grado_ 1`, caption = "Polinomio grado 1")
-#kable(`resultados_grado_ 2`, caption = "Polinomio grado 2")
-#kable(`resultados_grado_ 3`, caption = "Polinomio grado 3")
-#kable(`resultados_grado_ 4`, caption = "Polinomio grado 4")
-kable(`resultados_grado_ 5`, caption = "Polinomio grado 5")
-kable(`resultados_grado_ 6`, caption = "Polinomio grado 6")
-#kable(`resultados_grado_ 7`, caption = "Polinomio grado 7")
-#kable(`resultados_grado_ 8`, caption = "Polinomio grado 8")
-#kable(`resultados_grado_ 9`, caption = "Polinomio grado 9")
-kable(`resultados_grado_ 10`, caption = "Polinomio grado 10")
-```
-
-
-
 Vamos a calcular los valores singulares de la matriz X 
 ```{r}
 X <- `X_ 10`
