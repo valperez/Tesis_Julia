@@ -1,74 +1,66 @@
 \chapter{Discriminación de modelos} \label{chapter_MDopt}
 
-\say{Los experimentos son realizados por científicos en prácticamente todos los campos de investigación, usualmente para descubrir algo sobre un determinado proceso o sistema. Se puede definir un experimento como una prueba o una serie de pruebas en la que se realizan cambios intencionados en las variables de entrada de un proceso o sistema para observar e identificar los cambios que se puedan observar en variable de salida} \cite{montgomery2017design}. 
+\say{Los experimentos son realizados por científicos en prácticamente todos los campos de investigación, usualmente para descubrir algo sobre un determinado proceso o sistema. Se puede definir un experimento como una prueba o una serie de pruebas en la que se realizan cambios intencionados en las variables de entrada de un proceso o sistema para observar e identificar los cambios que se puedan tener en la variable de salida}, \cite{montgomery2017design}. 
 
-Se debe llevar un registro de los cambios de las variable de entrada y salida con el objetivo de establecer relaciones y obtener conclusiones. La información recolectada sobre los cambios en las variables se debe analizar por medio de diversos métodos estadísticos. Montgomery establece que \say{usualmente es muy útil presentar los resultados de los experimentos en términos de un modelo empírico, esto es, una ecuación derivada de los datos que exprese la relación entre la respuesta y factores de diseño importantes}. 
+Se debe llevar un registro de los cambios de las variables de entrada y salida con el objetivo de establecer relaciones y obtener conclusiones. La información recolectada sobre los cambios en las variables se debe analizar por medio de diversos métodos estadísticos. Montgomery establece que \say{usualmente es muy útil presentar los resultados de los experimentos en términos de un modelo empírico, esto es, una ecuación derivada de los datos que exprese la relación entre la respuesta y factores de diseño importantes}. 
 
-Los resultados que se obtienen de los experimentos representan un avance científico indispensable. No obstante, la realización de experimentos tiene un obstáculo importante. \cite{box2005statistics} lo enuncia de manera precisa como \say{El conocimiento es poder. Es la clave para la inovación y los beneficios. Pero, la obtención de nuevo conocimiento puede ser complejo, prolongado y costoso}. El diseño de experimentos es el método que se encarga de determinar una manera eficiente de hacer experimentos donde se obtengan resultados concretos. 
+Los resultados que se obtienen de los experimentos representan un avance científico indispensable. No obstante, la realización de experimentos tiene un obstáculo importante. \cite{box2005statistics} lo enuncia de manera precisa como \say{El conocimiento es poder. Es la clave para la inovación y los beneficios. Pero, la obtención de nuevo conocimiento puede ser complejo, prolongado y costoso}. \cite{lawson2015design} establece que el diseño de experimentos es el método que se encarga de determinar una manera eficiente de hacer experimentos donde se obtengan resultados concretos. 
 
-El objetivo del experimento es determinar los factores que tengan mayor influencia en los cambios de la respuesta. La elección de dichos factores resulta en posibles modelos diferentes. En ocasiones puede ocurrir que los resultados de un experimento sean ambiguos en la decisión de los factores de un experimento. En estos casos puede resultar conveniente agregar algunos ensayos extras. \cite{meyer1996} proponen el criterio MD, de \text{Model Discrimination}. Este método busca determinar que factores contribuyen a los cambios en la variable de respuesta. 
+El objetivo del experimento es determinar los factores que tengan mayor influencia en los cambios de la respuesta. La elección de dichos factores resulta en posibles modelos diferentes. En ocasiones puede ocurrir que los resultados de un experimento sean ambiguos en la decisión de los factores que afectan la variable de respuesta. En estos casos puede resultar conveniente agregar algunos ensayos extras. \cite{meyer1996} proponen el criterio MD, de \textit{Model Discrimination}. Este criterio busca determinar que factores contribuyen a los cambios en la variable de respuesta. 
 
-En este capítulo se comenta un resumen del artículo publicado por \cite{meyer1996}. Asimismo, se exponen dos ejemplos donde se utiliza el criterio MD para mostrar su uso en la discriminación entre posibles modelos. El objetivo de este capítulo es exponer el poder de cómputo de cómputo de los tres lenguajes en discriminación de modelos en el contexto de diseño de experimentos. El criterio MD se programó en \textsf{Julia} y \textsf{Python} mientras que en \textsf{R} se utilizó el paquete \texttt{BsMD2} desarrollado por Patricia Vela. 
+En este capítulo se comenta un resumen del artículo publicado por \cite{meyer1996}. Asimismo, se exponen dos ejemplos donde se utiliza el criterio MD para mostrar su uso en la discriminación entre posibles modelos. El objetivo de este capítulo es exponer el poder de cómputo de los tres lenguajes en discriminación de modelos en el contexto de diseño de experimentos. El criterio MD se programó en \textsf{Julia} y \textsf{Python} mientras que en \textsf{R} se utilizaron los paquetes \texttt{BsMD} y \texttt{BsMD2} desarrollados por Ernesto Barrios y Patricia Vela respectivamente. 
 
-\section{Definiciones y preliminares}
+\section{Preliminares y definiciones}
 
-Dado que el enfoque de esta tesis no es el diseño de experimentos, se presenta una lista de términos y sus definiciones obtenidos de \cite{lawson2015design}. El objetivo es proporcionar los antecedentes necesarios para la comprensión de este capítulo. 
+Dado que el enfoque de esta tesis no es el diseño de experimentos, se presenta una lista de términos y sus definiciones obtenidos de \cite{lawson2015design}. El objetivo es proporcionar los antecedentes necesarios para la comprensión de este capítulo. A la par, se establece un diseño de experimentos creado por la autora cuyo objetivo es ejemplificar cada uno de los términos mostrados a continuación. 
 
-\begin{enumerate}
-	\item Ensayos: es la acción donde el experimentador cambia al menos una de las variables estudiadas para observar el efecto de su acción. 
+El ejemplo gira alrededor de deporte favorito de la autora: el atletismo. Más específicamente, las competencias de distancias largas como 5K, 10K y 21K. Suponga que se busca crear un diseño de experimentos cuyo objetivo sea correr 10 kilómetros lo más rápido posible el 31 de diciembre. Desde agosto, cada semana se harán carreras de 10 kilómetros donde se medirá el tiempo para obtener un progreso semanal. Algunos factores que podrían tener un efecto en el tiempo final recorrido son el calzado utilizado, el clima presente en el día de la carrera, la ropa utilizada, la nutrición durante el ciclo de entrenamiento y la cena y agua ingeridos la noche anterior. 
+
+\begin{itemize}
+	\item Ensayos: es la acción donde el experimentador cambia al menos una de las variables estudiadas para observar el efecto de su acción. También son llamadas experimentos. En el ejemplo del atletismo, cada carrera semanal de 10 kilómetros es un ensayo. 
 	
-	\item Variable independiente: es una de las variables bajo estudio que se controla en un valor o nivel objetivo durante un experimento. El nivel se cambia de manera sistemática de ensayo a ensayo para determinar el efecto que tiene en la respuesta.
+	\item Variable independiente: es una de las variables bajo estudio que se controla en un valor o nivel objetivo durante un experimento. El nivel se cambia de manera sistemática de ensayo a ensayo para determinar el efecto que tiene en la respuesta. En el ejemplo de la carrera, las variables independientes son el calzado, el clima, la ropa y la nutrición utilizados el día de cada carrera. 
 	
-	\item Variable dependiente (o variable respuesta denotada por $Y$): es la característica del experimento que se mide después de cada ensayo. La magnitud de la respuesta depende de los cambios en las variables independientes o factores y en los factores confundidos. 
+	\item Variable dependiente (o variable respuesta denotada por $Y$): es la característica del experimento que se mide después de cada ensayo. La magnitud de la respuesta depende de los cambios en las variables independientes o factores y en los factores de confusión. En el ejemplo de la carrera, la variable dependiente es el tiempo total que toma al atleta correr 10 kilómetros. 
 	
-	\item Factores confundidos: surgen cuando cada cambio que hace el experimentador para un factor, entre ensayos, está acoplado con un cambio idéntico en otro factor. En esta situación es imposible determinar que factor causa cualquier cambio observado en la respuesta o variable dependiente. 
+	\item Factores de confusión: surgen cuando cada cambio que hace el experimentador para un factor, entre ensayos, está acoplado con un cambio idéntico en otro factor. En esta situación es imposible determinar que factor causa cualquier cambio observado en la respuesta o variable dependiente. En el ejemplo de la carrera, cualquier cambio en nutrición está asociado (casi de manera indistinguible) con un cambio en la hidratación.
 	
-	\item Efecto: es el cambio en la respuesta causado por el cambio en un factor o variable independiente. Después de que los ensayos en un diseño de experimentos son realizados, el efecto se puede estimar calculándolo de los datos de respuesta observados. 
+	\item Efecto: es el cambio en la respuesta causado por el cambio en un factor o variable independiente. Después de que los ensayos en un diseño de experimentos son realizados, el efecto se puede estimar calculándolo de los datos de respuesta observados. En el ejemplo, el efecto es el aumento o disminución del tiempo necesario para completar 10 kilómetros. 
 	
-	\item Diseño experimental: es una colección de experimentos o ensayos planeados con anticipación a la ejecución. Los ensayos seleccionados en un diseño de experimentos dependerán del propósito del diseño. 
+	\item Diseño experimental: es una colección de experimentos o ensayos planeados con anticipación a la ejecución. Los ensayos seleccionados en un diseño de experimentos dependerán del propósito del diseño. En el ejemplo del atletismo, el diseño experimental es el conjunto de carreras semanales hechas desde agosto hasta diciembre. 
 	
-	\valinline{Como digo que esto es de Wiley?}
+	\item Diseño factorial. Lawson lo define como un experimento donde los ensayos consisten en todas las posibles combinaciones de los niveles de los factores estudiados. Por su parte, \cite{montgomery2017design} expande la definición al exponer un ejemplo. Un diseño factorial es aquel en donde si hay $a$ niveles del factor $A$ y $b$ niveles del factor $B$ cada ensayo contiene todas las combinaciones $ab$ de tratamientos. Son los diseños más eficientes para estudiar los efectos de dos o más factores. En el ejemplo de las carrera, el diseño factorial es el conjunto de ensayos donde se pruebas todas las posibles combinaciones de calzado, ropa y nutrición. 
 	
-	\item Diseño factorial: es un diseño donde en cada ensayo del experimento todas las posibles combinaciones de niveles de factores son investigados. Por ejemplo, si hay $a$ niveles del factor $A$ y $b$ niveles del factor $B$ cada ensayo contiene todas las combinaciones $ab$ de tratamientos. Son los diseños más eficientes para estudiar los efectos de dos o más factores. 
+	\item Diseño factorial fraccionado: es una variación del diseño factorial básico donde solo se realizan un subconjunto de ensayos. En el ejemplo del atletismo, un diseño factorial fraccionado es seleccionar un subconjunto de combinaciones de calzado, ropa y nutrición que, se crea, podrán dar el mejor resultado en la carrera. 
 	
-	\item Diseño factorial fraccionado: es una variación del diseño factorial básico donde solo se realizan un subconjunto de ensayos. 
+	\item Factor activo: aquellos factores que tienen influencia real en la respuesta. Continuando con el ejemplo de la carrera, existe una relación directa entre el calzado utilizado y el desempeño de un atleta. 
 	
-	\valinline{Faltan, no encuentro las definiciones}
+	\item Factor no activo: aquellos factores que no tienen influencia real en la respuesta. En el ejemplo del atletismo, el clima puede o no tener influencia en el resultado de un atleta en una carrera. El ambiente en que se realizó el entrenamiento puede ser seleccionado para que un atleta pueda rendir de la misma manera en climas completamente diferentes. 
 	
-	\item Factor activo: 
-	
-	\item Factor no activo: 
-
-	
-\end{enumerate}
+\end{itemize}
 
 
-Factores activos *
-Factores no activos *
+\section{Metodología general} \label{sec_metodologia}
 
+En esta sección se pretende explicar la metodología propuesta por \cite{meyer1996} para la discriminación de modelos cuya teoría matemática se expone a detalle en las siguientes dos secciones. Algunos pasos de este procedimiento incluyen teoría de diseños de experimentos y teoría bayesiana. Esos temas están fuera del alcance de esta tesis. Sin embargo, se presentan referencias donde se puede indagar más sobre el tema. 
 
-
-\section{Metodología General} \label{sec_metodologia}
-
-En esta sección se pretende explicar la metodología propuesta por \cite{meyer1996} para la discriminación de modelos sin entrar en la teoría matemática. Algunos pasos de este procedimiento incluyen teoría de diseños de experimentos y teoría bayesiana. Esos temas están fuera del alcance de esta tesis. Sin embargo, se presentan referencias donde se puede indagar más sobre el tema. 
-
-Suponga que le interesa un fenómeno y decide hacer un experimento donde se recolecten datos para conocer más sobre el objeto de interés. La planeación de este tipo de experimentos se conoce como diseño estadístico de experimentos que \cite{montgomery2017design} define como \say{el proceso de plneación del experimento para que se recopilen datos que puedan ser analizados por métodos estadisticos que resulten en conclusiones objetivas y válidas.}
+Suponga que le interesa un fenómeno y decide hacer un experimento donde se recolecten datos para conocer más sobre el objeto de interés. La planeación de este tipo de experimentos se conoce como diseño estadístico de experimentos que \cite{montgomery2017design} define como \say{el proceso de planeación del experimento para que se recopilen datos que puedan ser analizados por métodos estadísticos que resulten en conclusiones objetivas y válidas.}
 
 Montgomery también expone una serie de pautas para realizar un diseño de experimentos. El primer paso se menciona anteriormente y es distinguir un fenómeno al que se le pueda diseñar un experimento para conocer más sobre él. El segundo paso consiste en la elección de la variable de respuesta, los factores que influyen en ella y los niveles a los que se someten. Meyer propone el caso donde se toma una variable de respuesta $Y$, posiblemente afectada por $j$ factores que tienen dos niveles cada uno. Las combinaciones de factores activos crean un modelo $M_i$ para $Y$.
 
-El tercer paso es la elección del diseño experimental que, en el caso de Meyer, se toma un experimento factorial fraccionado donde se realiza solo un subconjunto de todos los ensayos posibles. En este punto, Meyer propone incluir conocimiento previo (también conocido como información \textit{a priori}) del fenómeno. Se completa el diseño experimental al asignar probabilidades a priori a cada uno de los posibles modelos denominadas $P(M_i)$. Se busca proponer una relación lineal entre factores ya que resultan en los modelos más simples. 
+El tercer paso es la elección del diseño experimental que, en el caso de Meyer, la elección es un experimento factorial fraccionado donde se realiza solo un subconjunto de los ensayos posibles. En este punto, Meyer propone incluir conocimiento previo (también conocido como información \textit{a priori}) del fenómeno. Se completa el diseño experimental al asignar probabilidades a priori a cada uno de los posibles modelos denominadas $P(M_i)$. Se busca proponer una relación lineal entre factores, ya que resulta en la creación de modelos más simples. 
 
-El cuarto paso del diseño de experimentos es la realización del experimento. En este paso se registra el cambio en los niveles de cada factor junto con su efecto en la variable respuesta denominada $Y$. Esta información corregida con la realización del experimento se conoce como conocimiento posterior (o \textit{apriori}) ya que se conoce después de haber realizado el experimento. En este punto Meyer utiliza teoría bayesiana para calcular la probabilidad $P(M_i | Y)$ de que cada modelo $M_i$ sea el correcto. Para facilitar la comprensión de la probabilidad, se invita a que lea $P(M_i | Y)$ en voz alta. 
+El cuarto paso del diseño de experimentos es la realización del experimento. En este paso se registra el cambio en los niveles de cada factor junto con su efecto en la variable respuesta denominada $Y$. La información corregida con la realización del experimento se conoce como conocimiento posterior (o \textit{a posteriori}) ya que se conoce después de haber realizado el experimento. En este punto Meyer utiliza teoría bayesiana para calcular la probabilidad $P(M_i | Y)$ de que cada modelo $M_i$ sea el correcto. Para facilitar la comprensión de la probabilidad, se invita a que se lea $P(M_i | Y)$ como la \say{probabilidad de que el modelo $M_i$ sea el correcto dada la información obtenida sobre el vector $Y$}. 
 
-El quinto paso propuesto por Montgomery es el análisis estadístico de los datos. Meyer propone calcular la probabilidad de que cada factor $j$ está activo, $P_j$. Entre mayor sea la probabilidad $P_j$, mayor es la posibilidad de que el factor $j$ esté activo. Si existe una diferencia clara y prominente entre las probabilidades $P_j$ entonces se puede hacer una separación entre factores activos y no activos. En el caso contrario, Meyer establece que se deben realizar más ensayos para discriminar entre los factores y, consecuentemente, entre modelos. 
+El quinto paso propuesto por Montgomery es el análisis estadístico de los datos. Meyer propone calcular la probabilidad de que cada factor $j$ está activo denominada $P_j$. Entre mayor sea la probabilidad $P_j$, mayor es la posibilidad de que el factor $j$ esté activo. Si existe una diferencia clara y prominente entre las probabilidades $P_j$ entonces se puede hacer una separación entre factores activos y no activos. En el caso contrario, Meyer establece que se deben realizar más ensayos para discriminar entre los factores y, consecuentemente, entre modelos. 
 
-Es en la elección de esos ensayos donde se presenta el criterio MD. El criterio MD valora que ensayos son necesarios repetir para aclarar el efecto de los factores en la  la variable respuesta $Y$. Además, la propuesta en el artículo de Meyer utiliza un algoritmo de intercambio donde se calcula el valor MD para todas las combinaciones de ensayos posibles. Se selecciona el conjunto de ensayos con mayor MD para realizarlos nuevamente y obtener resultados concretos. 
+Es en la elección de esos ensayos donde se presenta el criterio MD. El criterio MD valora que ensayos son necesarios repetir para aclarar el efecto de los factores en la variable respuesta $Y$. Además, la propuesta en el artículo de Meyer utiliza un algoritmo de intercambio donde se calcula el valor MD para todas las combinaciones de ensayos posibles. Se selecciona el conjunto de ensayos con mayor MD para realizarlos nuevamente y obtener resultados concretos. 
 
 Finalmente, el último paso del diseño estadístico de experimentos es la obtención de conclusiones. En la metodología de Meyer, se llega a este paso cuando los ensayos extras hacen una clara distinción entre factores activos y no activos. Con esto, se cumple el objetivo de describir el fenómeno estudiado con el modelo más probable. El diagrama \ref{diagrama_completo} muestra de manera visual la metodología enunciada. 
 
 \begin{figure}[h]
 	\begin{center}
-		\includegraphics[scale=0.5]{Imagenes/diagrama_completo.PNG}
+		\includegraphics[scale=0.4]{Imagenes/diagrama_completo.PNG}
 		\caption{Diagrama de metodología descrita por \cite{meyer1996}}
 		\label{diagrama_completo}
 	\end{center}
@@ -80,20 +72,20 @@ Finalmente, el último paso del diseño estadístico de experimentos es la obten
 
 Esta sección presenta una explicación matemática detallada del criterio MD propuesto por \cite{meyer1996}. Sea \textbf{$Y$} el vector de respuestas de tamaño $n \times 1$ de un experimento factorial fraccionado con $k$ factores. El modelo que mejor describa \textbf{$Y$} depende de los factores activos en el experimento y en este análisis se consideran todas las posibles combinaciones de dichos factores. Sea $M_i$ el modelo con una combinación particular de factores activos $f_i$ donde $0 \leq f_i \leq k$. Condicionado a que $M_i$ sea el modelo verdadero, se asume un modelo lineal normal, $\textbf{$Y$} \sim N(X_i \beta_i, \sigma^2 I).$ 
 
-La matriz $X_i$ es la matriz de regresión para $M_i$ e incluye los efectos principales para cada factor activo y su interacción hasta cualquier orden deseado. Sea $t_i$ el número de efectos (sin incluir el término constante $t_0$) en $M_i$. Se denota además a $M_0$ como el modelo sin factores activos. 
+La matriz $X_i$ es la matriz de regresión para $M_i$ e incluye los efectos principales para cada factor activo y su interacción hasta cualquier orden deseado. Sea $t_i$ el número finito de efectos (sin incluir el término constante $t_0$) en $M_i$. Se denota además a $M_0$ como el modelo sin factores activos. 
 
-Posteriormente, se asignan distribuciones a priori no informativas al término constante $\beta_0$ y el error la desviación estándar $sigma$. Ambos valores son comunes en todos los modelos. Por lo tanto, $p( \beta_0, \sigma) \propto \dfrac{1}{\sigma}$. Los coeficientes restantes $\beta_i$ tienen distribuciones normales a priori independientes con media 0 y desviación estándar $\gamma \sigma$. 
+Posteriormente, se asignan distribuciones a priori no informativas al término constante $\beta_0$ y el error la desviación estándar $\sigma$. Ambos valores son comunes en todos los modelos. Por lo tanto, $p( \beta_0, \sigma) \propto \dfrac{1}{\sigma}$. Los coeficientes restantes $\beta_i$ tienen distribuciones normales a priori independientes con media 0 y desviación estándar $\gamma \sigma$. 
 
-Se completa el modelo al asignar probabilidades previas a cada uno de los posibles modelos. Se recomienda seguir la regla de Pareto y pensar en modelos donde sean pocos los factores principales. Otro supuesto es la regla de Pareto o \textit{sparsity of effects principle} que es pensar que cuando hay varias variables, el sistema es más probable es el que esté dominado por los efectos principales e interacciones de orden bajo \cite{montgomery2017design}. Se asume que existe la probabilidad $\pi, \text{ } 0 < \pi < 1$ de que cualquier factor esté activo. Se asume también que la información previa de que un factor esté activo no tiene efecto en la creencia de que otros factores estén activos. Por lo tanto, la probabilidad a priori del modelo $M_i$ sigue una función de probabilidad $P(M_i) = \pi ^f_i (1 - \pi)^{k-f_i}.$ 
+Se completa el modelo al asignar probabilidades previas a cada uno de los posibles modelos. Otro supuesto es la regla de Pareto o \textit{sparsity of effects principle} que consiste en pensar que cuando hay varias variables, el sistema es más probable es el dominado por pocos efectos principales e interacciones de orden bajo \cite{montgomery2017design}. Se asume que existe la probabilidad $\pi, \text{ } 0 < \pi < 1$ de que cualquier factor esté activo. Se asume también que la información previa de que un factor esté activo no tiene efecto en la creencia de que otros factores estén activos. Por lo tanto, la probabilidad a priori del modelo $M_i$ sigue una función de probabilidad $P(M_i) = \pi ^{f_i} (1 - \pi)^{k-f_i}$. 
 
-Después, se realiza el experimento y se obtienen los resultados en el vector de datos \textbf{$Y$}. Con la nueva información se pueden actualizar las distribuciones de los parámetros de cada modelo así como la probabilidad de que los modelos sean correctos. En este punto se utiliza teoría de estadística bayesiana que va más allá de lo alcances de esta tesis. En caso de que se busque más información del tema se recomiendo leer \val{agregar cita de Mendoza}. 
+Después, se realiza el experimento y se obtienen los resultados en el vector de datos \textbf{$Y$}. Con la nueva información se pueden actualizar las distribuciones de los parámetros de cada modelo, así como la probabilidad de que los modelos sean correctos. En este punto se utiliza teoría de estadística bayesiana que va más allá de lo alcances de esta tesis. En caso de que se busque más información del tema se recomienda leer \cite{mendoza_bayesiana}. 
 
-La probabilidad \textit{a posterior} de que el modelo $M_i$ describa los datos de manera precisa es  
+La probabilidad posterior de que el modelo $M_i$ describa los datos de manera precisa es  
 
 
 \begin{equation*}
 	\begin{aligned}
-		P(M_i | Y) \propto  \pi ^f_i (1 - \pi)^{k-f_i} \gamma^{-t_i} |\Gamma_i + X_i' X_i |^{-1/2} S_i^{-(n-1)/2}, 		
+		P(M_i | Y) \propto  \pi ^{f_i} (1 - \pi)^{k-f_i} \gamma^{-t_i} |\Gamma_i + X_i^{T} X_i |^{-1/2} S_i^{-(n-1)/2}, 		
 	\end{aligned}
 \end{equation*}
 
@@ -101,7 +93,7 @@ La probabilidad \textit{a posterior} de que el modelo $M_i$ describa los datos d
 
 \begin{equation} \label{betai}
 	\begin{aligned}
-		\hat{\beta_i} = (\Gamma_i + X_i' X_i)^{-1} X_i ' Y, 
+		\hat{\beta_i} = (\Gamma_i + X_i^{T} X_i)^{-1} X_i^{T} Y, 
 	\end{aligned}
 \end{equation}
 
@@ -119,7 +111,7 @@ y
 
 \begin{equation} \label{delta_i}
 	\begin{aligned}
-		S_i = (Y - X_i \hat{\beta_i})' (Y - X_i \hat{\beta_i}) + \hat{\beta_i}' \Gamma_i \hat{\beta_i}.
+		S_i = (Y - X_i \hat{\beta_i})^{T} (Y - X_i \hat{\beta_i}) + \hat{\beta_i}^{T} \Gamma_i \hat{\beta_i}.
 	\end{aligned}
 \end{equation}
 
@@ -127,23 +119,23 @@ Asimismo, se puede sumar el conjunto de $P(M_i | Y)$ donde el factor $j$ esté i
 
 \begin{equation} \label{eq_pj}
 	\begin{aligned}
-		P_j = \sum_{M_i:factor_{j}activo} P(M_i | Y)
+		P_j = \sum_{M_i:\text{factor}_{j}\text{ activo}} P(M_i | Y)
 	\end{aligned}
 \end{equation}
 
-El conjunto de probabilidades $\{ P_j \}$ ofrece un resumen de la actividad de cada uno de los factores del experimento. 
+\noindent El conjunto de probabilidades $\{ P_j \}$ ofrece un resumen de la actividad de cada uno de los factores del experimento. 
 
-En este punto del análisis ya se tienen las probabilidades $P(M_i | Y)$ donde, si alguna es cerca a 1, señalaría el modelo que mejor describe los datos. Sin embargo, es común que los datos no identifiquen sin ambigüedad un modelo en particular. \cite{Meyer} desarrolla un método para identificar un conjunto de ensayos cuya realización aclara la actividad de los factores. 
+En este punto del análisis ya se tienen las probabilidades $P(M_i | Y)$ donde, si alguna es cercana a 1, señalaría el modelo que mejor describe los datos. Sin embargo, es común que los datos no identifiquen sin ambigüedad un modelo en particular. \cite{meyer1996} desarrolla un método para identificar un conjunto de ensayos cuya realización aclara la actividad de los factores. 
 
 Meyer describe el diseño de discriminación de modelos (MD) propuesto por Box y Hill en 1967 de la siguiente manera. Sea $Y^{*}$ el vector de datos correspondiente a los resultados de los nuevos ensayos. Sea $P(Y^{*}| M_i, Y)$ la densidad predictiva de $Y^{*}$ dados los datos iniciales $Y$ y el modelo $M_i$. Entonces, el cálculo del valor MD es
 
 \begin{equation*}
 	\begin{aligned}
-		MD = \sum_{0 \leq i \neq j \leq m} P(M_i | Y) P(M_j | Y) \int_{-\infty}^{\infty} p(Y^{*} | M_i, Y) \times \ln(\dfrac{p(Y^{*} | M_i, Y)}{p(Y^{*} | M_j, Y)}) dY*
+		MD = \sum_{0 \leq i \neq j \leq m} P(M_i | Y) P(M_j | Y) \int_{-\infty}^{\infty} p(Y^{*} | M_i, Y) \times \ln(\dfrac{p(Y^{*} | M_i, Y)}{p(Y^{*} | M_j, Y)}) dY^{*}
 	\end{aligned}
 \end{equation*}
 
-Sea $p_i$ la densidad predictiva para una nueva observación condicionada a las observaciones originales $Y$ cuando $M_i$ sea el modelo correcto. Entonces, el diseño de criterio es 
+Sea $p_i$ la densidad predictiva para una nueva observación condicionada a las observaciones originales $Y$ cuando $M_i$ sea el modelo correcto. Entonces, el diseño del criterio es 
 
 \begin{equation} \label{MD_original}
 	\begin{aligned}
@@ -151,11 +143,11 @@ Sea $p_i$ la densidad predictiva para una nueva observación condicionada a las 
 	\end{aligned}
 \end{equation}
 
-\noindent donde $I(p_i, p_j) = \int p_i \ln(\dfrac{p_i}{p_j})$ es la información de Kullback-Leibler que describe la información media para discriminar a favor de $M_i$ contra $M_j$ cuando $M_i$ es el verdadero modelo. Adicionalmente, el cociente $\dfrac{p_i}{p_j}$ se puede entender como la probabilidad en favor de $M_i$ contra $M_j$ dados los datos de los ensayos extras. 
+\noindent donde $I(p_i, p_j) = \int p_i(x) \ln(\dfrac{p_i(x)}{p_j(x)}) dx$ es la información de Kullback-Leibler que describe la información media para discriminar a favor de $M_i$ contra $M_j$ cuando $M_i$ es el verdadero modelo. Adicionalmente, el cociente $\dfrac{p_i}{p_j}$ se puede entender como la probabilidad en favor de $M_i$ contra $M_j$ dada la información de los ensayos extras. 
 
 La intuición detrás de la fórmula del criterio MD puede resultar más sencilla de entender si se considera el ejemplo donde solo se tienen dos modelos posibles, $M_1$ y $M_2$. El valor MD es proporcional a la suma del valor esperado de $\ln(p_1/p_2)$ dado $M_1$ y el valor condicional esperado de  $\ln(p_2/p_1)$ dado $M_2$. Entonces, se busca un diseño que calcule una probabilidad alta a favor de $M_1$ si este es el modelo correcto; pero que también calcule lo equivalente para $M_2$ si es el modelo correcto. Es decir, se busca el valor de MD que señale el diseño correcto. 
 
-Ahora se simplifica la ecuación \ref{MD_original} condicionando sobre $\sigma^{2}$ e integrando sobre $\sigma^{2}$ en el último paso. Pero, primero se debe derivar la distribución predictiva de $Y^{*}$ para cada modelo. Sean ${X_i}$ y ${X_i}^{*}$ las matrices de regresión para los ensayos iniciales y adicionales, respectivamente, cuando $M_i$ es el modelo. Entonces, 
+Ahora, se simplifica la ecuación \ref{MD_original} condicionando sobre $\sigma^{2}$ e integrando sobre $\sigma^{2}$ en el último paso. Pero, primero se debe derivar la distribución predictiva de $Y^{*}$ para cada modelo. Sean ${X_i}$ y ${X_i}^{*}$ las matrices de regresión análogas a \ref{eq_matrizX} para los ensayos iniciales y adicionales, respectivamente, cuando $M_i$ es el modelo. Entonces, 
 
 \begin{equation*}
 	\begin{aligned}
@@ -165,19 +157,19 @@ Ahora se simplifica la ecuación \ref{MD_original} condicionando sobre $\sigma^{
 
 \noindent donde $\hat{{Y_i}}^{*} = {X_i}^{*} \hat{\beta_i}$, $\hat{\beta_i}$ definido como la ecuación \ref{betai} y 
 
-\begin{equation*}
+\begin{equation} \label{vi_vj}
 	\begin{aligned}
-	{V_i}^{*} = I + {X_i}^{*}(\Gamma_i + X_i'X_i)^{-1} {X_i'}^{*}
+	{V_i}^{*} = I + {X_i}^{*}(\Gamma_i + X_i^{T}X_i)^{-1} {X_i^{T}}^{*}
 	\end{aligned}
-\end{equation*}
+\end{equation}
 
-\noindent El radio de los densidades para dos modelos, $M_i$ y $M_j$ es entonces, 
+\noindent El cociente de los densidades para dos modelos, $M_i$ y $M_j$ es entonces, 
 
 \begin{equation*}
 	\begin{aligned}
-		\ln(\frac{p(Y^{*} | M_i, Y, \sigma^{2})}{p(Y^{*}| M_j, Y, \sigma^{2})}) =  \frac{1}{2} \ln(\frac{|{V_j}^{*}|}{|{V_i}^{*}|}) - &
-		 \frac{1}{2 \sigma^{2}} ((Y^{*} - \hat{{Y_j}}^{*})' {{V_j}^{*})}^{-1}(Y* - \hat{{Y_j}}^{*}) - \\
-		 & (Y^{*} - \hat{{Y_i}}^{*})'{{V_i}^{*})}^{-1}(Y* - \hat{{Y_i}}^{*})
+		\ln \left (\frac{p(Y^{*} | M_i, Y, \sigma^{2})}{p(Y^{*}| M_j, Y, \sigma^{2})} \right ) =  \frac{1}{2} \ln \left (\frac{|{V_j}^{*}|}{|{V_i}^{*}|} \right ) - &
+		 \frac{1}{2 \sigma^{2}} ((Y^{*} - \hat{{Y_j}}^{*})^{T} {{V_j}^{*}}^{-1}(Y^{*} - \hat{{Y_j}}^{*}) - \\
+		 & (Y^{*} - \hat{{Y_i}}^{*})^{T}{{V_i}^{*}}^{-1}(Y^{*} - \hat{{Y_i}}^{*}))
 	\end{aligned}
 \end{equation*}
 
@@ -185,7 +177,7 @@ Se integra con respecto a $p(Y^{*} | M_i, Y, \sigma^{2})$ para obtener
 
 \begin{equation*}
 	\begin{aligned}
-		\frac{1}{2} \ln(\frac{|{V_j}^{*}|}{|{V_i}^{*}|}) - \frac{1}{2 \sigma^{2}}(n\sigma^{2} - \sigma^{2}\text{tr}({{V_j}^{*}}^{-1}{V_i}^{*}) - (\hat{{Y_i}}^{*} - \hat{{Y_j}}^{*})'{{V_j}^{*}}^{-1}(\hat{{Y_i}}^{*} - \hat{{Y_j}}^{*})
+		\frac{1}{2} \ln(\frac{|{V_j}^{*}|}{|{V_i}^{*}|}) - \frac{1}{2 \sigma^{2}}(n\sigma^{2} - \sigma^{2}\text{tr}({{V_j}^{*}}^{-1}{V_i}^{*}) - (\hat{{Y_i}}^{*} - \hat{{Y_j}}^{*})^{T}{{V_j}^{*}}^{-1}(\hat{{Y_i}}^{*} - \hat{{Y_j}}^{*})
 	\end{aligned}
 \end{equation*}
 
@@ -194,7 +186,7 @@ Finalmente, se integra con respecto a $p(\sigma^{2} | Y, M_i)$ y se obtiene el c
 \begin{equation} \label{formula_MD}
 	\begin{aligned}
 		MD =  \frac{1}{2} \sum_{0 \leq i \neq j \leq m} & P(M_i | Y)  P(M_j | Y) \times  (-n^{*} + tr({{V_j}^{*}}^{-1}{V_i}^{*}) + (n-1) \times \\
-		& ((\hat{{Y_j}}^{*})'{{V_j}^{*}}^{-1}(\hat{{Y_i}}^{*} - \hat{{Y_j}}^{*}))/S_i)
+		& ((\hat{{Y_i}}^{*}-\hat{{Y_j}}^{*})^{T}{{V_j}^{*}}^{-1}(\hat{{Y_i}}^{*} - \hat{{Y_j}}^{*}))/S_i)
 	\end{aligned}
 \end{equation}
 
@@ -208,13 +200,13 @@ En esta sección se resume el artículo escrito por \cite{mitchelldetmax} donde 
 
 Considere el modelo de regresión lineal múltiple $y = X \beta + \epsilon$. Donde el vector de observaciones $y$ es de tamaño $n \times 1$; $X$ es la matriz de $n \times k$ de constantes; $\beta$ es el vector $k \times 1$ de coeficientes por estimar; y $\epsilon$ es el vector de errores de tamaño $n \times 1$ de variables aleatorias independientes e idénticamente distribuidas con una media $0$ y varianza desconocida $\sigma^{2}$. El renglón $i$-ésimo de $X$ es $f(x_i)'$ donde $x_i$ es el $i$-ésimo punto de diseño y la función $f$ está determinada por el modelo. Sea $p$ el número de variables independientes y $\chi$ la región donde es factible realizar el experimento.
 
-Se utilizó el método de mínimos cuadrados para calcular los coeficientes $\beta$. El estimador de $\beta$ es $\hat{\beta} = (X'X)^{-1} X'y$, y su matriz de covarianza es $(X'X)^{-1} \sigma^{2}$. En cualquier punto $x \in \chi$, el valor estimado de la \say{verdadera} respuesta es $\hat{y} (x) = f(x)' \beta$. Si el modelo es correcto, la esperanza de $\hat{y}(x)$ es la esperanza de la respuesta en el punto $x$. Es decir, el modelo predice correctamente $y$. La varianza de $\hat{y}(x)$ está dada por $v(x) = f(x)' (X'X)^{-1} f(x) \sigma^{2}$. Sin pérdida de generalidad, se puede considerar a $\sigma^{2}$ igual a $1$. 
+Se utilizó el método de mínimos cuadrados para calcular los coeficientes $\beta$. El estimador de $\beta$ es $\hat{\beta} = (X'X)^{-1} X'y$, y su matriz de covarianza es $(X'X)^{-1} \sigma^{2}$. En cualquier punto $x \in \chi$, el valor estimado de la \say{verdadera} respuesta es $\hat{y} (x) = f(x)' \hat{\beta}$. Si el modelo es correcto, la esperanza de $\hat{y}(x)$ es la esperanza de la respuesta en el punto $x$. Es decir, el modelo predice correctamente $y$. La varianza de $\hat{y}(x)$ está dada por $v(x) = f(x)' (X'X)^{-1} f(x) \sigma^{2}$. Sin pérdida de generalidad, se puede considerar a $\sigma^{2}$ igual a $1$. 
 
 Una de las maneras más populares de construir diseños óptimos es el llamado diseño \say{D-óptimos} donde se busca maximizar $|X'X|$. El propósito del artículo de Mitchell es presentar su versión de diseño D-óptimo llamado \say{DETMAX}. 
 
 \subsection{Algoritmo básico}
 
-En 1970, Mitchell publicó un primer artículo donde introdujo su versión del algoritmo de intercambio. En esa ocasión estableció que se debe empezar con un diseño de $n$ ensayos elegido al azar. Para mejorarlo, se agregan y eliminan punto de acuerdo a las siguientes consignas: 
+En 1970, Mitchell publicó un primer artículo donde introdujo su versión del algoritmo de intercambio. En esa ocasión estableció que se debe empezar con un diseño de $n$ ensayos elegido al azar. Para mejorarlo, se agregan y eliminan puntos de acuerdo a las siguientes consignas: 
 
 \begin{enumerate}
 	\item Se suma un ensayo número $n+1$ elegido para alcanzar el incremento máximo posible de $|X'X|$. Después, 
@@ -225,7 +217,7 @@ Estos dos pasos se realizan al primero sumar al diseño original el punto donde 
 
 \subsection{Incorporación de excursiones}
 
-Posteriormente, en el artículo \cite{mitchelldetmax} propone una versión generalizada del algoritmo anterior. El requerimiento de que el diseño con $n+1$ puntos sea regresado inmediatamente a un diseño con $n$ puntos se relajó. Ahora, al algoritmo se le permite hacer una \say{excursión} donde se pueden construir diseños de varios tamaños que eventualmente regresan a uno de tamaño $n$.  
+Posteriormente, en su artículo \cite{mitchelldetmax} propone una versión generalizada del algoritmo anterior. El requerimiento de que el diseño con $n+1$ puntos sea regresado inmediatamente a un diseño con $n$ puntos se relajó. Ahora, al algoritmo se le permite hacer una \say{excursión} donde se pueden construir diseños de varios tamaños que eventualmente regresan a uno de tamaño $n$.  
 
 Si no hay un incremento en el determinante, todos los diseños construidos en la excursión son eliminados y agregados a un conjunto de diseños fallidos llamado $F$. El conjunto $F$ es usado después para guiar la siguiente excursión, la cual siempre empieza con el mejor diseño actual de $n$ puntos. 
 
@@ -237,28 +229,27 @@ Sea $D$ el diseño actual en cualquier momento durante una excursión. Las regla
 	\item Si el número de puntos en $D$ es menor que $n$, se agrega un punto si $D$ no está en $F$ y se elimina un punto de otra manera. 
 \end{enumerate}
 
-Para determinar si algún diseño $D$ está o no en $F$, se debe examinar el determinante de $|X'X|$. A pesar de que esto no es un prueba definitiva (ya que dos diseños diferentes pueden tener el mismo determinante), Mitchell establece que no parece afectar el rendimiento del algoritmo y solo toma una fracción de tiempo en comparación a hacer la prueba exacta de equivalencia.
+Para determinar si algún diseño $D$ está o no en $F$, se debe examinar el determinante $|X'X|$. A pesar de que esto no es un prueba definitiva (ya que dos diseños diferentes pueden tener el mismo determinante), Mitchell establece que no parece afectar el rendimiento del algoritmo y solo toma una fracción de tiempo en comparación a hacer la prueba exacta de equivalencia.
 
 En cada iteración se vuelve más difícil obtener un mejor diseño ya que las excursiones se pueden alejar mucho de un nivel de $n$ puntos. Para parar el algoritmo, Mitchell propone establecer límites en el mínimo y máximo número de puntos permitidos en la construcción de un diseño durante una excursión. Su recomendación es establecerlo entre $n \pm 6$. 
 
 \subsection{Puntos candidatos}
 
-Mitchell adopta el enfoque de \cite{dykstra1971augmentation} donde los puntos de diseño son seleccionados de una lista previamente especificada de candidatos. El objetivo es la facilidad de programación y el poder de exclusión de puntos no deseados o posibles. 
+Mitchell adopta el enfoque de \cite{dykstra1971augmentation} donde los puntos de diseño son seleccionados de una lista previamente especificada de candidatos. El objetivo de esto es la facilidad de programación y el poder de exclusión de puntos no deseados o posibles. 
 
-Se puede presentar el caso donde los diseños sean óptimos localmente, por lo tanto se recomienda ejecutar el algoritmo repetidas veces para encontrar la solución. En cada ocasión, DETMAX empieza con un diseño completamente nuevo con puntos son seleccionados aleatoriamente de una lista de candidatos. De esta forma, se asegura que el diseño solución es el óptimo globalmente. Mitchell establece que diez intentos usualmente son suficientes para llegar al diseño óptimo. 
+Se puede presentar el caso donde los diseños sean óptimos localmente por lo tanto, se recomienda ejecutar el algoritmo repetidas veces para encontrar la solución. En cada ocasión, DETMAX empieza con un diseño completamente nuevo cuyos puntos seleccionados aleatoriamente de una lista de candidatos. De esta forma, se asegura que el diseño solución es el óptimo globalmente. Mitchell establece que diez intentos usualmente son suficientes para llegar al diseño óptimo. 
 
 \section{Función MDopt}
-\cite{tesis_paty}\val{arreglar} utilizó la teoría sobre discriminación de modelos de Meyer así como el algoritmo de intercambio de Michell para crear el paquete \texttt{BsMD2}. El paquete se enfoca en la aplicación de la metodología general establecida por Meyer e incluye la función \texttt{MDopt}. La función \texttt{MDopt} calcula el criterio MD para los ensayos extras sugeridos para discriminar entre posibles modelos. En este ejercicio se utilizó la función creada por Vela para desarrollar una función \texttt{MDopt} análoga en \textsf{Julia} y \textsf{Python}. Esta sección resume el algoritmo utilizado para crear la funciónmientras que en el siguiente apartado se pone en práctica la función con dos ejemplos. 
+\cite{tesis_paty} utilizó la teoría sobre discriminación de modelos de Meyer así como el algoritmo de intercambio de Michell para crear el paquete \texttt{BsMD2}. El paquete se enfoca en la aplicación de la metodología general establecida por Meyer e incluye la función \texttt{MDopt}. La función \texttt{MDopt} calcula el criterio MD para los ensayos extras sugeridos para discriminar entre posibles modelos. En este ejercicio se utilizó la función creada por Vela para desarrollar una función \texttt{MDopt} análoga en \textsf{Julia} y \textsf{Python}. Esta sección resume el algoritmo utilizado para crear la función, mientras que en el siguiente apartado se pone en práctica con dos ejemplos. 
 
-Suponga que el diseño de experimentos ya está definido y ahora busca utilizar la función \texttt{MDopt} para calcular el valor MD para una serie de ensayos extras necesarios. El primer argumento de la función \texttt{MDopt} es el correspondiente a la matriz \texttt{X} cuyas columnas representan los factores del experimento y los renglones a los ensayos. El diseño del experimento es factorial fraccionado por lo que los factores tienen dos niveles en este caso representados como dos niveles representados como \texttt{+} o \texttt{-}. Por lo tanto, la matriz \texttt{X} está compuesta por \texttt{1} y  \texttt{-1}. 
+Suponga que el diseño de experimentos ya está definido y ahora busca utilizar la función \texttt{MDopt} para calcular el valor MD de una serie de ensayos extras necesarios. El primer argumento de la función \texttt{MDopt} es el correspondiente a la matriz \texttt{X} cuyas columnas representan los factores del experimento y los renglones a los ensayos. El diseño del experimento es factorial fraccionado por lo que los factores tienen dos niveles, en este caso representados como \texttt{+} o \texttt{-}. Por lo tanto, la matriz \texttt{X} está compuesta por \texttt{1} y  \texttt{-1}. 
 
 El segundo argumento de la función es llamado \texttt{max\_int} y corresponde a la interacción máxima entre factores. La función utiliza la secuencia condicional \texttt{if} para construir la matriz \texttt{Xfac}. Se comienza definiendo la matriz \texttt{Xfac} como una copia de la matriz \texttt{X}. Si \texttt{max\_int} es mayor a 1 existen interacciones entre dos factores. Por lo tanto, se agregan columnas a \texttt{Xfac} correspondientes a todas las posibles combinaciones de interacciones entre factores. La interacción entre una dupla de factores se señala con un \texttt{1}. El proceso se repite para el caso donde \texttt{max\_int} sea mayor a 2 para añadir las interacciones entre tres factores. 
 
-Posteriormente, la función calcula $\Gamma_k, \beta_k, \delta_k$ para cada modelo $k$ usando las fórmulas \ref{gamma_i}, \ref{betai} y \ref{delta_i} respectivamente. Luego, se define otra función (dentro de \texttt{MDopt}) llamada \texttt{MDr} cuyo objetivo es calcular el valor MD para un conjunto de ensayos. Finalmente, la función \texttt{MDopt} implementa el algoritmo de intercambio para calcular el valor MD para distintas combinaciones de ensayos.
+Posteriormente, la función calcula $\Gamma_k, \beta_k, S_k$ para cada modelo $k$ usando las fórmulas \ref{gamma_i}, \ref{betai} y \ref{delta_i} respectivamente. Luego, se define otra función (dentro de \texttt{MDopt}) llamada \texttt{MDr} cuyo objetivo es calcular el valor MD para un conjunto de ensayos. Finalmente, la función \texttt{MDopt} implementa el algoritmo de intercambio para calcular el valor MD para distintas combinaciones de ensayos.
 
-Al término de los cálculos, la función \texttt{MDopt} de Vela agrega formatos a distintos objetos indispensables para objetivos fuera del alcance de este trabajo. En cambio, la función \texttt{MDopt} desarrollada para este trabajo se limita a dar formato al dataframe que muestra los ensayos a los que se calculó el valor MD. El diagrama \ref{diagrama_mdopt} presenta el desarrollo de la función \texttt{MDopt} de manera visual. 
+Al término de los cálculos, la función \texttt{MDopt} de Vela añade formato a distintos objetos cuyo objetivo está fuera del alcance de este trabajo. En cambio, la función \texttt{MDopt} desarrollada para este proyecto se limita a dar formato al dataframe que muestra los ensayos a los que se calculó el valor MD. El diagrama \ref{diagrama_mdopt} presenta el desarrollo de la función \texttt{MDopt} de manera visual. 
 
-\valinline{Falta arregkar esta imagen}
 \begin{figure}[h]
 	\begin{center} 
 		\includegraphics[scale=0.5]{Imagenes/diagrama_MDopt.PNG}
@@ -271,12 +262,13 @@ El desarrollo detallado y el pseudocódido de la función \texttt{MDr} y del alg
 
 \section{Implementación de MDopt en los lenguajes}
 
-Este proyecto se eligió para ilustrar el poder de cálculo de \textsf{Julia, R} y \textsf{Python} ya que representa un reto de rapidez y complejidad de cálculo. Se utilizó el algoritmo presentado en la sección anterior para desarrollar la función \texttt{MDopt} en \textsf{Julia} y \textsf{Python}. Posteriormente, se utilizaron los paquetes \texttt{JuliaCall} y \texttt{reticulate} de \textsf{R} para crear un vínculo de \textsf{R} con \textsf{Julia} y \textsf{Python} respectivamente. Así, se exportaron y ejecutaron las funciones \texttt{MDopt} a \textsf{R}. Se utilizaron dos ejemplos de experimentos que presenta \cite{Meyer} para mostrar y comparar la rapidez de ejecución de las tres funciones. En esta sección expone el paralelismo que se encontró al implementar lenguajes externos en \textsf{R}.
+Este proyecto se eligió para ilustrar el poder de cálculo de \textsf{Julia, R} y \textsf{Python} ya que representa un reto de rapidez y complejidad de cálculo. Se utilizó el algoritmo presentado en la sección anterior para desarrollar la función \texttt{MDopt} en \textsf{Julia} y \textsf{Python}. Posteriormente, se utilizaron los paquetes \texttt{JuliaCall} y \texttt{reticulate} de \textsf{R} para crear un vínculo de \textsf{R} con \textsf{Julia} y \textsf{Python} respectivamente. Así, se exportaron y ejecutaron las funciones \texttt{MDopt} a \textsf{R}. Se utilizaron dos ejemplos de experimentos que presenta \cite{meyer1996} para mostrar y comparar la rapidez de ejecución de las tres funciones. En sus ambiente naturales, \textsf{Python} y \textsf{Julia} son más rápidos, pero para efecto de este trabajo se utilizó \textsf{R} como punto de comparación ya que es uno de los propósitos de esta tesis. En esta sección se expone el paralelismo que se encontró al implementar lenguajes externos en \textsf{R}.
 
 Para ejecutar lenguajes externos en \textsf{R} se requieren dos paquetes. El primero es \texttt{JuliaCall} y, como su nombre lo indica, se encarga de ejecutar comandos de \textsf{Julia} en \textsf{R}. Asimismo, el paquete \texttt{reticulate} cumple el mismo propósito con \textsf{Python}. Ambos paquetes fueron desarrollados con el objetivo de crear un enlace entre su lenguaje y \textsf{R} por lo que se encontraron similitudes entre ellos. La tabla \ref{comandos_similares} presenta los comandos análogos de los paquetes con especificaciones que se encontraron al trabajar con ellos. 
 
 \begin{center}
 	\begin{tabular}{ |p{2.5cm}|p{2.5cm}|p{3cm}|p{3cm}|  }
+		\hline
 		JuliaCall & reticulate & Uso & Especificaciones\\
 		\hline
 		julia\_setup   & use\_python    & Es usado para especificar la dirección del programa (Julia o Python) dentro de la computadora &   use\_python no es necesario a menos que se tengan varias versiones de Python instaladas.\\
@@ -293,7 +285,7 @@ Para ejecutar lenguajes externos en \textsf{R} se requieren dos paquetes. El pri
 
 
 \subsection{JuliaCall}
-El paquete \texttt{JuliaCall} permite el funcionamiento de \textsf{Julia} dentro de \textsf{R}. Una de las funciones del paquetes es ejecutar funciones creadas en \textsf{Julia} usando como argumentos objetos creados en \textsf{R}. Si tuviera que describir el objetivo de este paquete sería que funciona como un puente entre ambos lenguajes. \texttt{JuliaCall} solamente conecta los lenguajes, más no los mezcla de ninguna otra forma. En esta sección se expondrá la manera en la que se trabajó \texttt{JuliaCall} en \textsf{R}. 
+El paquete \texttt{JuliaCall} permite el funcionamiento de \textsf{Julia} dentro de \textsf{R}. Una de las funciones del paquetes es ejecutar funciones creadas en \textsf{Julia} usando como argumentos objetos creados en \textsf{R}. Si tuviera que describir el funcionamiento de este paquete sería que es como un puente entre ambos lenguajes. \texttt{JuliaCall} solamente conecta los lenguajes, más no los mezcla de ninguna otra forma. En esta sección se expondrá la manera en la que se trabajó \texttt{JuliaCall} en \textsf{R}. 
 
 Suponga que busca ejecutar, dentro de \textsf{R}, una función llamada \texttt{function(x, y)} creada en \textsf{Julia}. Se puede ejecutar de diferentes maneras, pero el siguiente es el procedimiento que se realizó:
 
@@ -312,18 +304,18 @@ Suponga que busca ejecutar, dentro de \textsf{R}, una función llamada \texttt{f
 	
 	\item Utilizar \texttt{julia\_source(archivo.jl)} para agregar \texttt{function} a \textsf{R}. 
 	
-	\item Ejecutar la instrucción \texttt{julia\_eval} para correr la función que con los argumentos \texttt{x, y} ya creados. 
+	\item Ejecutar la instrucción \texttt{julia\_eval} para correr la función con los argumentos \texttt{x, y} ya creados. 
 	 
 \end{enumerate}
 
 \subsection{reticulate}
 
-El objetivo del paquete \texttt{reticulate} es hacer posible la ejecución e \textsf{Python} en \textsf{R}. A diferencia de \texttt{JuliaCall}, mi experiencia con \texttt{reticulate} es que funciona como una extensión de \textsf{R} ya permite navegar fácilmente entre ambos lenguajes sin la necesidad de comandos. Más bien, se necesitan los prefijos \texttt{.r} y \texttt{py\$} para distinguir los objetos de cada lenguaje. 
+El objetivo del paquete \texttt{reticulate} es hacer posible la ejecución de \textsf{Python} en \textsf{R}. La documentación describe que \say{el paquete \texttt{reticulate} provee herramientas para la interoperabilidad entre \textsf{Python} y \textsf{R}} \cite{reticulate_package}. Los usuarios del paquete tienden a usar funciones de ambos lenguajes de manera entrelazada buscando obtener el código más eficiente posible. A diferencia de \texttt{JuliaCall}, mi experiencia con \texttt{reticulate} es que funciona como una extensión de \textsf{R} ya que permite navegar fácilmente entre ambos lenguajes sin la necesidad de comandos. Más bien, se necesitan los prefijos \texttt{.r} y \texttt{py\$} para distinguir los objetos de cada lenguaje. 
 
 Análogo a la sección anterior, suponga que se busca ejecutar, dentro de \textsf{R}, una función llamada \texttt{functionPy(x,y)} creada en \textsf{Python}. El procedimiento que se siguió en este trabajo es el siguiente: 
 
 \begin{enumerate}
-	\item Cargar el paquete \texttt{reticulate}
+	\item Cargar el paquete \texttt{reticulate}.
 	
 	\item Crear los objetos de entrada de la función \texttt{x, y}.
 	
@@ -335,18 +327,18 @@ Análogo a la sección anterior, suponga que se busca ejecutar, dentro de \texts
 	
 	\item Se recomienda verificar que la conversión de objetos haya sido correcta. En ocasiones los objetos tipo \texttt{Int} en \textsf{R} se convierten a \texttt{Float} y la función \texttt{functionPy()} puede marcar un error. 
 	
-	\item Ejecutar la función \texttt{functionPY()} de manera usual. Es decir, no se necesita ningún comando adicionaldel paquete \texttt{reticulate}. 
+	\item Ejecutar la función \texttt{functionPy()} de manera usual. Es decir, no se necesita ningún comando adicional del paquete \texttt{reticulate}. 
 	
 	
 \end{enumerate}
 
-La siguiente sección muestra dos ejemplos utilizados para ejecutar las funciones \texttt{MDopt} del paquete \texttt{BsMD2} así como las creadas en \textsf{Julia} y \textsf{Python}. 
+La siguiente sección muestra dos ejemplos utilizados para ejecutar las funciones \texttt{MDopt} de los paquetes \texttt{BsMD} y \texttt{BsMD2}, así como las creadas en \textsf{Julia} y \textsf{Python}. 
 
 \section{Ejemplos y resultados}
 
 \subsection{Ejemplo 1 - Proceso de moldeo por inyección}
 
-El primer ejemplo que se utilizó es tomado del artículo de Meyer, quien a su vez, lo tomó de otro artículo publicado en 1978 por Box, Hunter y Hunter. El ejemplo describe un experimento que busca estudiar los efectos de 8 factores en un proceso de moldeo por inyección. Los factores se representan con las letras mayúsculas $A, B, C, D, E, F, G, H$. El diseño experimental es un $2^{8-4}$ factorial fraccionado con generadores $I = ABDH = ACEH = BCFH = ABCG$. Este tipo de diseño está fuera de los alcances de este trabajo, pero se puede encontrar una explicación detallada en el capítulo 8.4 de \cite{montgomery2017design}. Los datos para el primer ejemplo se presentan en la tabla \ref{data_table1}. 
+El primer ejemplo que se utilizó es tomado del artículo de \cite{meyer1996}, quien a su vez, lo tomó de otro artículo publicado en 1978 por Box, Hunter y Hunter. El ejemplo describe un experimento que busca estudiar los efectos de 8 factores en un proceso de moldeo por inyección. Los factores se representan con las letras mayúsculas $A, B, C, D, E, F, G, H$. El diseño experimental es un $2^{8-4}$ factorial fraccionado con generadores $I = ABDH = ACEH = BCFH = ABCG$. Este tipo de diseño está fuera de los alcances de este trabajo, pero se puede encontrar una explicación detallada en el capítulo 8.4 de \cite{montgomery2017design}. Los datos para el primer ejemplo se presentan en la tabla \ref{data_table1}. 
 
 \begin{center}
 	\begin{tabular}{c|cccccccc|c}
@@ -385,7 +377,7 @@ El primer ejemplo que se utilizó es tomado del artículo de Meyer, quien a su v
 		16 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & -1 & 20.3 \\
 		
 	\end{tabular}
-	\captionof{table}{Datos para el ejemplo 1} \label{data_table1}
+	\captionof{table}{Datos para el ejemplo 1 - proceso de moldeo por inyección} \label{data_table1}
 \end{center}
 
 Como se mencionó en la sección \ref{sec_metodologia}, uno de los pasos del análisis de este tipo de diseños es calcular $P(M_i | Y)$, la probabilidad posterior de cada modelo $M_i$. Los resultados se obtuvieron del artículo de Meyer, pero se pueden calcular con el paquete \texttt{BsMD2}. En la tabla \ref{modelos_prob_post} se observan 5 modelos diferentes que tienen la probabilidad más alta de incluir los factores activos del experimento. 
@@ -408,11 +400,12 @@ Como se mencionó en la sección \ref{sec_metodologia}, uno de los pasos del an�
 	\captionof{table}{Modelos con la probabilidad posterior más alta para el ejemplo 1} \label{modelos_prob_post}
 \end{center}
 
-Asimismo, calculando las probabilidades posteriores $P_j$ definidas en \ref{eq_pj} los posibles factores activos son $A, C, E,$ y $H$. Esto factores presentan una probabilidad $P_j = 0.764$ mientras que la probabilidad del resto de factores es $0$. Por lo tanto, de los 8 factores iniciales que, se creía, afectaban la variable respuesta $Y$ se pueden eliminar los 4 cuya $P_j = 0$. De esta manera, el problema original con un diseño $2^{8-4}$ se convierte en un diseño $2^{4-1}$. 
+Asimismo, calculando las probabilidades posteriores $P_j$ definidas en \ref{eq_pj} los posibles factores activos son $A, C, E,$ y $H$. Estos factores presentan una probabilidad $P_j = 0.764$ mientras que la probabilidad del resto de factores es $0$. Por lo tanto, de los 8 factores iniciales que, se creía, afectaban la variable respuesta $Y$ se pueden eliminar los cuatro cuya $P_j = 0$. De esta manera, el problema original con un diseño $2^{8-4}$ se convierte en un diseño $2^{4-1}$. 
 
 Los ensayos realizados no proporcionan suficiente información para distinguir entre los 5 posibles modelos, por lo que se necesitan ensayos adicionales. En la tabla \ref{extra_runs_ej1} se muestra diferentes combinaciones de los niveles de los factores $A, C, E, H$ y la predicción de su efecto en la variable respuesta $Y$. 
 
 \begin{center}
+	\resizebox{\textwidth}{!}{%
 	\begin{tabular}{c|ccccc|ccccc}
 		\multicolumn{6}{c|}{} & \multicolumn{5}{c}{Predicciones del modelo} \\
 		\multicolumn{1}{V}{Punto candidato} & A & C & E & H & Y & 1 & 2 & 3 & 4 & 5 \\
@@ -449,34 +442,43 @@ Los ensayos realizados no proporcionan suficiente información para distinguir e
 		
 		 16 & 1 & 1 & 1 & -1 &    & 23.25 & 21.87 & 16.35 & 17.34 & 19.75 \\
 		
-	\end{tabular}
+	\end{tabular}}
 	\captionof{table}{Ejemplo 1, Colapsado en los factores A, C, E y H} \label{extra_runs_ej1}
 \end{center}
 
+
 Los primeros 8 renglones de la tabla \ref{extra_runs_ej1} muestran los 16 ensayos realizados en el experimento mostrados en la tabla \ref{data_table1}. Cada renglón muestra una dupla de ensayos donde los factores $A, C, E$ y $H$ tuvieron los mismos niveles en el experimento original. Por lo tanto, se muestran dos valores en la respuesta $Y$. 
 
-El número máximo de factores activos en los cinco posibles modelos es cuatro y cada factor cuenta con dos niveles (\texttt{-} o \texttt{+}). Las columnas $A, C, E$ y $H$ muestran las $2^{4} = 16$ posibles combinaciones de factores activos. Las columnas correspondientes a las predicciones del modelo muestra la predicción de la variable de respuesta bajo cada uno de los modelos. Por ejemplo, tome el modelo 1 que tiene como factores activos a $A, C, E$. En este modelo, la columna $H$ no es necesaria ya que el factor $H$ no está activo en el modelo 1. Tome el primer renglón, donde los tres factores se colocan en el nivel \texttt{-1}. La predicción de la variable $Y$ del modelo 1 es $21.08$. El valor se repite en la predicción del modelo 1 para el punto candidato 9 ya que los factores $A, C, E$ están en el nivel \texttt{-1}. Esta repetición ocurre para los renglones donde el nivel de los factores activos es el mismo. 
+El número máximo de factores activos en los cinco posibles modelos es cuatro y cada factor cuenta con dos niveles (\texttt{-} o \texttt{+}). Las columnas $A, C, E$ y $H$ muestran las $2^{4} = 16$ posibles combinaciones de factores activos. Las columnas correspondientes a las predicciones del modelo muestra la predicción de la variable de respuesta bajo cada uno de los modelos presentados en la tabla \ref{modelos_prob_post}. Por ejemplo, tome el modelo 1 que tiene como factores activos a $A, C, E$. En este modelo, la columna $H$ no es necesaria ya que el factor $H$ no está activo en el modelo 1. Tome el primer renglón, donde los tres factores se colocan en el nivel \texttt{-1}. La predicción de la variable $Y$ bajo el modelo 1 es $21.08$. El valor se repite en la predicción del modelo 1 para el punto candidato 9 ya que los factores $A, C, E$ están en el nivel \texttt{-1}. Esta repetición ocurre para los renglones donde el nivel de los factores activos es el mismo. 
 
-La tabla \ref{extra_runs_ej1} muestra los puntos de diseño candidatos a ser los ensayos extra del experimento. En este ejemplo se establece generar un diseño con cuatro ensayos extras cuya elección dependerá de su valor MD. Hay $3,876$ posibles diseños que se pueden generar de los 16 puntos candidatos mostrados en la tabla \ref{extra_runs_ej1}. Un posible acercamiento es calcular el valor MD para cada uno de esos diseños. Sin embargo, una forma más eficiente es utilizar el algoritmo de intercambio presentado en la sección \ref{sec_algInterca}. El algoritmo genera un conjunto de puntos candidatos aleatorio, calcula el valor MD y agrega y elimina puntos para crear un conjunto de puntos con el máximo valor MD posible. Lo anterior se repite hasta satisfacer los criterios de convergencia. 
+La tabla \ref{extra_runs_ej1} muestra los puntos de diseño candidatos a ser los ensayos extra del experimento. En este ejemplo se busca generar un diseño con cuatro ensayos extras cuya elección dependerá de su valor MD. Hay $3,876$ posibles diseños que se pueden generar de los 16 puntos candidatos mostrados en la tabla \ref{extra_runs_ej1}. Un posible acercamiento es calcular el valor MD para cada uno de esos diseños. Sin embargo, una forma más eficiente es utilizar el algoritmo de intercambio presentado en la sección \ref{sec_algInterca}. El algoritmo genera un conjunto de puntos candidatos aleatorio, calcula el valor MD y agrega y elimina puntos para crear un conjunto de ensayos con el máximo valor MD posible. Lo anterior se repite hasta satisfacer los criterios de convergencia. 
 
-El código para el cálculo del criterio MD y el algoritmo de intercambio para \textsf{R, Julia} y \textsf{Pyhton} se muestra a continuación.
+El código para el cálculo del criterio MD y el algoritmo de intercambio para \textsf{R, Julia} y \textsf{Python} se muestra a continuación.
 
-\begin{lstlisting}[language=R]
-	# # # R paquete Patricia
+\begin{minted}{R}
+	# Para guardar los tiempos
+tiempos_df <- data.frame(matrix(nrow = 5, ncol = 4))
+colnames(tiempos_df) <- c("BsMD2", "BsMD", 
+	"JuliaCall", "reticulate")
+row.names(tiempos_df) <- seq(1, 5)
+	
+runs <- seq(1, 5)
+	
+	# R tesis Paty
 library(BsMD2)
 setwd("~/ITAM/Tesis/Julia con R/Code/MD-optimality")
-	
-	# matriz de diseno inicial
+
+#matriz de diseno inicial	
 X <- as.matrix(BM93e3[1:16,c(1,2,4,6,9)]) 
-	# vector de respuesta
-y <- as.vector(BM93e3[1:16,10]) 
-	# probabilidad posterior de los 5 modelos
+#vector de respuesta
+y <- as.vector(BM93e3[1:16,10])
+#probabilidad posterior de los 5 modelos 
 p_mod <- c(0.2356,0.2356,0.2356,0.2356,0.0566) 
 	
-fac_mod <- matrix(
-	c(2,1,1,1,1,3,3,2,2,2,4,4,3,4,3,0,0,0,0,4),
-	nrow=5,
-	dimnames=list(1:5,c("f1","f2","f3","f4")))
+fac_mod <- matrix(c(2,1,1,1,1,3,3,2,2,2,4,4,3,4,
+		3,0,0,0,0,4), nrow=5, 
+		dimnames=list(1:5,
+		c("f1","f2","f3","f4")))
 	
 Xcand <- matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 	-1,-1,-1,-1,1,1,1,1,-1,-1,-1,-1,1,1,1,1,
@@ -485,33 +487,44 @@ Xcand <- matrix(c(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 	-1,1,1,-1,1,-1,-1,1,1,-1,-1,1,-1,1,1,-1),
 	nrow=16, dimnames=list(1:16,
 	c("blk","f1","f2","f3","f4"))
-	)
+)
 	
+times <- c()
+for (i in runs){
+	t <- Sys.time()
+	e3_R <- BsMD2::MDopt(X = X, y = y, 
+	Xcand = Xcand, nMod = 5, p_mod = p_mod, 
+	fac_mod = fac_mod, nStart = 25)
+	t_2 <- Sys.time()
+	t_final <- difftime(t_2, t, unit = "secs")
+		
+	times <- c(times, t_final)
+}
+tiempos_df["BsMD2"] <- times
 	
-t <- Sys.time()
-e3_R <- BsMD2::MDopt(X = X, y = y, Xcand = Xcand,
-	nMod = 5, p_mod = p_mod, fac_mod = fac_mod, 
-	nStart = 25)
-Sys.time() - t
-	
-	# # # R paquete original
+	# R paquete original
 library(BsMD)
-	
+
 s2 <- c(0.5815, 0.5815, 0.5815, 0.5815, 0.4412)
+times <- c()
+for (i in runs){
+	t_RO <- Sys.time()
+	e3_RO <- BsMD::MD(X = X, y = y, nFac = 4, 
+	nBlk = 1, mInt = 3, g = 2, nMod = 5, 
+	p = p_mod, s2 = s2, nf = c(3, 3, 3, 3, 4), 
+	facs = fac_mod, nFDes = 4, Xcand = Xcand, 
+	mIter = 20, nStart = 25, top = 10)
+	t_2 <- Sys.time() 
+	t_final <- difftime(t_2, t_RO, 
+		unit = "secs")
+	times <- c(times, t_final)
+}
+tiempos_df["BsMD"] <- times
 	
-t_RO <- Sys.time()
-e3_RO <- BsMD::MD(X = X, y = y, nFac = 4, nBlk = 1, 
-			mInt = 3, g = 2, nMod = 5, 
-			p = p_mod, s2 = s2, 
-			nf = c(3, 3, 3, 3, 4), facs = fac_mod, 
-			nFDes = 4, Xcand = Xcand, mIter = 20, 
-			nStart = 25, top = 10)
-Sys.time() - t_RO
-	
-	# # #  Julia con R
+	# Julia con R
 library(JuliaCall)
-julia_setup(JULIA_HOME = 
-	"C:/Users/Valeria/AppData/Local/Programs/Julia-1.6.3/bin")
+julia_setup(JULIA_HOME =
+"C:/Users/Valeria/AppData/Local/Programs/Julia-1.6.3/bin")
 	
 julia_source("MDopt.jl")
 	# Conversiones para los tipos de Julia
@@ -520,20 +533,27 @@ julia_assign("X_J", X_J)
 julia_assign("y_J", y)
 julia_assign("p_mod_J", p_mod)
 julia_assign("fac_mod_J", fac_mod)
-julia_command("fac_mod_J = NamedArray(fac_mod_J)")
-julia_eval("fac_mod_J = Int64.(fac_mod_J)")
+julia_command("fac_mod_J=NamedArray(fac_mod_J)")
+julia_eval("fac_mod_J=Int64.(fac_mod_J)")
 julia_assign("Xcand_J", Xcand)
-julia_command("Xcand_J = NamedArray(Xcand_J)")
-julia_eval("Xcand_J = Int64.(Xcand_J)")
+julia_command("Xcand_J=NamedArray(Xcand_J)")
+julia_eval("Xcand_J=Int64.(Xcand_J)")
 	
-t_J <- Sys.time()
-julia_eval("MDopt(X = X_J, y = y_J, Xcand = Xcand_J, 
-	nMod = 5, p_mod = p_mod_J, fac_mod = fac_mod_J, 
-	nFDes = 4, max_int = 3, g = 2, Iter = 20, 
-	nStart = 10, top = 10)")
-Sys.time() - t_J
+times <- c()
+for (i in runs){
+	t <- Sys.time()
+	julia_eval("MDopt(X=X_J,y=y_J,Xcand=Xcand_J, 
+nMod=5,p_mod=p_mod_J,fac_mod=fac_mod_J, 
+nFDes=4,max_int=3,g=2,Iter=20, 
+nStart=10,top=10)")
+	t_2 <- Sys.time()
+	t_final <- difftime(t_2, t, unit = "secs")
+		
+	times <- c(times, t_final)
+}
+tiempos_df["JuliaCall"] <- times
 	
-	# # # Python con R
+	# Python con R
 library(reticulate)
 source_python("MD_Python.py")
 	
@@ -555,14 +575,25 @@ Iter_P <- r_to_py(20L)
 nStart_P <- r_to_py(25L)
 top_P <- r_to_py(10L)
 	
-t_P <- Sys.time()
-MD_Python(X = X_P, y = y_P, Xcand = Xcand_P, 
+times <- c()
+for (i in runs){
+	t <- Sys.time()
+	MD_Python(X = X_P, y = y_P, Xcand = Xcand_P, 
 	nMod = nMod_P, p_mod = p_mod_P, 
-	fac_mod = fac_mod_P, nFDes = nFDes_P, 
+	fac_mod = fac_mod_P, nFDes = nFDes_P,
 	max_int = max_int_P, g = g_P, Iter = Iter_P, 
 	nStart = nStart_P, top = top_P)
-Sys.time() - t_P
-\end{lstlisting}
+	t_2 <- Sys.time()
+	t_final <- difftime(t_2, t, unit = "secs")
+		
+	times <- c(times, t_final)
+}
+tiempos_df["reticulate"] <- times
+
+write.csv(tiempos_df, "tiempos_MD_ej3.csv")
+	
+	
+\end{minted}
 
 Los resultados en los tres lenguajes fueron los mismos y se muestran en la tabla \ref{results_ej1}. 
 
@@ -594,9 +625,9 @@ Los resultados en los tres lenguajes fueron los mismos y se muestran en la tabla
 	\captionof{table}{Resultados para el ejemplo 1} \label{results_ej1}
 \end{center}
 
-En este ejemplo, el paquete creado por Vela calculó la solución en 5.62 segundos mientras que su antecesor, \texttt{BsMD} realizó el cálculo en 0.04 segundos. A la función creada en \textsf{Julia} le tomó 34.86 segundos ejecutar el código. Sin embargo, se debe considerar que el tiempo que le toma al comando \texttt{julia\_setup} es largo, cerca de 5 minutos. A pesar de que este comando solo se debe realizar una vez por cada sesión de \textsf{R} utilizada, el paquete \texttt{reticulate} carga casi al instante. No obstante, la función de \textsf{Python} realiza el cálculo en 51.05 segundos.  
+En este ejemplo, el paquete creado por Vela calculó la solución en un promedio de 4.06 segundos mientras que su antecesor, \texttt{BsMD} realizó el cálculo en 0.03 segundos. A la función creada en \textsf{Julia} le tomó 3.07 segundos ejecutar el código. Sin embargo, se debe considerar que el tiempo que le toma al comando \texttt{julia\_setup} es largo, cerca de 5 minutos. A pesar de que este comando solo se debe realizar una vez por cada sesión de \textsf{R} utilizada, el paquete \texttt{reticulate} carga casi al instante. No obstante, la función de \textsf{Python} realiza el cálculo en 15.32 segundos.  
 
-Una característica singular que presenta \textsf{Julia}, tanto en \texttt{Jupyter Notebook} como en \textsf{R}, es que el tiempo de ejecución va disminuyendo progresivamente cada vez que se realiza el cálculo incluso si se modifican los argumentos de la función \texttt{MDopt}. La segunda y tercera ocasión tardaron 9 y 5 segundos respectivamente en ejecutar el código. 
+Una característica singular que presenta \textsf{Julia}, es que al ser un lenguaje \textit{just in time}, el tiempo de ejecución disminuye en gran medida después de la primera vez, incluso si se modifican los argumentos de la función \texttt{MDopt}. Esto ocurre independientemente del programa donde se utilice (en este caso, \texttt{Jupyter Notebook} o \textsf{R}).  
 
 
 \subsection{Ejemplo 2}
@@ -626,68 +657,91 @@ El segundo experimento presentado por \cite{meyer1996} proviene de un diseño fa
 	\captionof{table}{Datos para el ejemplo 2} \label{data_table2}
 \end{center}
 
-El análisis bayesiano previo para este ejemplo no muestra un distinción clara de factores activos y factores no activos. Se decidió obtener un diseño adicional de 4 ensayos para encontrar el mejor subconjunto de los 32 ensayos candidatos del diseño original. El código para generar los resultados en los tres lenguajes es el siguiente.
+El análisis bayesiano previo de este ejemplo no muestra una distinción clara de factores activos y factores no activos. Se decidió obtener un diseño adicional de 4 ensayos para encontrar el mejor subconjunto de los 32 ensayos candidatos del diseño original. El código para generar los resultados en los tres lenguajes es el siguiente.
 
-\valinline{Hay que arreglar este código}
+\begin{minted}{R}
+	# Para guardar los tiempos
+tiempos_df<-data.frame(matrix(nrow = 5, ncol = 4))
+colnames(tiempos_df) <- c("BsMD2", "BsMD", 
+	"JuliaCall", "reticulate")
+row.names(tiempos_df) <- seq(1, 5)
+	
+runs <- seq(1, 5)
 
-\begin{lstlisting}[language=R]
-	# # # R paquete Patricia
+# R tesis Paty
 library(BsMD2)
 setwd("~/ITAM/Tesis/Julia con R/Code/MD-optimality")
 data(M96e2)
-
-	# matriz de diseno inicial
+print(M96e2)
+	
 X <- as.matrix(cbind(blk = rep(-1, 8), 
 	M96e2[c(25,2,19,12,13,22,7,32), 1:5]))
-	# vector de respuesta
 y <- M96e2[c(25,2,19,12,13,22,7,32), 6]
 	
-	# para obtener p_mod y fac_mod
-pp <- BsProb1(X = X[, 2:6], y = y, p = .25, gamma = .4, 
-	max_int = 3, max_fac = 5, top = 32)
+pp <- BsProb1(X = X[, 2:6], y = y, p = .25, 
+gamma = .4, max_int = 3, max_fac = 5, top = 32)
+	
 p <- pp@p_mod
 facs <- pp@fac_mod
-	# matriz de puntos candidatos
-Xcand <- as.matrix(cbind(blk = rep(+1, 32), M96e2[, 1:5]))
-
-t <- Sys.time()
-e4_R <- BsMD2::MDopt(X = X, y = y, Xcand = Xcand, 
-	nMod = 32, p_mod = p, fac_mod = facs, 
-	g = 0.4, Iter = 10, nStart = 25, top = 5)
-Sys.time() - t
-
-	# # # R paquete original 
+Xcand <- as.matrix(cbind(blk = rep(+1, 32), 
+M96e2[, 1:5]))
+	
+times <- c()
+for (i in runs){
+	t <- Sys.time()
+	e4_R <- BsMD2::MDopt(X = X, y = y,
+	Xcand = Xcand, nMod = 32, p_mod = p, 
+	fac_mod = facs,  g = 0.4, Iter = 10, 
+	nStart = 25, top = 5)
+	t_2 <- Sys.time()
+	t_final <- difftime(t_2, t, unit = "secs")
+		
+	times <- c(times, t_final)
+}
+tiempos_df["BsMD2"] <- times
+	
+# R paquete original 
 library(BsMD)
-reactor8.BsProb <- BsProb(X = X, y = y, blk = 1, mFac = 5, mInt = 3, 
-p = 0.25, g = 0.40, ng = 1, nMod = 32)
-
+reactor8.BsProb <- BsProb(X = X, y = y, blk = 1, 
+mFac = 5, mInt = 3, p = 0.25, g = 0.40, ng = 1, 
+nMod = 32)
+	
 nf <- reactor8.BsProb$nftop
 s2 <- reactor8.BsProb$sigtop
+	
+times <- c()
+for (i in runs){
+	t_RO <- Sys.time()
+	ej4_RO <- BsMD::MD(X = X, y = y, nFac = 5, 
+	nBlk = 1, mInt = 3, g = 0.40, nMod = 32, 
+	p = p, s2 = s2, nf = nf, facs = facs, 
+	nFDes = 4, Xcand = Xcand, mIter = 20, 
+	nStart = 25, top = 5)
+	t_2 <- Sys.time() 
+	t_final <- difftime(t_2, t_RO, 
+	unit = "secs")
+	times <- c(times, t_final)
+}
+tiempos_df["BsMD"] <- times
 
-t_RO <- Sys.time()
-ej4_RO <- BsMD::MD(X = X, y = y, nFac = 5, nBlk = 1, mInt = 3, 
-	g = 0.40, nMod = 32, p = p, s2 = s2, nf = nf, 
-	facs = facs, nFDes = 4, Xcand = Xcand, 
-	mIter = 20, nStart = 25, top = 5)
-Sys.time() - t_RO
-
-	# # # Julia con R 
+	# Julia con R
 library(JuliaCall)
-julia_setup(JULIA_HOME = "C:/Users/Valeria/AppData/
-		Local/Programs/Julia-1.6.3/bin")
+julia_setup(JULIA_HOME = ~/Programs/Julia-1.6.3/bin")
 	
 julia_source("MDopt.jl")
 	
 X <- as.matrix(cbind(blk = rep(-1, 8), 
-	M96e2[c(25,2,19,12,13,22,7,32), 1:5]))
+M96e2[c(25,2,19,12,13,22,7,32), 1:5]))
 y <- M96e2[c(25,2,19,12,13,22,7,32), 6]
 	
-pp <- BsProb1(X = X[, 2:6], y = y, p = .25, gamma = .4, 
-	max_int = 3, max_fac = 5, top = 32)
+pp <- BsProb1(X = X[, 2:6], y = y, p = .25, 
+	gamma = .4, max_int = 3, max_fac = 5, 
+	top = 32)
 	
 p <- pp@p_mod
 facs <- pp@fac_mod
-Xcand <- as.matrix(cbind(blk = rep(+1, 32), M96e2[, 1:5]))
+Xcand <- as.matrix(cbind(blk = rep(+1, 32), 
+	M96e2[, 1:5]))
 	
 	# Conversiones para los tipos de Julia
 X <- as.data.frame(X)
@@ -695,19 +749,27 @@ julia_assign("X", X)
 julia_assign("y", y)
 julia_assign("p_mod", p)
 julia_assign("fac_mod", facs)
-julia_command("fac_mod = NamedArray(fac_mod)")
-julia_eval("fac_mod = Int64.(fac_mod)")
+julia_command("fac_mod=NamedArray(fac_mod)")
+julia_eval("fac_mod=Int64.(fac_mod)")
 julia_assign("Xcand", Xcand)
-julia_command("Xcand = NamedArray(Xcand)")
-julia_eval("Xcand = Int64.(Xcand)")
+julia_command("Xcand=NamedArray(Xcand)")
+julia_eval("Xcand=Int64.(Xcand)")
 	
-t_J <- Sys.time()
-julia_eval("MDopt(X = X, y = y, Xcand = Xcand, nMod = 32, 
-		p_mod = p_mod, fac_mod = fac_mod, nFDes = 4, max_int = 3, 
-		g = 0.4, Iter = 10, nStart = 25, top = 5)")
-Sys.time() - t_J
+times <- c()
+for (i in runs){
+	t <- Sys.time()
+	julia_eval("MDopt(X=X,y=y, 
+Xcand=Xcand,nMod=32,p_mod=p_mod, 
+fac_mod=fac_mod,nFDes=4,max_int=3, 
+g=0.4,Iter=10,nStart=25,top=5)")
+	t_2 <- Sys.time()
+	t_final <- difftime(t_2, t, unit = "secs")
 	
-	# # # Python con R
+	times <- c(times, t_final)
+}
+tiempos_df["JuliaCall"] <- times
+	
+	# Python con R
 library(reticulate)
 source_python("MD_Python.py")
 	
@@ -720,7 +782,6 @@ y_P <- r_to_py(y)
 Xcand_P <- r_to_py(Xcand_P)
 p_mod_P <- r_to_py(p)
 fac_mod_P <- r_to_py(fac_mod_P)
-	
 nMod_P <- r_to_py(32L)
 nFDes_P <- r_to_py(4L)
 max_int_P <- r_to_py(3L)
@@ -729,13 +790,27 @@ Iter_P <- r_to_py(10L)
 nStart_P <- r_to_py(25L)
 top_P <- r_to_py(5L)
 	
-t_P <- Sys.time()
-MD_Python(X = X_P, y = y_P, Xcand = Xcand_P, nMod = nMod_P, 
+times <- c()
+for (i in runs){
+	t <- Sys.time()
+	MD_Python(X = X_P, y = y_P, 
+	Xcand = Xcand_P, nMod = nMod_P, 
 	p_mod = p_mod_P, fac_mod = fac_mod_P, 
 	nFDes = nFDes_P, max_int = max_int_P, 
-	g = g_P, Iter = Iter_P, nStart = nStart_P, top = top_P)
-Sys.time() - t_P
-\end{lstlisting} 
+	g = g_P, Iter = Iter_P, nStart = nStart_P, 
+	top = top_P)
+	t_2 <- Sys.time()
+	t_final <- difftime(t_2, t, unit = "secs")
+
+	times <- c(times, t_final)
+}
+tiempos_df["reticulate"] <- times
+	
+	write.csv(tiempos_df, "tiempos_MD_ej4.csv")
+	
+	
+	
+\end{minted} 
 
 En los tres lenguajes los resultados fueron los mismos y se muestran en la tabla \ref{results_ej2}.
 
@@ -757,19 +832,19 @@ En los tres lenguajes los resultados fueron los mismos y se muestran en la tabla
 	\captionof{table}{Resultados para el ejemplo 2} \label{results_ej2}
 \end{center}
 
-Este ejemplo es el más pesado e intensivo computacionalmente que se mostrará en este documento. Los tiempos de ejecución lo muestran. El paquete \texttt{BsMD2} realizó el cálculo en 9.573741 minutos; el paquete \texttt{BsMD} hizo el cálculo en 0.4537661 segundos; Julia se tardó 50.54355 segundos; y, finalmente a Python le tomó 11.058 minutos.
+Este ejemplo es el más pesado e intensivo computacionalmente que se mostrará en este documento. Los tiempos de ejecución lo muestran. El paquete \texttt{BsMD2} realizó el cálculo en 256.27 segundos; el paquete \texttt{BsMD} hizo el cálculo en 0.41 segundos; Julia se tardó 23.88 segundos; y, finalmente a Python le tomó 547.90 segundos.
 
 El paquete \texttt{BsMD} sale de \textsf{R} para hacer los cálculos en \textsf{Fortran}, un lenguaje de programación de alto nivel adaptado al cálculo numérico y a la computación científica. La rapidez del paquete no está en la capacidad computacional de \textsf{R} sino en la de \textsf{Fortran}. Por tanto, no es una sorpresa que \texttt{BsMD} ejecute la función \texttt{MDopt} en menos de 1 segundo. 
 
-En segundo lugar está \textsf{Julia}, que muestra su capacidad computacional al realizar los cálculos en menos de 1 minuto. En este ejercicio, \textsf{Julia} muestra ser 10 veces más rápido que \textsf{Python} y el paquete \texttt{BsMD2} en \textsf{R}. Asimismo, se ejecutaron las funciones \texttt{MDopt} en \textsf{Julia} y \textsf{Python} usando \texttt{Jupter Notebook} para observar si existían cambios en la rapidez de los cálculos. En el caso de \textsf{Julia} la función se ejecutó en un tiempo muy similar al mostrado con \texttt{JuliaCall}. Sin embargo, utilizar la función \texttt{MDopt} en \textsf{Python} (usando \texttt{Jupyter Notebook}) es mucho mas rápido que en \textsf{R} usando el paquete \texttt{reticulate}. En \texttt{Jupter Notebook}, el cálculo de resultados se hizo en 2.87 minutos. A pesar de la mejora en el tiempo de ejecución, \textsf{Julia} permanece como el segundo lenguaje más rápido para ejecutar la función \texttt{MDopt}. 
+En segundo lugar está \textsf{Julia}, que muestra su capacidad computacional al realizar los cálculos en menos de 1 minuto. En este ejercicio, \textsf{Julia} muestra ser al menos 10 veces más rápido que \textsf{Python} y el paquete \texttt{BsMD2} en \textsf{R}. Asimismo, se ejecutaron las funciones \texttt{MDopt} en \textsf{Julia} y \textsf{Python} usando \texttt{Jupter Notebook} para observar si existían cambios en la rapidez de los cálculos. En el caso de \textsf{Julia} la función se ejecutó en un tiempo muy similar al mostrado con \texttt{JuliaCall}. Sin embargo, utilizar la función \texttt{MDopt} en \textsf{Python} (usando \texttt{Jupyter Notebook}) es mucho mas rápido que en \textsf{R} usando el paquete \texttt{reticulate}. En \texttt{Jupter Notebook}, el cálculo de resultados se hizo en 2.87 minutos. A pesar de la mejora en el tiempo de ejecución, \textsf{Julia} permanece como el segundo lenguaje más rápido para ejecutar la función \texttt{MDopt}. 
 
 \section{Conclusiones}
 
 El objetivo de este proyecto fue mostrar la capacidad computacional de los tres lenguajes en cálculos intensivos. Para esto, se presentó el problema de determinar los mejores ensayos adicionales para distinguir entre factores activos y no activos en un experimento. \cite{meyer1996} ofrece como solución el uso del criterio MD y el algoritmo de intercambio para discriminar entre los posibles modelos que describan el fenómeno del experimento. 
 
-Se tomó como referencia la función \texttt{MDopt} desarrollada por \cite{tesis_paty} para crear funciones con el mismo nombre y objetivo en \textsc{Python} y \textsf{Julia}. Después, se ejecutaron las funciones en \textsf{R} usando los paquetes \texttt{reticulate} y \texttt{JuliaCall} respectivamente. Asimismo, se utilizó el paquete \texttt{BsMD} desarrollado por Ernesto Barrios que realiza los cálculos en \textsf{Fortran}, pero presenta los resultados en \textsf{R}. 
+Se tomó como referencia la función \texttt{MDopt} desarrollada por \cite{tesis_paty} para crear funciones con el mismo nombre y objetivo en \textsf{Python} y \textsf{Julia}. Después, se ejecutaron las funciones en \textsf{R} usando los paquetes \texttt{reticulate} y \texttt{JuliaCall} respectivamente. Asimismo, se utilizó el paquete \texttt{BsMD} desarrollado por Ernesto Barrios que realiza los cálculos en \textsf{Fortran}, pero presenta los resultados en \textsf{R}. 
 
-Se midieron los tiempos de ejecución para determinar que lenguaje realiza los cálculos más rápidamente. El paquete más rápido fue \texttt{BsMD} seguido por \textsf{Julia}. El paquete \texttt{BsMD2} toma el tercer lugar mientras que la función desarrollada en \textsf{Python} fue la más tardía. Los resultados en los tiempos de ejecución muestran la complejidad del algoritmo y la capacidad de cada uno de los lenguajes. 
+Se midieron los tiempos de ejecución para determinar el lenguaje que realiza los cálculos más rápidamente. El paquete más rápido fue \texttt{BsMD} seguido por \textsf{Julia}. El paquete \texttt{BsMD2} toma el tercer lugar mientras que la función desarrollada en \textsf{Python} fue la más tardía. Los resultados en los tiempos de ejecución muestran la complejidad del algoritmo y la capacidad de cada uno de los lenguajes. 
 
 Este proyecto realmente muestra el potencial de rendimiento que tiene \textsf{Julia}. Una de las razones de esa rapidez es que \textsf{Julia} pide definir el tipo de objeto con el que se va a trabajar. Esto hace que las funciones asignadas a los objetos funcionen de la manera más eficiente posible. Sin embargo, la definición e inicialización de objetos en \textsf{Julia} fue lo más complicado de este proyecto. Tuve que buscar como definir un vector de dataframes, un vector de vectores y un vector de matrices que guardaran los valores que iba necesitando en la función \texttt{MDopt}. En cambio, en \textsf{Python} todos los objetos se definieron como listas sin ninguna otra especificación. 
 

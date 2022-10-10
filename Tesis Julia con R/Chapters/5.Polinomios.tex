@@ -1,12 +1,12 @@
 \chapter{Ajuste de polinomios} \label{cap_polinomios}
 
-En los capítulos anteriores se presentaron tres lenguajes de programación, \textsf{Julia, R } y \textsf{Python}, con la intención de utilizarlos para la solución de tres ejercicios. En este capítulo se presenta el primero de ellos. El problema fue diseñado y publicado por primera vez por el National Institute of Standards and Technology (NIST) cuya misión incluye proveer soluciones que garanticen el estándar de medición. El ejemplo busca medir la precisión en los cálculos de los lenguajes de programación al proveer un conjunto de datos, un problema y su solución con alta precisión numérica en sus dígitos. La tarea del usuario es desarrollar una solución cuya precisión se acerque lo más posible a la presentada por NIST. 
+En los capítulos anteriores se presentaron tres lenguajes de programación, \textsf{Julia, R } y \textsf{Python}, con la intención de utilizarlos para la solución de tres proyectos. En este capítulo se presenta el primero de ellos. El problema fue diseñado y publicado por el Instituto Nacional de Estándares y Tecnología (NIST) cuya misión incluye \say{mejorar la precisión del software estadístico proveyendo conjuntos de datos de referencia con resultados computacionales certificados que permitan la evaluación objetivo del software estadístico}, \cite{NIST_pagina}. El ejercicio busca medir la precisión numérica en los cálculos que ejecutan los lenguajes de programación. NIST provee un conjunto de datos, un problema y su solución con alta precisión numérica en sus dígitos. La tarea del usuario es desarrollar una solución cuya precisión se acerque lo más posible a la presentada por el instituto. 
 
-En este capítulo se toma un problema propuesto por NIST donde la tarea es ajustar un polinomio de grado diez a un conjunto de datos. La solución se programó en los tres lenguajes ya mencionados y se compara la exactitud de la respuesta, el tiempo que lleva la ejecución y la facilidad de programación. La importancia de este ejemplo se centra en la precisión numérica. NIST establece los estándares de referencia de las mediciones. Por lo tanto, si los cálculos logran alcanzar un alto grado de precisión numérica se puede confiar en la robustez del método de solución. 
+En este capítulo se toma un problema propuesto por NIST donde la tarea es ajustar un polinomio de grado diez a un conjunto de datos. La solución se programó en los tres lenguajes ya mencionados y se compara la exactitud de la respuesta, el tiempo de ejecución y la facilidad de programación. La importancia de este proyecta se centra en la precisión numérica. NIST establece los estándares de referencia de las mediciones. Por lo tanto, si los cálculos logran alcanzar un alto grado de precisión numérica se puede confiar en la robustez del método de solución. 
 
 
 \section{El problema}
-Suponga que se tiene un conjunto de datos con solamente dos variables $x$, $y$. El problema propuesto es ajustar la información a un polinomio de grado $p$. Es decir, se busca ajustar los datos al modelo
+Suponga que se tiene un conjunto de datos con solo dos variables $x$, $y$. El problema propuesto es ajustar la información a un polinomio de grado $p$. Es decir, se busca ajustar los datos al modelo
 
 \begin{equation} \label{eq_matricial_pol}
     \begin{aligned}
@@ -14,7 +14,7 @@ Suponga que se tiene un conjunto de datos con solamente dos variables $x$, $y$. 
     \end{aligned}
 \end{equation}
 
-El ejercicio consiste en calcular los coeficientes que \textit{mejor cumplan} la ecuación anterior. Una manera de hacer el cálculo es con el método de mínimos cuadrados.  
+El ejercicio consiste en calcular los coeficientes que mejor cumplan la ecuación anterior. Una manera de hacer el cálculo es con el método de mínimos cuadrados.  
 
 \subsection{Método de Mínimos Cuadrados}
 
@@ -22,7 +22,7 @@ El objetivo del método de mínimos cuadrados es encontrar una función que mejo
 
 \begin{equation*}
 	\begin{aligned}
-		y_i = \beta_0 + \beta_1 x_{i1} + \dots + \beta_p x_{ip} + \epsilon_i \text{ donde } i = 1, \dots, n
+		y_i = \beta_0 + \beta_1 x_{i1} + \dots + \beta_p x_{ip} + \epsilon_i, \quad \text{ donde } i = 1, \dots, n
 	\end{aligned}
 \end{equation*}
 
@@ -33,11 +33,11 @@ La ecuación anterior representa una curva de orden $p$. El método de mínimos 
  \end{equation*}
 
 
-\noindent donde $y$ es un vector de tamaño $n$, $X$ es una matriz de tamaño $n \times (k + 1)$ y $\beta$ es un vector de tamaño $k + 1$. 
+\noindent donde $y = y_1, \dots, y_n$ es un vector de tamaño $n$, $X$ es una matriz de tamaño $n \times p$ y $\beta = \beta_1, \dots, \beta_{p}$ es un vector de tamaño $p$. 
 
 
 \section{Los datos}
-El conjunto de datos que se utilizan para trabajar este problema son proporcionados por el Instituto Nacional de Estándares y Tecnología (\textit{NIST}, por sus siglas en inglés). Su departamento de estadística ofrece varios servicios, entre ellos generar datos ligados a problemas cuya solución suponga un reto numérico. Para este ejercicio se escogió el conjunto de datos llamado \texttt{fillip} cuyo problema es ajustar un polinomio de grado 10. 
+El conjunto de datos que se utilizan para trabajar este problema son proporcionados por NIST. Su departamento de estadística ofrece varios servicios, entre ellos generar datos ligados a problemas cuya solución suponga un reto numérico. Para este ejercicio se escogió el conjunto de datos llamado \texttt{fillip} cuyo problema es ajustar un polinomio de grado 10. 
 El cálculo de los coeficientes del ajuste presentado por NIST contiene hasta 15 dígitos decimales cuyo objetivo es que el usuario pueda valorar la precisión de su ajuste. 
 
 Los datos constan de 82 pares ordenados $(x_i, y_i)$ y se pueden encontrar en \url{https://www.itl.nist.gov/div898/strd/lls/data/LINKS/DATA/Filip.dat}. Su gráfica se muestra en la figura \ref{fillip_graph}. 
@@ -58,7 +58,7 @@ Con la información ya presentada, se puede aterrizar la ecuación \ref{eq_matri
 		& \text{ donde } i = 1, 2, \dots , 82.
 \end{align*}
 
-El vector $y$ es de tamaño 82 y corresponde a la columna del mismo nombre en los datos \texttt{fillip}. La incógnita del problema es el vector de tamaño 11 conformado por los coeficientes $\beta$. Los regresores $x_i^{j}$ se obtienen de los datos \texttt{fillip} de la columna llamada \texttt{x}. De forma matricial, el problema se puede representar como 
+El vector $y$ es de tamaño 82 y corresponde a la columna del mismo nombre en los datos \texttt{fillip}. La incógnita del problema es el vector de tamaño 11 conformado por los coeficientes $\beta$. Los regresores $x_i^{j}$ se obtienen de los datos \texttt{fillip}, específicamente de la columna \texttt{x}. De forma matricial, el problema se puede representar como 
   
 \begin{equation} \label{eq_matricial}
 	\begin{aligned}
@@ -74,8 +74,8 @@ El vector $y$ es de tamaño 82 y corresponde a la columna del mismo nombre en lo
     	y_1 \\
     	y_2 \\
     	\vdots \\
-    	y_81 \\
-    	y_82
+    	y_{81} \\
+    	y_{82}
     \end{bmatrix}
     =     
     \begin{pmatrix}
@@ -90,14 +90,14 @@ El vector $y$ es de tamaño 82 y corresponde a la columna del mismo nombre en lo
 		\beta_1 \\
 		\vdots \\
 		\beta_9 \\
-		\beta_10
+		\beta_{10}
 	\end{bmatrix}
     \end{aligned}
 \end{equation} 
 
 Representar la matriz $X$ de esta manera tiene una ventaja particular. Cada elemento puede ser considerado como $x_{i, j}$, donde el renglón $i$ representa la observación $i$ de los datos. Asimismo, la columna $j$ representa la potencia a la que está elevada la observación $i$. Por ejemplo, el elemento $x_{34, 5}$ es la observación 34 de la columna \texttt{x} de los datos elevado a la 5 potencia. Sin embargo, el elemento $x_{34, 5}$ realmente está en la columna número 6 de la matriz. El objetivo principal de esta notación es no perder de vista la potencia de las observaciones. 
 
-Hasta ahora se ha planteado el problema propuesto como cualquier ejercicio de ajuste de polinomios. La siguiente sección presenta las condiciones para que la solución de un problema se considere sensible. Asimismo, se presenta la pauta para considerar un problema como mal o bien condicionado. 
+Hasta ahora se ha planteado el problema propuesto como cualquier ejercicio de ajuste de polinomios. La siguiente sección presenta el número de condición y su relación con la sensibilidad de un problema. Asimismo, se presenta la pauta que da el número de condición para determinar si un sistema de ecuaciones está bien o mal condicionado.
 
 \section{Número de condición y precisión de la solución}
 
@@ -109,9 +109,9 @@ Considere el sistema lineal presentado de manera matricial como
 	\end{aligned}
 \end{equation} 
 
-Note la similitud de la ecuación anterior con la ecuación \ref{eq_matricial}. En esencia presentan el mismo problema con variables llamadas de manera diferente. En esta sección se utiliza la notación presentada en la ecuación \ref{eq_sistema_lineal} por congruencia con las definiciones y teoremas presetados. 
+Note la similitud de la ecuación anterior con la ecuación (\ref{eq_matricial}). En esencia presentan el mismo problema con variables llamadas de manera diferente. En esta sección se utiliza la notación presentada en la ecuación (\ref{eq_sistema_lineal}) por congruencia con las definiciones y teoremas presentados. 
 
-Se considera que los datos tienen impurezas cuando cualquier cambio en la matriz $A$ o en el vector $b$ resulta en un ajuste de los coeficientes $x$ poco preciso. El caso contrario, donde los métodos dan resultados precisos se conoce a los datos como exactos \cite{numerical_linear_algebra}.
+Se considera que los datos tienen impurezas cuando cualquier cambio en la matriz $A$ o en el vector $b$ resulta en un ajuste de los coeficientes $x$ poco preciso. El caso contrario, donde los métodos dan resultados precisos se conoce a los datos como exactos \citep{numerical_linear_algebra}.
 
 En general, para el problema \ref{eq_matricial_pol} se tienen tres casos posibles: 
 \begin{enumerate}
@@ -120,17 +120,17 @@ En general, para el problema \ref{eq_matricial_pol} se tienen tres casos posible
 	\item Ambos, el vector $b$ y la matriz $A$ tiene impurezas. 
 \end{enumerate}
 
-En este ejercicio el enfoque es en el tercer caso, ya que no hay razones para asumir que solo una columna de los datos es la causante de las impurezas. En este caso se considera que el sistema lineal es sensible, ya que un pequeño cambio en el vector $y$ o en la matriz $X$ generan una variación importante en la solución del mismo. La sensibilidad de un sistema lineal se puede determinar con el número de condición. 
+Este ejercicio se enfoca en el tercer caso, ya que no hay razones para asumir que solo una columna de los datos es la causante de las impurezas. En este caso se considera que el sistema lineal es sensible, ya que un pequeño cambio en el vector $y$ o en la matriz $A$ generan una variación importante en la solución del mismo. La sensibilidad de un sistema lineal se puede determinar con el número de condición. 
 
 \begin{definition}
 	El número $\parallel A \parallel  \parallel A^{-1} \parallel$ se llama el número de condición de $A$ y se denota $Cond(A)$ \cite[p.~62]{numerical_linear_algebra}. 
 \end{definition}
 
-Asimismo, el número de condición establece una relación en la magnitud en los cambios en un sistema como se muestra en el siguiente teorema presentado por  \cite[p.~65]{numerical_linear_algebra}.
+Asimismo, el número de condición establece una relación en la magnitud en los cambios de un sistema como se muestra en el siguiente teorema presentado. Note que $\Delta A$ representa una perturbación en la matriz $A$ y $\delta x$ simboliza cambio en la solución $x$. 
 
 
 \begin{theorem} \label{teo:perturbaciones}
-	Suponga que se busca resolver el sistema lineal $Ax = b$. Suponga también que $A$ es no singular, $b \neq 0$, y $\parallel \Delta A \parallel < \dfrac{1}{\parallel A^{-1} \parallel}$. 
+	\cite[p.~65]{numerical_linear_algebra} Suponga que se busca resolver el sistema lineal $Ax = b$. Suponga también que $A$ es no singular, $b \neq 0$, y $\parallel \Delta A \parallel < \dfrac{1}{\parallel A^{-1} \parallel}$. 
 	Entonces
 	\begin{equation*}
 		\begin{aligned}
@@ -139,9 +139,9 @@ Asimismo, el número de condición establece una relación en la magnitud en los
 	\end{equation*} 
 \end{theorem}
 
-La importancia del número de condición se ejemplifica en el teorema anterior. Los cambios en la solución $x$ son menores o iguales a una constante determinada por el número de condición multiplicada por la suma de las perturbaciones de $A$ y las perturbaciones de $b$. Además, el teorema establece que, aunque las perturbaciones de $A$ y $b$ sean pequeñas, puede haber un cambio grande en la solución si el número de condición es grande. Por lo tanto, $Cond(A)$ juega un papel crucial en la sensibilidad de la solución \cite{numerical_linear_algebra}. 
+La importancia del número de condición se ejemplifica en el teorema anterior. Los cambios en la solución $x$ son menores o iguales a una constante determinada por el número de condición multiplicada por la suma de las perturbaciones de $A$ y las perturbaciones de $b$. Además, el teorema establece que, aunque las perturbaciones de $A$ y $b$ sean pequeñas, puede haber un cambio grande en la solución si el número de condición es grande. Por lo tanto, $Cond(A)$ juega un papel crucial en la sensibilidad de la solución \citep{numerical_linear_algebra}. 
 
-Por otro lado, el número de condición presenta una lista de propiedades. Sin embargo, la más relevante para este ejercicio es la definición del número de condición como cociente de valores singulares. 
+El número de condición presenta una lista de propiedades. La más relevante para este ejercicio es la definición del número de condición como cociente de valores singulares
 
 \begin{equation} \label{formula:num_cond}
 	\begin{aligned}
@@ -149,13 +149,13 @@ Por otro lado, el número de condición presenta una lista de propiedades. Sin e
 	\end{aligned}
 \end{equation}
 
-\noindent donde $\sigma_{max}$ y $\sigma_{min}$ son, respectivamente, el valor singular más grande y más pequeño de $A$. Se necesita exponer una última definición antes de calcular el número de condición de la matriz $X$ presentada en la expresión \ref{eq_matricial}. 
+\noindent donde $\sigma_{max}$ y $\sigma_{min}$ son, respectivamente, el valor singular más grande y más pequeño de $A$. Se profundiza en el uso y definición de valores singulares en la sección \ref{subsec_DVS}. La condición de un sistema lineal está ligado al número de condición con la siguiente definición. 
 
 \begin{definition} \label{def:condicionamiento}
 	El sistema $Ax = b$ está mal condicionado si el $Cond(A)$ es grande (por ejemplo, $10^{5}, 10^{8}, 10^{10}, etc)$. En otro caso, está bien condicionado \cite[p.~68]{numerical_linear_algebra}.
 \end{definition}
 
-El número de condición se calculó en \textsf{Julia} y se verificó en \textsf{R}. En ambos se calculó de dos maneras. La primera fue utilizando la función que ya programada en cada lenguaje, mientras que la segunda es utilizando la fórmula \ref{formula:num_cond}. En Julia, el código es 
+El número de condición se calculó en \textsf{Julia} y se verificó en \textsf{R}. En ambos lenguajes se calculó de dos maneras distintas. La primera fue utilizando la función ya programada en cada lenguaje, mientras que la segunda fue utilizando la fórmula \ref{formula:num_cond}. En Julia, el código es 
 
 \begin{minted}{julia}
 	# Con función de Julia
@@ -163,13 +163,14 @@ El número de condición se calculó en \textsf{Julia} y se verificó en \textsf
 	
 	# Usando propiedad de valores singulares
 	julia> sing_values = svd(X_10).S
-	julia> sing_values = sort(sing_values)
-	julia> numCond_2 = sing_values[length(sing_values)] / sing_values[1]
+	sing_values = sort(sing_values)
+	numCond_2 = sing_values[length(sing_values)] / 
+	sing_values[1]
 \end{minted}
 
 Los resultados son $numCond_1 = 1.7679692504686805e15$ y $numCond_2 = 1.7679692504686795e15$. Por otro lado, en R el código es 
 
-\begin{lstlisting}[language=R]
+\begin{minted}{R}
 	# con funcion de R
 	numCond_R1 <- cond(X)
 	
@@ -178,41 +179,39 @@ Los resultados son $numCond_1 = 1.7679692504686805e15$ y $numCond_2 = 1.76796925
 	S.d <- S.svd$d
 	S.d <- sort(S.d, decreasing = TRUE)
 	numCond_R2 <- S.d[1] / S.d[length(S.d)]
-\end{lstlisting}
+\end{minted}
 
-Los resultados son $numCond_{R1} = numCond_{R2} = 1.767962e{15}$. En conclusión, en ambos lenguajes confirman que el número de condición de la matriz $X$ de \ref{eq_matricial} es bastante grande. Por lo tanto, por la definición \ref{def:condicionamiento} se puede decir que el problema está mal condicionado. Esto podría ocasionar muchas preguntas al lector, incluyendo si hubiera sido mejor utilizar otros datos o ajustar un polinomio de grado menor. 
+Los resultados son $numCond_{R1} = numCond_{R2} = 1.767962e{15}$. En conclusión, ambos lenguajes confirman que el número de condición de la matriz $X$ del problema \ref{eq_matricial} es bastante grande. Por lo tanto, por la definición \ref{def:condicionamiento} se puede decir que el problema está mal condicionado. Esto podría ocasionar muchas preguntas al lector, incluyendo si hubiera sido mejor utilizar otros datos o ajustar un polinomio de grado menor. 
 
-Se deben recordar dos cuestiones. La primera es que los datos fueron generados en el Instituto Nacional de Estándares y Tecnología. Los datos y el problema propuestos fueron diseñados para presentar un alto nivel de dificultad de cálculo. El segundo punto es recordar que el objetivo de esta sección del trabajo es evaluar la precisión numérica de los lenguajes. Por lo tanto, no debe ser una sorpresa que el problema esté mal condicionado. Se espera encontrarse con dificultades de programación. De esta forma, cuando se encuentre un método de solución que obtenga los resultados similares a los presentados por NIST, se puede confiar en la precisión numérica. 
+Se deben recordar dos cuestiones. La primera es que los datos fueron generados en el Instituto Nacional de Estándares y Tecnología. Los datos y el problema propuestos fueron diseñados para presentar un alto nivel de dificultad de cálculo. El segundo punto es recordar que el objetivo de esta sección es evaluar la precisión numérica de los lenguajes. Por lo tanto, no debe ser una sorpresa que el problema esté mal condicionado. Se espera encontrar dificultades de programación. De esta forma, cuando se encuentre un método de solución que obtenga resultados similares a los presentados por NIST, se puede confiar en la precisión numérica. 
 
-Sin embargo, la pregunta sobre la eficiencia de los métodos en polinomios de orden menor se consideró un excelente punto de comparación entre soluciones. Por lo tanto, se decidió extender el problema propuesto y ajustar los datos a polinomios de grado $k$, donde $k = 1, 2, \dots, 10$. En total, se calcularon 10 ajustes para cada uno de los 6 métodos presentados en las siguientes secciones. En \textsf{Julia} se desarrollaron 4 métodos de solución mientras que en \textsf{R} y \textsf{Python} solo fue necesario implementar uno en cada lenguaje. 
+Para ampliar la comparación entre soluciones y continuar midiendo la eficiencia de los métodos, se decidió extender el problema propuesto y ajustar los datos a polinomios de grado $k$, donde $k = 1, 2, \dots, 10$. En total, se calcularon 10 ajustes para cada uno de los 6 métodos presentados en las siguientes secciones. En \textsf{Julia} se desarrollaron 4 métodos de solución mientras que en \textsf{R} y \textsf{Python} solo fue necesario implementar uno en cada lenguaje ya que los paquetes utilizados obtuvieron el resultado esperado en la primera implementación.  
 
 \section{Solución usando Julia}
 
-\cite{laberintos} abordaron este problema propuesto con el objetivo de mostrar y comparar la precisión numérica de los lenguajes \textsf{R, Excel, Stata, SPSS, SAS} y \textsf{Matlab}. El artículo presenta cuatro métodos para calcular las soluciones a los coeficientes $\beta$ de la ecuación \ref{eq_matricial}. El propósito de esta sección es mostrar cuatro métodos de solución al problema propuesto en \textsf{Julia}. Dos de los métodos son tomados del artículo presentado por Morgenstern y Morales, mientras que en los otros dos se toman de funciones programadas en paquetes de \textsf{Julia}. 
+\cite{laberintos} abordaron este problema con el objetivo de mostrar y comparar la precisión numérica de los lenguajes \textsf{R, Excel, Stata, SPSS, SAS} y \textsf{Matlab}. El artículo presenta cuatro métodos para calcular las soluciones a los coeficientes $\beta$ de la ecuación (\ref{eq_matricial}). El propósito de esta sección es mostrar cuatro métodos de solución al problema propuesto en \textsf{Julia}. Dos de los métodos son tomados del artículo presentado por Morgenstern y Morales, mientras que en los otros dos se toman de funciones programadas en paquetes de \textsf{Julia}. 
 
-En primer lugar se debe leer el archivo donde se encuentran los datos \texttt{fillip}. Además, se deben inicializar variables que contenga el grado del polinomio que se busca ajustar y el total de observaciones. 
+En primer lugar se debe leer el archivo donde se encuentran los datos \texttt{fillip}. Además, se deben inicializar variables que contengan el grado del polinomio que se busca ajustar y el total de observaciones. 
 
 \begin{minted}{julia}
     julia> using CSV, DataFrames
-    julia> filip = CSV.read("filip_data.csv", DataFrame)
-    julia> x = filip.x
-    julia> y = filip.y
-    julia> k = 10 #grado del polinomio
-    julia> n = length(x) # número de observaciones
+    filip = CSV.read("filip_data.csv", DataFrame)
+    x = filip.x
+    y = filip.y
+    k = 10 #grado del polinomio
+    n = length(x) # número de observaciones
 \end{minted}
 
 En segundo lugar, se desarrolló una función que generara la matriz $X$ definida en \ref{eq_matrizX}. Esta función se nombró \texttt{generar\_X(k)} y toma como argumento $k$, la potencia a la que se busca ajustar el polinomio. 
 
 
 \begin{minted}{julia}
-julia> function generar_X(k) # k es la potencia del polinomio
+julia> function generar_X(k)# k es la potencia del polinomio
 
     n = size(filip, 1) # número de renglones
-    
     # Inicialización de una matriz vacía
     X = Array{Float64}(undef, n, k + 1)
-    # La primera columna siempre es 
-    # un vector de unos
+    # La primera columna siempre es un vector de unos
     X[:, 1] = ones(n)
     
     # Para el resto de la columnas,
@@ -224,24 +223,24 @@ julia> function generar_X(k) # k es la potencia del polinomio
 end
 \end{minted}
 
-Hasta este punto se presentó el código necesario para desarrollar los cuatro métodos de solución propuestos. A continuación se muestra la teoría y el código de cada método. 
+Hasta este punto se presentó el código en común necesario para desarrollar los cuatro métodos de solución propuestos. A continuación se muestra la teoría y el código de cada método. 
 
-\subsection{\textit{GLM}}
+\subsection{Paquete \textit{GLM}}
 
-Ya que el problema es ajustar un modelo de regresión lineal, el primer acercamiento propuesto es utilizar el paquete \texttt{GLM} ya que sus siglas se traducen a \say{Modelos Lineales Generalizados}. Su función principal es \texttt{lm} de la que se da una explicación detallada en el capítulo \ref{cap_regresiones}. 
+Ya que el problema es ajustar un modelo de regresión lineal, el primer acercamiento propuesto es utilizar el paquete \texttt{GLM} ya que sus siglas se traducen a \say{Modelos Lineales Generalizados}. Su función principal es \texttt{lm} de la que se da una explicación detallada en la sección \ref{cap_regresiones}. 
 
 En este ejercicio, el argumento \texttt{formula} se presenta usando la función llamada \texttt{poly}. Similar a la función \texttt{I(...)} de \textsf{R}, el objetivo de \texttt{poly} es construir un objeto que tenga las propiedades de un polinomio. La construcción y definición  de \texttt{poly} se encuentra en la documentación del paquete \textsf{StatsModels} elaborado por \cite{StatsModel_manual}. 
 
-Por otro lado, al argumento \texttt{data} se asignan los datos \texttt{fillip} ya cargados. El resto de los argumentos se omiten ya que se opción default es la necesaria en este ejercicio. Por lo tanto, el código de este método en \textsf{Julia} es 
+Por otro lado, al argumento \texttt{data} se asignan los datos \texttt{fillip} ya leídos. El resto de los argumentos se omiten ya que su opción default es la necesaria en este ejercicio. Por lo tanto, el código de este método en \textsf{Julia} es 
 
 
 \begin{minted}{julia}
     julia> using GLM
-    julia> x_fit = lm(@formula(y ~ 1 + poly(x, 10)), filip)
+    x_fit = lm(@formula(y ~ 1 + poly(x, 10)), filip)
 \end{minted}
 
 
-Los resultados para todos los métodos se encuentran en la sección \ref{sec_evalMetodos}. Es claro que para este método (GLM en las tablas de resultados \ref{NIST_res_gr5}, \ref{NIST_res_gr6}, \ref{NIST_res_gr10}) los cálculos no arrojan un resultado correcto. Dado que NIST proporciona la respuesta fue claro observar que la estimación de los coeficientes no fue precisa.
+Los resultados para todos los métodos se encuentran en la sección \ref{sec_evalMetodos}. Es claro que para este método (GLM en las tablas de resultados \ref{NIST_res_gr5}, \ref{NIST_res_gr6}, \ref{NIST_res_gr10}) los cálculos no arrojan un resultado correcto. Dado que NIST proporciona la respuesta, fue claro observar que la estimación de los coeficientes no fue precisa.
 
 
 \subsection{Factorización QR versión económica}
@@ -296,10 +295,10 @@ donde
 	\end{aligned}
 \end{equation*}
 
-Si se define $r$ como el rango de $X$ entonces $R_{11}$ es de dimensión $r \times r$ triangular superior y $Q$ es ortogonal. Las primeras $r$ columnas de $Q$ forman una base ortonormal de $R(X)$ \cite{numerical_linear_algebra}. Esta variación de la factorización QR siempre existe como lo enuncia el siguiente teorema.
+Si se define $r$ como el rango de $X$ entonces $R_{11}$ es de dimensión $r \times r$ triangular superior y $Q$ es ortogonal. Las primeras $r$ columnas de $Q$ forman una base ortonormal de $R(X)$ \citep{numerical_linear_algebra}. Esta variación de la factorización QR siempre existe como lo expone el siguiente teorema.
 
 \begin{theorem} \label{exitencia_QR_dec}
-Sea $A$ una matriz de $m \times n$ con rango($A$) = $r \leq min (m, n)$. Entonces, existe una matriz de permutación $P$ de $n \times n$ y una matriz ortogonal $Q$ de dimensiones $m \times m$ tal que 
+Sea $A$ una matriz de $m \times n$ con rango($A$) = $r \leq \text{mín} (m, n)$. Entonces, existe una matriz de permutación $P$ de $n \times n$ y una matriz ortogonal $Q$ de dimensiones $m \times m$ tal que 
 \begin{equation*}
 \begin{aligned}
 Q^{T}AP = 
@@ -315,17 +314,15 @@ donde $R_{11}$ es una matriz triangular superior de tamaño $r \times r$ con ent
 El paquete \texttt{LinearAlgebra} en \textsf{Julia} tiene la función \texttt{qr} que permite obtener la descomposición QR versión económica.  
 
 \begin{minted}{julia}
-    ### Con QR versión económica
+    # Con QR versión económica
     julia> using LinearAlgebra
-    julia> F = qr(X, Val(true))
-    julia> Q = F.Q
-    julia> P = F.P
-    julia> R = F.R
+    F = qr(X, Val(true))
+    Q = F.Q
+    P = F.P
+    R = F.R
 \end{minted}
 
-Ya que se obtuvo la factorización QR versión económica se necesita más teoría algebraica para resolver el problema original \ref{eq_matricial}. Las características de la matriz $X$ permiten que el teorema \ref{exitencia_QR_dec} se cumpla. Es decir, $XP = QR$. Por otro lado, como $P$ es matriz de permutación existe $z$ tal que $Pz = \beta$. 
-
-Por lo tanto, existe una expresión en la que $\beta$ se puede sustituir en la ecuación \ref{eq_matricial_pol} para obtener 
+Ya que se obtuvo la factorización QR versión económica se necesita más teoría algebraica para resolver el problema original \ref{eq_matricial}. Las características de la matriz $X$ permiten que el teorema \ref{exitencia_QR_dec} se cumpla. Es decir, $XP = QR$. Por otro lado, como $P$ es matriz de permutación existe $z$ tal que $Pz = \beta$. Por lo tanto, existe una expresión en la que $\beta$ se puede sustituir en la ecuación \ref{eq_matricial} para obtener 
 \begin{equation*}
     \begin{aligned}
     y = X (Pz) . 
@@ -357,7 +354,7 @@ Por lo tanto, existe una expresión en la que $\beta$ se puede sustituir en la e
     \end{aligned}
 \end{equation*}
 
-En Julia, esto se programa de la siguiente manera
+\noindent En Julia, esta solución se programa de la siguiente manera
 \begin{minted}{julia}
     # 1. Resolver QRz = y
     julia> z = Q*R \ y
@@ -366,17 +363,21 @@ En Julia, esto se programa de la siguiente manera
 \end{minted}
 
 
-Este método también fracasó. En las tablas de resultados \ref{NIST_res_gr5}, \ref{NIST_res_gr6}, \ref{NIST_res_gr10}, las columnas \texttt{QRvEcon} muestran que el método parecía funcionar hasta llegar al polinomio de grado 10, donde falló. Se continuó buscando la solución usando la descomposición de valores singulares.
+Este método también fracasó. En las tablas de resultados \ref{NIST_res_gr5} y \ref{NIST_res_gr6} se muestra que este método calcula el resultado de manera correcta. Esto sucede con los cálculos a medida que el orden de los polinomios va incrementado. Sin embargo, en la tabla \ref{NIST_res_gr10} las columnas \texttt{QRvEcon} muestran que el método falla en el polinomio de grado 10. Se continuó buscando la solución usando la descomposición de valores singulares.
 
-\subsection{Descomposición de valores singulares}
+\subsection{Descomposición de valores singulares} \label{subsec_DVS}
 
 La tercera forma en la que se intento solucionar el problema propuesto fue usando la descomposición de valores singulares para obtener la matriz pseudoinversa de Moore-Penrose. En primer lugar se muestra la definición de valores singulares. Posteriormente, se presenta su descomposición así como su aplicación en la definición de la matriz pseudoinversa. 
+
+\begin{definition}
+	El conjunto de todas las matrices de tamaño $m \times n$ con entradas complejos se denota como $M_{m \times n} (\mathbb{C})$, o como $M_{n} (\mathbb{C})$ si $m = n$. Por conveniencia, se denota $M_{n} (\mathbb{C}) = M_{n}$ y $M_{m \times n} (\mathbb{C}) = M_{m \times n}$. De manera análoga, el conjunto de matrices de tamaño $m \times n$ con entradas reales se denota como $M_{m \times n} (\mathbb{R})$, o como $M_{n} (\mathbb{R})$ si $m = n$. \cite[p.~24]{garcia2017second}
+\end{definition}
 
 \begin{definition}
 Sea $A$ una matriz de $m \times n$ y sea $q = min \{m, n \}$. Si el rango de $A = r \geq 1$, sean $\sigma_1 \geq \sigma_2 \geq \dots \geq \sigma_r > 0$ los eigenvalores positivos en orden decreciente de $(A^{*}A)^{1/2}$. Los valores singulares de $A$ son
 \begin{equation*}
     \begin{aligned}
-    \sigma_1, \sigma_2, \dots, \sigma_r \text{ y } \sigma_{r+1} = \sigma_{r+2} = \dots = \sigma_q = 0.
+    \sigma_1, \sigma_2, \dots, \sigma_r \quad \text{y} \quad \sigma_{r+1} = \sigma_{r+2} = \dots = \sigma_q = 0.
     \end{aligned}
 \end{equation*}
 Si A = 0, entonces los valores singulares de A son $\sigma_1 = \sigma_2 = \dots = \sigma_q = 0$. 
@@ -462,11 +463,11 @@ La matriz $A^{\dagger}$ tiene las siguientes propiedades:
     \item $(A^{T}A)^{\dagger}(A^{T}A) = A^{\dagger}A = VV^{T}$
 \end{enumerate}
 
-En este punto es conveniente recordar las dimensiones de la matriz $X_{n \times m} = X_{82 \times 11}$. Ya que $m < n$, hay más ecuaciones que variables desconocidas. Por lo tanto, el sistema lineal está sobredeterminado. \cite{worldScientificNews} establece que si la ecuación \ref{eq_matricial_pol} se multiplica por $X^{T}$ se obtiene el sistema deterinado (balanceado)
+En este punto es conveniente recordar las dimensiones de la matriz $X_{n \times m} = X_{82 \times 11}$. Ya que $m < n$, hay más ecuaciones que variables desconocidas. Por lo tanto, el sistema lineal está sobredeterminado. \cite{worldScientificNews} establece que si la ecuación \ref{eq_matricial_pol} se multiplica por $X^{T}$ se obtiene el sistema determinado (balanceado)
 \begin{equation}
 \label{transformacion_eq_base}
     \begin{aligned}
-    X^{T}X \beta = X^{T} y, \text{ } y \in Col(V).
+    X^{T}X \beta = X^{T} y, \quad y \in Col(V).
     \end{aligned}
 \end{equation}
 
@@ -481,27 +482,27 @@ Ahora bien, si se multiplica \ref{transformacion_eq_base} por $(X^{T}X)^{\dagger
     \end{aligned}
 \end{equation*}. 
 
-Por lo tanto, la pseudo inversa de Moore Penrose des la solución de mínimos cuadrados del problema \ref{eq_matricial} \citep{worldScientificNews}. En Julia, este método se puede programar en las dos líneas siguientes. 
+Por lo tanto, la pseudo inversa de Moore Penrose es la solución de mínimos cuadrados del problema \ref{eq_matricial} \citep{worldScientificNews}. En Julia, este método se puede programar en las dos líneas siguientes. 
 
 \begin{minted}{julia}
-    # # # Inversa de Moore Penrose
+    # Inversa de Moore Penrose
     julia> N = pinv(X)
-    julia> x_MP = N*y 
+    x_MP = N*y 
 \end{minted}
 
 Este método tampoco funcionó. Los resultados de este método corresponden a la columna \texttt{MoorePenrose} de las tablas \ref{NIST_res_gr5}, \ref{NIST_res_gr6}, \ref{NIST_res_gr10}. Se continuó indagando en los paquetes de Julia hasta encontrar \textit{Polynomials}. 
 
 \subsection{\textit{Polynomials}}
-\textit{Polynomials} es un paquete que proporciona aritmética básica, integración, diferenciación, evaluación y hallar raíces para polinomios univariados \cite{poly_manual}. Las instrucciones para instalarlo se encuentran en la sección \ref{instalacion_paquete}. 
+\textit{Polynomials} es un paquete que proporciona aritmética básica, integración, diferenciación, evaluación y hallar raíces para polinomios univariados \citep{poly_manual}. Las instrucciones para instalarlo se encuentran en la sección \ref{instalacion_paquete}. 
 
 
-El paquete \textit{Polynomials} contiene la función llamada \texttt{fit} que ajusta un polinomio de grado \texttt{deg} a \texttt{x} y \texttt{y} usando interpolación polinomial o aproximación por mínimos cuadrados \cite{poly_manual}. La función toma tres argumentos como entrada. Los primeros dos corresponden a $x$ y $y$ de los datos a utilizar (en este caso, los datos \texttt{filip}). El tercer argumento, \texttt{deg},  compete al grado que se busca sea el polinomio. 
+El paquete \textit{Polynomials} contiene la función llamada \texttt{fit} que ajusta un polinomio de grado \texttt{deg} a \texttt{x} y \texttt{y} usando interpolación polinomial o aproximación por mínimos cuadrados \citep{poly_manual}. La función toma tres argumentos como entrada. Los primeros dos corresponden a $x$ y $y$ de los datos a utilizar (en este caso, los datos \texttt{filip}). El tercer argumento, \texttt{deg},  compete al grado que se busca sea el polinomio. 
 
-Los métodos de solución propuestos anteriormente utilizan el procedimiento de mínimos cuadrados ya que el problema es un sistema de ecuaciones lineales. De acuerdo a la documentación de la función \texttt{fit}, el método que utiliza es Gauss-Newton se emplea para resolver sistemas de ecuaciones no lineales. El cambio en metodología causó que el paquete no fuera considerado en primera instancia como opción para la resolución del problema. Adicionalmente, a diferencia de la función de la función \texttt{lm} del paquete \texttt{GLM}, la función \texttt{fit} solamente aporta los coeficientes del ajuste del polinomio. Es decir, dicha función no calcula los estimadores del ajuste. Por otra parte, el código en \textsf{Julia} es sumamente sencillo: 
+Los métodos de solución propuestos anteriormente utilizan el procedimiento de mínimos cuadrados ya que el problema es un sistema de ecuaciones lineales. De acuerdo a la documentación del paquete, la función \texttt{fit} utiliza el método de Gauss-Newton que se emplea para resolver sistemas de ecuaciones no lineales. El cambio en metodología causó que el paquete no fuera considerado en primera instancia como opción para la resolución del problema. Adicionalmente, a diferencia de la función \texttt{lm} del paquete \texttt{GLM}, la función \texttt{fit} del paquete \texttt{Polynomials} solamente aporta los coeficientes del ajuste del polinomio. Es decir, dicha función no calcula los estimadores del ajuste. Por otra parte, el código en \textsf{Julia} es sumamente sencillo: 
 
 \begin{minted}{julia}
 	julia> using Polynomials 
-	julia> x_pol = Polynomials.fit(x, y, 10)
+	x_pol = Polynomials.fit(x, y, 10)
 \end{minted}
 
 A pesar de que la función \texttt{fit} decepciona al no calcular los estimadores, es necesario agregarlo a esta  sección de la tesis, ya que es el único método que funcionó. Las tablas de resultados \ref{NIST_res_gr5}, \ref{NIST_res_gr6}, \ref{NIST_res_gr10} muestra que este es el único método que, en conjunto con \textsf{R} y \textsf{Python} da los resultados correctos. Las siguientes secciones muestran la solución en dichos lenguajes. 
@@ -510,92 +511,106 @@ A pesar de que la función \texttt{fit} decepciona al no calcular los estimadore
 
 Los problemas presentados por NIST tienen cierto grado de fama dentro de la comunidad científica. El problema propuesto en este capítulo no es la excepción. Ejemplo de ello es la solución que presentó Brian Ripley en el 2006. Ripley es un estadístico británico famoso por ser el autor de diversos libros de estadística y programación. Sus aportaciones son tales que, en diversas ocasiones, ha sido galardonado por universidades de sumo prestigio como es la Universidad de Cambridge. Tal vez su logro más conocido es haber sido parte del equipo creador de \textsf{R} llamado \textit{The R Core team}. 
 
-Sin duda, Ripley es un gigante de la estadística en \textsf{R} por lo que en esta sección se utiliza la solución que él mismo propuso e hizo pública para el problema \ref{eq_matricial}. Dicha solución utiliza la función \texttt{lm(formula, data)} cuya explicación detallada se encuentra en la sección \ref{explicacion_lm}. Dado que el problema propuesto presenta un alto grado de sensibilidad, el argumento \texttt{tol} de la función \texttt{lm} debe ser modificado como se muestra en el siguiente código. 
+Sin duda, Ripley es un gigante de la estadística en \textsf{R} por lo que en esta sección se utiliza la solución que él mismo propuso e hizo pública para el problema \ref{eq_matricial}. Dicha solución utiliza la función \texttt{lm(formula, data)} cuya explicación detallada se encuentra en la sección \ref{explicacion_lm}. Dado que el problema propuesto presenta un alto grado de sensibilidad, el argumento \texttt{tol} de la función \texttt{lm} debe ser modificado. El siguiente código muestra el código en \textsf{R} para el ajuste de los polinomios de grado $k$, donde $k = 1, 2, \dots , 10$.  
 
-\valinline{Agregar que aqui se ponen todos los pols de los grados}
 
-\begin{lstlisting}[language=R]
+\begin{minted}{R}
 	# Para polinomio de grado = 1
-start <- Sys.time()
-lm_1 <- lm(y ~ x, data = data, x = TRUE)
-end <- Sys.time()
-	
-`resultados_grado_ 1`$R <- lm_1$coefficients
-row.names(`resultados_grado_ 1`) <- c("b0", "b1")
-X_1 <- lm_1$x
-	
-time_vec <- c(end - start)
+time_vec <- c(1)
+
+for (i in runs){
+	start <- Sys.time()
+	lm_1 <- lm(y~x, data = data, x = TRUE)
+	end <- Sys.time()
+	time_vec <- c(time_vec, end - start)
+}
+
+tiempos_r[1, ] <- time_vec
 	
 	# Para polinomios de grado > 1
 for (i in 2:10){
-	# Se define el modelo
-	model <- paste("y ~ x", paste("+ I(x^", 2:i, ")", 
+	# Hacemos el modelo
+	model <- paste("y~x", paste("+I(x^", 2:i, ")", 
 	sep='', collapse=''))
-		
-		# Se convierte en formula
+	
+	# Lo convertimos en formula
 	form <- formula(model)
-		
-		# Ejecucion
-	start <- Sys.time()
-	lm.plus <- lm(form, data = data, x = TRUE)
-	end <- Sys.time()
-	time <- end - start
-		# Vector de tiempos
-	time_vec <- c(time_vec, time)
+	time_vec <- c(i)
+	
+	# Ejecutamos el modelo
+	for (j in runs){
+		start <- Sys.time()
+		lm.plus <- lm(form, data = data, 
+		x = TRUE, tol = 1e-10)
+		end <- Sys.time()
+		time_vec <- c(time_vec, end - start)
+	}
+	
+	tiempos_r[i, ] <- time_vec
 }
 		
-	\end{lstlisting}
+	\end{minted}
 
 \section{Solución usando Python}
 
-Igual que en \textsf{R}, en \textsf{Python} se buscó solucionar el problema usando paquetes ya programados. Para esto, se utilizó la función \texttt{polyfit} del paquete \texttt{NumPy}. Como se explica en la sección \ref{seccion_numpy}, el objetivo de dicha función es ajustar un polinomio de orden especificado a un conjunto de datos. Para ejecutar \texttt{polyfit} en el ajuste de los diez polinomios se desarrolló una función en \textsf{Python}. Dicha función se nombró \texttt{polynomial\_fit} y sus objetivos son calcular las aproximaciones de los coeficientes $\beta$, guardar los resultados en un dataframe y medir el tiempo de ejecución. El código se muestra a continuación. 
+Igual que en \textsf{R}, en \textsf{Python} se buscó solucionar el problema usando paquetes ya desarrollados. Para esto, se utilizó la función \texttt{polyfit} del paquete \texttt{NumPy}. Como se explica en la sección \ref{seccion_numpy}, el objetivo de la función es ajustar un polinomio de orden específico a un conjunto de datos. Para ejecutar \texttt{polyfit} en el ajuste de los diez polinomios se desarrolló una función en \textsf{Python}. Dicha función se nombró \texttt{polynomial\_fit} y sus objetivos son calcular las aproximaciones de los coeficientes $\beta$, guardar los resultados en un dataframe y medir el tiempo de ejecución. El código se muestra a continuación. 
 
 
-\begin{lstlisting}[language=Python]
+\begin{minted}{python}
 def polynomial_fit(grado_pol):
-	start_time = time.time()
-	# Regresa el coeficiente de mayor potencia primero
-	python_fit = np.polyfit(x, y, deg = grado_pol)
+	tiempos_list = []
+	for i in runs:
+		start_time = time.time()
+# Regresa el coeficiente para la potencia mayor primero
+		python_fit = np.polyfit(x, y, deg=grado_pol)
+# Medimos el tiempo
+		tiempo = time.time() - start_time
+		tiempos_list.append(tiempo)
+# Lo movemos para que este igual que en 
+# los otros programas
+		python_fit = np.flipud(python_fit)
+# Guardamos los coeficientes en un dataframe
+		resultado=pd.DataFrame(python_fit)
+# Cambiamos el nombre de la columna
+		resultado.columns = ['Python']
+		nombre_archivo = "res_python_gr" + 
+		str(grado_pol) + ".csv"
+		resultado.to_csv(nombre_archivo)
+
+	return tiempos_list
+
+# Hagamos un df vacio para guardar los tiempos
+names = []
+for i in runs:
+	names.append("Tiempos_" + str(i))
+
+names.insert(0, 'Grado')
+tiempo_df = pd.DataFrame(columns = names)
+
+# Calculemos todos los ajustes
+for grado in range(1, 11):
+	res_dic = {'Grado': grado}
+	for i in runs:
+		time_grado = []
+		time_grado = polynomial_fit(grado)
+		res_dic['Tiempos_' + 
+		str(i)] = time_grado[i - 1]
+tiempo_df = tiempo_df.append(res_dic, 
+	ignore_index = True)
+
+tiempo_df.to_csv("tiempos_NIST_Python.csv")
 	
-	# Lo movemos solo para que este en el 
-	# mismo orden que los demas metodos
-	python_fit = np.flipud(python_fit)
-	
-	# Medimos el tiempo
-	tiempo = time.time() - start_time
-	
-	# Guardamos los coeficientes en un dataframe
-	resultado = pd.DataFrame(python_fit)
-	# Cambiamos el nombre de la columna
-	resultado.columns = ['Python']
-	nombre_archivo = "res_python_gr" + 
-	str(grado_pol) + ".csv"
-	resultado.to_csv(nombre_archivo)
-	
-	return tiempo
-	
-	# Hacemos un df vacio para guardar los tiempos
-	column_names = ['Grado','Tiempos']
-	tiempo_df = pd.DataFrame(columns = column_names)
-	
-	# Calculamos todos los ajustes
-	for grado in range(1, 11):
-	time_grado = polynomial_fit(grado)
-	time_grado = {'Grado': grado, 'Tiempos': time_grado}
-	tiempo_df = tiempo_df.append(time_grado, 
-		ignore_index = True)
-	
-\end{lstlisting}
+\end{minted}
 
 En la siguiente sección se presentan los resultados, con sus tiempos de ejecución, de todos los métodos en los tres lenguajes. Asimismo, se presenta la experiencia de usuario en la resolución de este problema. 
 
 \section{Resultados y Conclusiones} \label{sec_evalMetodos}
 
-El objetivo del problema propuesto es medir la precisión numérica por lo tanto, en esta sección se presentan los resultados de los 6 métodos sin redondear los decimales. NIST no presenta la estimación de coeficientes para los polinomios de grado $1, 2, \dots, 9$. Sin embargo, se considera que el ajuste para polinomios de orden menor requieren menos recursos computacionales. Por lo tanto, si las estimaciones de tres o más métodos coinciden, dichos cálculos se pueden considerar correctos. 
+El objetivo del problema propuesto es medir la precisión numérica. Por lo tanto, en esta sección se presentan los resultados de los 6 métodos sin redondear los decimales. NIST no presenta la estimación de coeficientes para los polinomios de grado $1, 2, \dots, 9$. Sin embargo, se considera que el ajuste para polinomios de orden menor requiere menos recursos computacionales. Por lo tanto, si las estimaciones de tres o más métodos coinciden, los cálculos se pueden considerar correctos. 
 
-Se decidió omitir las tablas con los resultados de todos los ajustes ya que se consideró innecesario. No obstante, las tablas presentadas contienen los resultados de mayor interés para el objetivo de este problema. En caso de requerir el resultado de un ajuste que no se presenta en esta sección, se puede consultar la carpeta \texttt{NIST} del repositorio de GitHub de este trabajo: \url{https://github.com/valperez/Tesis_Julia/tree/main/Tesis%20Julia%20con%20R/Code/NIST}. 
+Se decidió omitir las tablas con los resultados de todos los ajustes ya que se consideró innecesario. No obstante, las tablas presentadas contienen los resultados de mayor interés para el objetivo de este proyecto. En caso de requerir el resultado de un ajuste que no se presenta en esta sección, se puede consultar la carpeta \texttt{NIST} del repositorio de GitHub de este trabajo: \url{https://github.com/valperez/Tesis_Julia/tree/main/Tesis%20Julia%20con%20R/Code/NIST}. 
 
-Ahora bien, se debe mencionar que todos los métodos obtienen los mismos resultados en los ajustes de los polinomios de orden 1 al 5. La tabla \ref{NIST_res_gr5} es evidencia de ello. 
+Ahora bien, se debe mencionar que todos los métodos obtienen los mismos resultados en los ajustes de los polinomios de orden 1 al 5. La Tabla \ref{NIST_res_gr5} es evidencia de ello. 
 
 \begin{figure}[h]
 	\begin{center}
@@ -616,9 +631,7 @@ A partir de este punto, el método \texttt{GLM} comienza a presentar fallas. Los
 \end{center}
 \end{figure}
 
-En cambio, el resto de los métodos obtienen resultados similares en los ajustes hasta el polinomio de grado 9. No obstante, cuando se busca calcular el polinomio de grado 10, solamente las columnas \texttt{Polynomials}, \texttt{R} y \texttt{Python} muestran los resultados correctos. 
-
-\valinline{Agregar columna de NISt y discutir los decimales diferentes en Polynomials}
+En cambio, el resto de los métodos obtienen resultados similares en los ajustes hasta el polinomio de grado 9. No obstante, cuando se busca calcular el polinomio de grado 10, solamente las columnas \texttt{Polynomials}, \texttt{R} y \texttt{Python} de la tabla \ref{NIST_res_gr10} muestran los resultados correctos. 
 
 \begin{figure}[h]
 \begin{center}
@@ -628,7 +641,7 @@ En cambio, el resto de los métodos obtienen resultados similares en los ajustes
 \end{center}
 \end{figure}
 
-En cuanto a los tiempos de ejecución, la tabla \ref{NIST_tiempos} presenta una comparación entre los métodos desarrollados. Las columnas correspondes al método utilizado mientras que los reglones representan el grado del polinomio. 
+En cuanto a los tiempos de ejecución, la tabla \ref{NIST_tiempos} presenta, en segundos, una comparación entre los métodos desarrollados. Las columnas corresponden al método utilizado mientras que los reglones representan el grado del polinomio. 
 
 
 \begin{figure}[h]
@@ -639,13 +652,11 @@ En cuanto a los tiempos de ejecución, la tabla \ref{NIST_tiempos} presenta una 
 \end{center}
 \end{figure}
 
-De los métodos programados en \textsf{Julia}, el más rápido es el correspondiente al paquete \texttt{Polynomials}. \texttt{MoorePenrose} y \texttt{QRvEcon} no tardan mucho más, pero sí es notorio el salto que se da en el método \texttt{GLM}. A pesar de que un tercio de segundo no represente mucho tiempo, sí es mucho más del que le toma a los otros métodos. En cambio, los procedimientos hechos en \texttt{R} y \texttt{Python} toman muy poco tiempo. 
+De los métodos programados en \textsf{Julia}, el más rápido es el correspondiente al paquete \texttt{Polynomials}. \texttt{MoorePenrose} y \texttt{QRvEcon} no tardan mucho más, pero sí es notorio el salto que se da en el método \texttt{GLM} siendo aproximadamente 1,000 veces más lento. A pesar de que un quinto de segundo no represente mucho tiempo, sí es mucho más del que le toma a los otros métodos. Los resultados de ejecución de \textsf{R} son levemente más lentos que los métodos más rápidos de \textsf{Julia}, pero \textsf{Python} demuestra un gran poder computacional al ser el lenguaje más rápido de la triada. 
 
-En cuanto a la experiencia de usuario, este ejercicio representó un reto algebraico mayor al resto. La tarea de encontrar cuatro formas diferentes de solución a un problema fue un desafío. Como usuaria de los tres lenguajes presentados, quedo insatisfecha con los resultados de \textsf{Julia}, especialmente con los paquetes \texttt{GLM} y \texttt{Polynomials}. Los paquetes deben ser una herramienta que presenten un algoritmo optimizado de la teoría algebraica. 
+En cuanto a la experiencia de usuario, este proyecto representó un reto algebraico mayor al resto. La tarea de encontrar cuatro formas diferentes de solución a un problema fue un desafío. Como usuaria de los tres lenguajes presentados, quedo insatisfecha con los resultados de \textsf{Julia}, especialmente con los paquetes \texttt{GLM} y \texttt{Polynomials}. Los paquetes deben ser una herramienta que presenten un algoritmo optimizado de la teoría algebraica. El fracaso tan temprano del paquete \texttt{GLM} fue una sorpresa. Por otro lado, a pesar de que el paquete \texttt{Polynomials} obtiene una respuesta con alta precisión numérica, se siente la falta del cálculo de estimadores como lo son la desviación estándar, el valor $p$ y los intervalos de confianza. Esto no es una sorpresa ya que el enfoque del paquete es toda la teoría relacionada con polinomios, no con ajustes de modelos lineales. 
 
-El fracaso tan temprano del paquete \texttt{GLM} fue una sorpresa. Por otro lado, a pesar de que el paquete \texttt{Polynomials} obtiene una respuesta con alta precisión numérica, se siente la falta del cálculo de los estimadores. Esto no es una sorpresa ya que el enfoque del paquete es toda la teoría relacionada con polinomios, no con ajustes de modelos lineales. 
-
-\textsf{R} y \textsf{Python} no decepcionan ni sorprenden. Ambos son lenguajes que llevan más tiempo siendo desarrollados por lo que la verdadera sorpresa sería que no funcionaran. Aun así, en el caso de \textsf{R} es necesario el conocimiento del argumento que representa la tolerancia del ajuste. En cambio, en \textsf{Python} se obtienen los resultados de manera sencilla y con pocas líneas de código. Por lo tanto, si tuviera que escoger, \textsf{Python} sería el lenguaje que elegiría para hacer el ajuste de un modelo lineal. 
+\textsf{R} y \textsf{Python} no decepcionan ni sorprenden. Ambos son lenguajes que llevan más tiempo siendo desarrollados por lo que la verdadera sorpresa sería que no funcionaran. Aún así, en el caso de \textsf{R} es necesario el conocimiento del argumento que representa la tolerancia del ajuste. En cambio, en \textsf{Python} se obtienen los resultados de manera sencilla y con pocas líneas de código. Por lo tanto, por la sencillez y rapidez del lenguaje, \textsf{Python} sería mi candidato principal para hacer el ajuste de un modelo lineal. 
 
 En el siguiente capítulo se retoma el enfoque en análisis de datos para desarrollar el ajuste de un modelo lineal usando una extensa cantidad de datos. 
 

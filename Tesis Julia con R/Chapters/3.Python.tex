@@ -1,22 +1,22 @@
-\chapter{Python}
+\chapter{Python} \label{cap_python}
 
-\say{Python es un lenguaje de programación que permite trabajar rápido e integrar sistemas más eficientemente} es una frase que podría parecer sencilla, pero es esa misma simplicidad la que la hace destacar como lo primero que se observa en la página oficial de \textsf{Python} \url{https://www.python.org/}. El creador de \textsf{Python} , Guido van Rossum, comenzó a desarrollar el lenguaje a finales de los ochentas para, finalmente, hacerlo público en 1991. Esto lo hace un lenguaje más antiguo que \textsf{Julia} y \textsf{R}. Sin embargo, su desarrollo y efectividad ha sido tal que empresas líderes mundiales en tecnología como Youtube y Google lo utilizan hoy en día. 
+\say{Python es un lenguaje de programación que permite trabajar rápido e integrar sistemas más eficientemente} es una frase que podría parecer sencilla, pero es esa misma simplicidad la que la hace destacar como lo primero que se observa en la página oficial de \textsf{Python} \url{https://www.python.org/}. El creador de \textsf{Python}, Guido van Rossum, comenzó a desarrollar el lenguaje a finales de los ochentas para, finalmente, hacerlo público en 1991. Esto lo hace un lenguaje más antiguo que \textsf{Julia} y \textsf{R}. Sin embargo, su desarrollo y efectividad ha sido tal que empresas líderes mundiales en tecnología como Youtube y Google lo utilizan hoy en día. 
 
-Los recursos de apoyo disponibles para el uso de \textsf{Python} son vastos y de todos los medios posibles. Se decidió incluirlo en este trabajo ya que su uso en ciencia de datos es cada vez más frecuente. Un ejemplo de ello es la publicación de libros escritos por reconocidos desarrolladores de software como lo son \textit{Python Data Science Handbook} de Jake VanderPlas y \textit{Python for Data Analysis} de Wes McKinney. 
+Los recursos de apoyo disponibles para el uso de \textsf{Python} son vastos y de todos los medios posibles. Se decidió incluirlo en este trabajo ya que su uso en ciencia de datos es cada vez más frecuente. Un ejemplo de ello es la publicación de libros escritos por reconocidos desarrolladores de software como lo son \textit{Python Data Science Handbook} de Jake VanderPlas y \textit{Python for Data Analysis} de Wes McKinney. Otros lenguajes de programación utilizados para ciencia de datos son \textsf{R, SQL} y \textsf{Stata}. 
 
-\textsf{Python} se incluye también por su uso similar con \textsf{Julia} y \text{R} lo que permite mostrar su sencillez y facilidad de programación. En este trabajo se utilizó \textsf{Python} para los tres ejercicios de manejo de datos que se explican a partir del capítulo \ref{cap_polinomios}. En dichos capítulos se presenta el código utilizado en los ejemplos por lo que en las siguientes secciones se comentan los paquetes principales y la interfaz que se utilizaron. 
+\textsf{Python} se incluye también en este documento por su uso similar con \textsf{Julia} y \text{R} lo que permite mostrar su sencillez y facilidad de programación. En este trabajo se utilizó \textsf{Python} para los tres proyectos de manejo de datos que se explican a partir del capítulo \ref{cap_polinomios}. En dichos capítulos se presenta el código utilizado en los ejercicios por lo que en las siguientes secciones se comentan los paquetes principales y la interfaz que se utilizaron. 
 
 \section{Listas}
 \say{Una \textit{lista} es una colección de elementos en un orden particular}, \cite{matthes2019python}. La lista es la estructura de datos elemental y principal de \textsf{Python} ya que permite almacenar diferentes tipos de elementos en un solo objeto. Una lista se crea usando paréntesis cuadrados \texttt{[]}. Por ejemplo, si se quisiera hacer una lista de animales en el zoológico el comando sería 
 
 \begin{lstlisting}[language=Python]
-	animales = ["zebra", "leon", "jirafa", "elefante"]
-	animales[1]
+animales = ["zebra", "leon", "jirafa", "elefante"]
+animales[1]
 \end{lstlisting}
 
 Los elementos de una lista pueden accederse mediante su índice y el uso de corchetes cuadrados. Por ejemplo, el comando \texttt{animales[1]} regresa \texttt{"león"}. Una característica clave de las listas en \textsf{Python} es que, a diferencia de \textsf{R} y \textsf{Julia}, las listas comienzan a numerar sus elementos desde el cero. 
 
-Existen más estructuras de datos en \textsf{Python} cuyas características cumples distintos criterios. En este trabajo se eligió trabajar con listas ya que son un objeto ordenado, mutable y que permite valores duplicados. Se recomienda ver la documentación de \textsf{Python}, \cite{doc_python}, para una explicación más detallada de los métodos propios de las listas. 
+Existen más estructuras de datos en \textsf{Python} cuyas características cumplen distintos criterios. En este trabajo se eligió trabajar con listas ya que son un objeto ordenado, mutable y que permite valores duplicados. Se recomienda ver la documentación de \textsf{Python}, \cite{doc_python}, para una explicación más detallada de los métodos propios de las listas. 
 
 \section{Paquetes}
 Al igual que en \textsf{Julia}, en \textsf{Python} se desarrolló el lenguaje original separado de los paquetes. La diversidad del desarrollo de los paquetes es tal que facilita hacer casi cualquier tipo de análisis matemático posible. 
@@ -26,23 +26,23 @@ Para usar cualquier instrucción de un paquete se tiene primero que nombrar su a
 	import numpy as np
 \end{lstlisting}
 
-\noindent importa el paquete \texttt{NumPy} con el apodo \texttt{np}. Si se quisiera llamar a la función \texttt{array} de este paquete se tendría que escribir el comando \texttt{np.array}. En el desarrollo códigos extensos esto podría parecer tedioso e incluso innecesario. Sin embargo lo considero una gran ventaja ya que quita la ambigüedad de reconocer que método corresponde a que paquete.
+\noindent importa el paquete \texttt{NumPy} con el apodo \texttt{np}. Si se quisiera llamar a la función \texttt{array} de este paquete se tendría que escribir el comando \texttt{np.array}. En las siguientes secciones se presentan los paquetes de \textsf{Python} utilizados en este trabajo. 
 
 \subsection{NumPy} \label{seccion_numpy}
-\texttt{NumPy} es el paquete fundamental para computación científica en \textsf{Python} ya que es el que proporciona los objetos multidimensionales como lo son los vectores y matrices. Estos objetos se pueden crear sin necesidad de \texttt{NumPy}, pero hacerlo mediante el paquete otorga algunas particularidades. La primera de ellas es que los arreglos creados en \texttt{NumPy} tienen dimensiones inmutables; la segunda es que sus elementos deben pertenecen al mismo tipo de dato; la tercera es que facilitan operaciones matemáticas en grandes cantidades de datos; y, finalmente, la cuarta es que es uno de los paquetes preferidos por la comunidad de \textsf{Python} lo cual lo hace objeto de una gran cantidad de publicaciones sobre su uso y aplicación. 
+\texttt{NumPy} es el paquete fundamental para computación científica en \textsf{Python} ya que es el que proporciona los objetos multidimensionales como lo son los vectores y matrices. Estos objetos se pueden crear sin necesidad de \texttt{NumPy}, pero hacerlo mediante el paquete otorga algunas ventajas. La primera de ellas es que los arreglos creados en \texttt{NumPy} tienen dimensiones inmutables; la segunda es que sus elementos deben pertenecer del mismo tipo de dato; la tercera es que facilitan operaciones matemáticas en grandes cantidades de datos; y, finalmente, la cuarta es que es uno de los paquetes preferidos por la comunidad de \textsf{Python} lo cual lo hace objeto de una gran cantidad de publicaciones sobre su uso y aplicación. 
 
-En esta tesis se usó \texttt{NumPy} para crear y manipular arreglos así como hacer un ajuste de un polinomio usando el método de mínimos cuadrados. A continuación se presenta la lista completa de comandos que se utilizaron con su respectiva explicación proveniente del paquete oficial de \texttt{NumPy}, \cite{numpy_manual}. 
+En esta tesis se usó \texttt{NumPy} para crear y manipular arreglos, así como hacer un ajuste de un polinomio usando el método de mínimos cuadrados. A continuación se presenta la lista completa de comandos que se utilizaron con su respectiva explicación proveniente del paquete oficial de \texttt{NumPy}, \cite{numpy_manual}. 
 
 \begin{itemize}
 	\item np.array([\texttt{lista}]): Crea un arreglo con los valores de la \texttt{lista}.
 	
-	\item np.insert(\texttt{arr, obj, values}): Inserta los valores \texttt{values} en el arreglo \texttt{arr} antes de los índices \texttt{obj}.
+	\item np.insert(\texttt{arr, obj, values}): Inserta los valores \texttt{values} en el arreglo \texttt{arr} antes del índice \texttt{obj}.
 	
 	\item np.arange(\texttt{start, stop}): Crea un arreglo con valores espaciados uniformemente desde \texttt{start} hasta el número antes de \texttt{stop}. 
 	
-	\item np.transpose(\texttt{a}): Transpone el objeto a \texttt{a}.
+	\item np.transpose(\texttt{a}): Transpone el objeto \texttt{a}.
 	
-	\item np.concatenate($a_1, a_2, \dots $): Une la secuencia de arreglos en uno ya existente.
+	\item np.concatenate(\texttt{$a_1, a_2, \dots $}): Une la secuencia de arreglos en uno ya existente.
 	
 	\item np.ones(\texttt{shape}): Crea una matriz de tamaño \texttt{shape} llena con unos.
 	
@@ -58,24 +58,22 @@ En esta tesis se usó \texttt{NumPy} para crear y manipular arreglos así como h
 
 
 \subsection{pandas}
-\texttt{pandas} es el segundo paquete en importancia de \textsf{Python} ya que ofrece manipulación y análisis de datos de manera rápida, flexible y sencilla. Sus funciones se enfocan en el uso eficiente de dataframes, lectura y escritura de datos, agrupación y unión de conjuntos de datos, entre otros \cite{pandas_manual}. En esta tesis se utilizaron los siguientes comandos.
+\texttt{pandas} es el segundo paquete en importancia de \textsf{Python} ya que ofrece manipulación y análisis de datos de manera rápida, flexible y sencilla. Sus funciones se enfocan en el uso eficiente de dataframes, lectura y escritura de datos, agrupación y unión de conjuntos de datos, entre otros \citep{pandas_manual}. En esta tesis se utilizaron los siguientes comandos de este paquete.
 
 \begin{itemize}
-	\item pd.read\_csv(\texttt{filepath}): Lee un archivo \texttt{csv} y lo convierte a DataFrame.
+	\item pd.read\_csv(\texttt{filepath}): Lee un archivo \texttt{csv} y lo convierte a dataframe.
 	
 	\item pd.DataFrame(\texttt{data}): Crea un objeto de tipo dataframe con los datos \texttt{data}. 
 	
-	\item pd.get\_dummies(\texttt{data}): Convierte variables categóricas \texttt{data} en variables indicadoras o dummie. 
+	\item pd.get\_dummies(\texttt{data}): Convierte las variables categóricas \texttt{data} en variables indicadoras o dummie. 
 \end{itemize}
 
 \subsection{os}
-Otro paquete utilizado en este trabajo fue \texttt{os} ya que proporciona una manera de usar funcionalidad dependiente del sistema operativo \cite{doc_python}. Este es el paquete que permite hacer la conexión entre \textsf{Python} y los archivos de una computadora. Los comandos que se utilizaron son dos. El primero fue \texttt{os.chdir(path)} que permite seleccionar el directorio en el que se está trabajando. Mientras que el segundo fue \texttt{os.listdir(path)} que proporciona una lista de archivos en el \texttt{path} dado. 
+Otro paquete utilizado en este trabajo fue \texttt{os} ya que proporciona una manera portátil de usar la funcionalidad dependiente del sistema operativo \citep{doc_python}. Este es el paquete que permite hacer la conexión entre \textsf{Python} y los archivos de una computadora. Los comandos que se utilizaron son dos. El primero fue \texttt{os.chdir(path)} que permite seleccionar el directorio en el que se está trabajando. Mientras que el segundo fue \texttt{os.listdir(path)} que proporciona una lista de archivos en el \texttt{path} dado. 
 
 
 \subsection{scikit-learn} \label{sec_sklearn}
-\texttt{scikit-learn} es un paquete creado para \textit{machine learning} o aprendizaje de máquina en \textsf{Python}. También es conocido como \texttt{sklearn} y proporciona herramientas simples y eficientes para la predicción en análisis de datos. Por ejemplo, clasificación, regresión, agrupamiento o conglomerado y reducción de dimensiones en modelos \cite{doc_python}.
-
-Para este trabajo se utilizó para hacer regresiones lineales. El usuario puede importar el paquete de dos maneras. 
+\texttt{scikit-learn} es un paquete creado para \textit{machine learning} o aprendizaje de máquina en \textsf{Python}. También es conocido como \texttt{sklearn} y proporciona herramientas simples y eficientes para la predicción en análisis de datos. Por ejemplo, clasificación, regresión, agrupamiento o conglomerado y reducción de dimensiones en modelos \citep{doc_python}. En este trabajo se utilizó para hacer regresiones lineales. El usuario puede importar el paquete de dos maneras. 
 
 \begin{lstlisting}[language=Python]
 	import sklearn
@@ -85,43 +83,43 @@ Para este trabajo se utilizó para hacer regresiones lineales. El usuario puede 
 	model = regr.fit(x, y)
 \end{lstlisting}
 
-El primer comando importa el paquete \texttt{sklearn} completo, mientras que el segundo solo toma la parte de modelos lineales. Con el paquete cargado, la tercera línea de código se encarga de guardar en la variable \texttt{reg} que se busca ajustar un modelo linear definido como la ecuación \ref{eq_rlm} usando el método de mínimos cuadrados. Finalmente, el último comando del código calcula los coeficientes $\beta$. 
+La primera línea de instrucción importa el paquete \texttt{sklearn} completo, mientras que la segunda solo toma la parte de modelos lineales. Con el paquete cargado, la tercera línea de código se encarga de guardar en la variable \texttt{regr} que lo que se busca es ajustar un modelo lineal definido como en la ecuación \ref{eq_rlm}. Finalmente, el último comando del código calcula los coeficientes $\beta$  usando el método de mínimos cuadrados. 
 
 \subsection{itertools}
-\say{Itertools es un módulo que estandariza un conjunto importante de herramientas rápidas y eficientes de memoria que son útiles en sí mismas o en combinación}, \cite{doc_python}. Este paquete tiene ciertas funciones implementadas que se pueden recrear sin la necesidad del mismo. Sin embargo, la ventaja de utilizar \texttt{itertools} es la velocidad en la que las genera. 
+\say{itertools es un módulo que estandariza un conjunto importante de herramientas rápidas y eficientes de memoria que son útiles en sí mismas o en combinación}, \cite{doc_python}. Este paquete tiene ciertas funciones implementadas que se pueden recrear sin la necesidad del mismo. Sin embargo, la ventaja de utilizar \texttt{itertools} es la velocidad en la que las genera. 
 
-En este trabajo se utilizo \texttt{itertools.combinations()} para crear las combinaciones de posibles factores activos del problema de selección de modelos del capítulo \ref{chapter_MDopt}. Todos los paquetes anteriores se utilizaron mediante la interfaz gráfica \textsf{Jupyter} que se presenta a continuación.
+En este trabajo se utilizo \texttt{itertools.combinations()} para crear las combinaciones de posibles factores activos del problema de discriminación de modelos presentado en el capítulo \ref{chapter_MDopt}. Todos los paquetes anteriores se utilizaron mediante la interfaz gráfica \textsf{Jupyter Notebook} que se presenta a continuación.
 
-\section{Jupyter} \label{cap_jupyter}
+\section{Jupyter Notebook} \label{cap_jupyter}
 \say{Jupyter Notebook es la aplicación web original para crear y compartir documentos computacionales. Es un programa que existe para desarrollar software de manera pública en decenas de lenguajes de programación incluyendo \textsf{R}, \textsf{Python} y \textsf{Julia}}, \cite{jupyter_page}. 
 
-Una manera sencilla de obtener \textsf{Jupyter} es instalando \textsf{Anaconda},una interfaz gráfica que permite manejar y administrar aplicaciones, paquetes, ambientes y canales sin necesidad de usar comandos en el sistema operativo. Para instalar Anaconda en Windows se debe ir a la página \url{https://docs.anaconda.com/anaconda/install/windows/} y seguir las instrucciones de instalación. Esto puede tomar unos minutos. Al terminar, la ejecución de \textsf{Jupyter Notebook} abrirá una ventana del explorador y que se verá de manera similar a la figura \ref{jupyter_pantallaPrincipal}. 
+Una manera sencilla de obtener \textsf{Jupyter Notebook} es instalando \textsf{Anaconda}, una interfaz gráfica que permite manejar y administrar aplicaciones, paquetes, ambientes y canales sin necesidad de usar comandos en el sistema operativo. Para instalar Anaconda en \textsf{Windows} se debe ir a la página \url{https://docs.anaconda.com/anaconda/install/windows/} y seguir las instrucciones de instalación. Esto puede tomar unos minutos. Al terminar, la ejecución de \textsf{Jupyter Notebook} abrirá una ventana del explorador que se verá de manera similar a la imagen \ref{jupyter_pantallaPrincipal}. 
 
 
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[scale=0.35]{Imagenes/jupyter_pantallaPrincipal.PNG}
-		\caption{Pantalla principal de Jupyter}
+		\caption{Pantalla principal de Jupyter Notebook}
 		\label{jupyter_pantallaPrincipal}
 	\end{center}
 \end{figure}
 
 
-\textsf{Jupyter} tiene la ventaja de facilitar el uso indistinto de los tres lenguajes utilizados en este trabajo. Uno de los prerequisitos para instalar \textsf{Jupyter} es la instalación previa de \textsf{Python}. Por lo tanto, este lenguaje que ya viene en la interfaz. La imagen \ref{pythonVersion} muestra un archivo que utiliza \textsf{Python} en \textsf{Jupyter}. En la esquina superior derecha se puede observar el lenguaje que se está utilizando. 
+\textsf{Jupyter Notebook} tiene la ventaja de facilitar el uso indistinto de los tres lenguajes utilizados en este trabajo. Uno de los prerequisitos para instalarlo es la instalación previa de \textsf{Python}. Por lo tanto, este es el lenguaje que ya viene en la interfaz. La figura \ref{pythonVersion} muestra, a manera de ejemplo, un archivo que utiliza \textsf{Python} en \textsf{Jupyter Notebook}. En la esquina superior derecha se puede verificar el lenguaje que se está utilizando. 
 
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[scale=0.35]{Imagenes/pythonVersion.PNG}
-		\caption{Archivo generado con Python en Jupyter}
+		\caption{Archivo generado con Python en Jupyter Notebook}
 		\label{pythonVersion}
 	\end{center}
 \end{figure}
 
-El caso de \textsf{R} y \textsf{Julia} es diferente por lo que se expondrá su implementación en las siguientes secciones. 
+El caso para \textsf{R} y \textsf{Julia} es diferente por lo que se expondrá su implementación en las siguientes secciones. 
 
 \subsection{Julia}
 
-El primer paso es haber instalado \textsf{Julia} en la computadora. Después, se debe instalar el paquete \texttt{IJulia} usando los pasos descritos en \ref{instalacion_paquete}. Esto solo se tiene que hacer una vez. Para confirmar que la instalación esté bien hecha se debe abrir \textsf{Jupyter}, seleccionar \textsf{New} y debe aparecer la opción de \textsf{Julia 1.6.3} (o la versión de \textsf{Julia} que esté instalada en la computadora). El archivo nuevo generado con \textsf{Julia} se ve similar a la imagen \ref{juliaVersion_ss}
+El primer paso para utilizar \textsf{Julia} en la interfaz \textsf{Jupyter Notebook} es tener instalado el lenguaje en la computadora. Posteriormente, se debe instalar el paquete \texttt{IJulia} usando los pasos descritos en la sección \ref{instalacion_paquete}. Esto solo se tiene que hacer una vez. Para confirmar que la instalación esté bien hecha se debe abrir \textsf{Jupyter Notebook}, seleccionar \textsf{New} y debe aparecer la opción de \textsf{Julia 1.6.3} (o la versión de \textsf{Julia} que esté instalada en la computadora). El archivo nuevo generado con \textsf{Julia} se ve similar a la figura \ref{juliaVersion_ss}
 
 \begin{figure}[h]
 	\begin{center}
@@ -133,16 +131,16 @@ El primer paso es haber instalado \textsf{Julia} en la computadora. Después, se
 
 \subsection{R}
 
-Hay varias maneras de instalar \textsf{R} en \textsf{Jupyter}, pero se expondrá la forma descrita en el manual de \textsf{Anaconda}, \cite{anaconda_doc}. 
+Existen varias maneras de instalar \textsf{R} en \textsf{Jupyter}, pero se expondrán los pasos descritos en el manual de \textsf{Anaconda}, \cite{anaconda_doc}. 
 
 \begin{enumerate}
 	\item Abrir el Navegador de \textsf{Anaconda} (no confundir con el de \textsf{Jupyter Notebook}).
 	
 	\item Seleccionar \texttt{Environments} y después la opción de \texttt{Create} ubicada en la esquina inferior izquierda. 
 	
-	\item Aparecerá una ventana donde permite nombrar el \texttt{Environment} como se prefiera. Se debe seleccionar la versión de \textsf{Python} que se tenga y seleccionar la casilla al lado de \textsf{R}. Después, se debe pulsar la opción de \texttt{Create}. 
+	\item Aparecerá una ventana donde permite al usuario nombrar el \texttt{Environment} como prefiera. Se debe seleccionar la versión de \textsf{Python} que se tenga y seleccionar la casilla del lado izquierdo de \textsf{R}. Después, se debe pulsar la opción de \texttt{Create}. 
 	
-	\item Para usar el ambiente que se acaba de crear en \textsf{Jupyter} se selecciona la flecha de lado derecho del nombre del ambiente nuevo. Entre las opciones seleccionar la opción de \texttt{Open with Jupyter Notebook} como se muestra en la figura \ref{abrirRconJupyter}
+	\item Para usar el ambiente que se acaba de crear en \textsf{Jupyter Notebook} se selecciona la flecha de lado derecho del nombre del ambiente nuevo. Entre las opciones seleccionar la opción de \texttt{Open with Jupyter Notebook} como se muestra en la figura \ref{abrirRconJupyter}
 	
 	\item Por último, se debe seleccionar el botón de \texttt{New} y después \textsf{R} para crear un archivo que trabaje con \textsf{R}. 
 \end{enumerate}
@@ -150,17 +148,17 @@ Hay varias maneras de instalar \textsf{R} en \textsf{Jupyter}, pero se expondrá
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[scale=0.35]{Imagenes/abrirRconJupyter.PNG}
-		\caption{Ejecutar R desde el navegador de Anaconda}
+		\caption{Ejecución de R desde el navegador de Anaconda}
 		\label{abrirRconJupyter}
 	\end{center}
 \end{figure}
 
-En la imagen \ref{rVersion} se muestra el ejemplo de un archivo generado con \textsf{R} en \textsf{Jupyter}. En el siguiente capítulo se exponen las funciones utilizadas en \textsf{R}. 
+En la figura \ref{rVersion} se muestra el ejemplo de un archivo generado con \textsf{R} en \textsf{Jupyter Notebook}. En el siguiente capítulo se exponen las funciones utilizadas en \textsf{R}. 
 
 \begin{figure}[h]
 	\begin{center}
 		\includegraphics[scale=0.35]{Imagenes/RVersion.PNG}
-		\caption{Archivo generado con R en Jupyter}
+		\caption{Archivo generado con R en Jupyter Notebook}
 		\label{rVersion}
 	\end{center}
 \end{figure}
