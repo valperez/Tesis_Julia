@@ -3,7 +3,7 @@ tiempos_df <- data.frame(matrix(nrow = 5, ncol = 4))
 colnames(tiempos_df) <- c("BsMD2", "BsMD", "JuliaCall", "reticulate")
 row.names(tiempos_df) <- seq(1, 5)
 
-runs <- seq(1, 5)
+runs <- seq(1, 6)
 
 # # # R tesis Paty
 library(BsMD2)
