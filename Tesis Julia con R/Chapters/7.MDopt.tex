@@ -12,32 +12,38 @@ En este capítulo se comenta un resumen del artículo publicado por \cite{meyer1
 
 \section{Preliminares y definiciones}
 
-Dado que el enfoque de esta tesis no es el diseño de experimentos, se presenta una lista de términos y sus definiciones obtenidos de \cite{lawson2015design}. El objetivo es proporcionar los antecedentes necesarios para la comprensión de este capítulo. A la par, se establece un diseño de experimentos creado por la autora cuyo objetivo es ejemplificar cada uno de los términos mostrados a continuación. 
-
-El ejemplo gira alrededor de deporte favorito de la autora: el atletismo. Más específicamente, las competencias de distancias largas como 5K, 10K y 21K. Suponga que se busca crear un diseño de experimentos cuyo objetivo sea correr 10 kilómetros lo más rápido posible el 31 de diciembre. Desde agosto, cada semana se harán carreras de 10 kilómetros donde se medirá el tiempo para obtener un progreso semanal. Algunos factores que podrían tener un efecto en el tiempo final recorrido son el calzado utilizado, el clima presente en el día de la carrera, la ropa utilizada, la nutrición durante el ciclo de entrenamiento y la cena y agua ingeridos la noche anterior. 
+Dado que el enfoque de esta tesis no es el diseño de experimentos, se presenta una lista de términos y sus definiciones obtenidos de \cite{lawson2015design}. El objetivo es proporcionar los antecedentes necesarios para la comprensión de este capítulo. 
 
 \begin{itemize}
-	\item Ensayos: es la acción donde el experimentador cambia al menos una de las variables estudiadas para observar el efecto de su acción. También son llamadas experimentos. En el ejemplo del atletismo, cada carrera semanal de 10 kilómetros es un ensayo. 
+	\item Ensayos: es la acción donde el experimentador cambia al menos una de las variables estudiadas para observar el efecto de su acción. También son llamadas experimentos. 
 	
-	\item Variable independiente: es una de las variables bajo estudio que se controla en un valor o nivel objetivo durante un experimento. El nivel se cambia de manera sistemática de ensayo a ensayo para determinar el efecto que tiene en la respuesta. En el ejemplo de la carrera, las variables independientes son el calzado, el clima, la ropa y la nutrición utilizados el día de cada carrera. 
+	\item Variable independiente (o variable de entrada): es una de las variables bajo estudio que se controla en un valor o nivel objetivo durante un experimento. El nivel se cambia de manera sistemática de ensayo a ensayo para determinar el efecto que tiene en la respuesta. 
 	
-	\item Variable dependiente (o variable respuesta denotada por $Y$): es la característica del experimento que se mide después de cada ensayo. La magnitud de la respuesta depende de los cambios en las variables independientes o factores y en los factores de confusión. En el ejemplo de la carrera, la variable dependiente es el tiempo total que toma al atleta correr 10 kilómetros. 
+	\item Variable dependiente (o variable respuesta denotada por $Y$): es la característica del experimento que se mide después de cada ensayo. La magnitud de la respuesta depende de los cambios en las variables independientes o factores y en los factores de confusión. 
 	
-	\item Factores de confusión: surgen cuando cada cambio que hace el experimentador para un factor, entre ensayos, está acoplado con un cambio idéntico en otro factor. En esta situación es imposible determinar que factor causa cualquier cambio observado en la respuesta o variable dependiente. En el ejemplo de la carrera, cualquier cambio en nutrición está asociado (casi de manera indistinguible) con un cambio en la hidratación.
+	\item Factores de confusión: surgen cuando cada cambio que hace el experimentador para un factor, entre ensayos, está acoplado con un cambio idéntico en otro factor. En esta situación es imposible determinar que factor causa cualquier cambio observado en la respuesta o variable dependiente. 
 	
-	\item Efecto: es el cambio en la respuesta causado por el cambio en un factor o variable independiente. Después de que los ensayos en un diseño de experimentos son realizados, el efecto se puede estimar calculándolo de los datos de respuesta observados. En el ejemplo, el efecto es el aumento o disminución del tiempo necesario para completar 10 kilómetros. 
+	\item Efecto: es el cambio en la respuesta causado por el cambio en un factor o variable independiente. Después de que los ensayos en un diseño de experimentos son realizados, el efecto se puede estimar calculándolo de los datos de respuesta observados. 
 	
-	\item Diseño experimental: es una colección de experimentos o ensayos planeados con anticipación a la ejecución. Los ensayos seleccionados en un diseño de experimentos dependerán del propósito del diseño. En el ejemplo del atletismo, el diseño experimental es el conjunto de carreras semanales hechas desde agosto hasta diciembre. 
+	\item Diseño experimental: es una colección de experimentos o ensayos planeados con anticipación a la ejecución. Los ensayos seleccionados en un diseño de experimentos dependerán del propósito del diseño. 
 	
-	\item Diseño factorial. Lawson lo define como un experimento donde los ensayos consisten en todas las posibles combinaciones de los niveles de los factores estudiados. Por su parte, \cite{montgomery2017design} expande la definición al exponer un ejemplo. Un diseño factorial es aquel en donde si hay $a$ niveles del factor $A$ y $b$ niveles del factor $B$ cada ensayo contiene todas las combinaciones $ab$ de tratamientos. Son los diseños más eficientes para estudiar los efectos de dos o más factores. En el ejemplo de las carrera, el diseño factorial es el conjunto de ensayos donde se pruebas todas las posibles combinaciones de calzado, ropa y nutrición. 
+	\item Diseño factorial. Lawson lo define como un experimento donde los ensayos consisten en todas las posibles combinaciones de los niveles de los factores estudiados. Por su parte, \cite{montgomery2017design} expande la definición al exponer un ejemplo. Un diseño factorial es aquel en donde si hay $a$ niveles del factor $A$ y $b$ niveles del factor $B$ cada ensayo contiene todas las combinaciones $ab$ de tratamientos. Son los diseños más eficientes para estudiar los efectos de dos o más factores. 
 	
-	\item Diseño factorial fraccionado: es una variación del diseño factorial básico donde solo se realizan un subconjunto de ensayos. En el ejemplo del atletismo, un diseño factorial fraccionado es seleccionar un subconjunto de combinaciones de calzado, ropa y nutrición que, se crea, podrán dar el mejor resultado en la carrera. 
+	\item Diseño factorial fraccionado: es una variación del diseño factorial básico donde solo se realizan un subconjunto de ensayos. 
 	
-	\item Factor activo: aquellos factores que tienen influencia real en la respuesta. Continuando con el ejemplo de la carrera, existe una relación directa entre el calzado utilizado y el desempeño de un atleta. 
+	\item Factor activo: aquellos factores que tienen influencia real en la respuesta.
 	
-	\item Factor no activo: aquellos factores que no tienen influencia real en la respuesta. En el ejemplo del atletismo, el clima puede o no tener influencia en el resultado de un atleta en una carrera. El ambiente en que se realizó el entrenamiento puede ser seleccionado para que un atleta pueda rendir de la misma manera en climas completamente diferentes. 
+	\item Factor no activo: aquellos factores que no tienen influencia real en la respuesta. 
 	
 \end{itemize}
+
+Para ejemplificar los términos mostrados anteriormente, se puede utilizar el  deporte favorito de la autora: el atletismo. Más específicamente, las competencias de distancias largas como 5K, 10K y 21K. Suponga que se busca crear un diseño de experimentos cuyo objetivo sea correr 10 kilómetros lo más rápido posible el 31 de diciembre. Desde agosto, cada semana se harán carreras de 10 kilómetros donde se medirá el tiempo para obtener un progreso semanal.
+
+Las carreras semanales son los ensayos del experimento. La variable dependiente es el tiempo final necesario para correr 10 kilómetros. Algunos factores que podrían tener un efecto en dicho tiempo y que pueden ser consideradas como variables independientes son el calzado utilizado, el clima presente en el día de la carrera, la ropa utilizada, la nutrición durante el ciclo de entrenamiento y la cena y agua ingeridos la noche anterior. Las dos últimas variables, la cena y el agua ingeridos la noche anterior a la carrera son factores de confusión ya que su asociación es casi indistinguible. 
+
+El diseño experimental es el conjunto de carreras semanales hechas de agosto a diciembre. Si se quisiera realizar un diseño factorial, se realizarían el conjunto de ensayos donde se prueben todas las posibles combinaciones de calzado, ropa y nutrición. En cambio, si se optara por un diseño factorial fraccionado, se elegiría solo un subconjunto de dichas combinaciones. 
+
+Un factor activo indiscutible en este ejemplo es la relación entre el calzado utilizado y el desempeño del atleta. Por otro lado, el clima del día de la carrera puede o no tener una influencia en el tiempo final de un carrera haciendo esta variable un factor no activo. 
 
 
 \section{Metodología general} \label{sec_metodologia}
@@ -70,13 +76,13 @@ Finalmente, el último paso del diseño estadístico de experimentos es la obten
 
 \section{Criterio MD} \label{seccion_criterioMD}
 
-Esta sección presenta una explicación matemática detallada del criterio MD propuesto por \cite{meyer1996}. Sea \textbf{$Y$} el vector de respuestas de tamaño $n \times 1$ de un experimento factorial fraccionado con $k$ factores. El modelo que mejor describa \textbf{$Y$} depende de los factores activos en el experimento y en este análisis se consideran todas las posibles combinaciones de dichos factores. Sea $M_i$ el modelo con una combinación particular de factores activos $f_i$ donde $0 \leq f_i \leq k$. Condicionado a que $M_i$ sea el modelo verdadero, se asume un modelo lineal normal, $\textbf{$Y$} \sim N(X_i \beta_i, \sigma^2 I).$ 
+Esta sección presenta una explicación matemática detallada del criterio MD propuesto por \cite{meyer1996}. Sea \textbf{$Y$} el vector de respuestas de tamaño $n \times 1$ de un experimento factorial fraccionado con $k$ factores. El modelo que mejor describa \textbf{$Y$} depende de los factores activos en el experimento y en este análisis se consideran todas las posibles combinaciones de dichos factores. Sea $M_i$ el modelo con una combinación particular de factores activos $f_i$ donde $0 \leq f_i \leq k$. Condicionado a que $M_i$ sea el modelo verdadero, se asume un modelo lineal normal, $\textbf{$Y$} \sim N(X_i \beta_i, \sigma^2 I).$ La hipótesis de homocedasticidad se puede asumir ya que, dado que las observaciones vienen de un mismo experimento, la varianza se puede pensar como una constante.
 
 La matriz $X_i$ es la matriz de regresión para $M_i$ e incluye los efectos principales para cada factor activo y su interacción hasta cualquier orden deseado. Sea $t_i$ el número finito de efectos (sin incluir el término constante $t_0$) en $M_i$. Se denota además a $M_0$ como el modelo sin factores activos. 
 
 Posteriormente, se asignan distribuciones a priori no informativas al término constante $\beta_0$ y el error la desviación estándar $\sigma$. Ambos valores son comunes en todos los modelos. Por lo tanto, $p( \beta_0, \sigma) \propto \dfrac{1}{\sigma}$. Los coeficientes restantes $\beta_i$ tienen distribuciones normales a priori independientes con media 0 y desviación estándar $\gamma \sigma$. 
 
-Se completa el modelo al asignar probabilidades previas a cada uno de los posibles modelos. Otro supuesto es la regla de Pareto o \textit{sparsity of effects principle} que consiste en pensar que cuando hay varias variables, el sistema es más probable es el dominado por pocos efectos principales e interacciones de orden bajo \cite{montgomery2017design}. Se asume que existe la probabilidad $\pi, \text{ } 0 < \pi < 1$ de que cualquier factor esté activo. Se asume también que la información previa de que un factor esté activo no tiene efecto en la creencia de que otros factores estén activos. Por lo tanto, la probabilidad a priori del modelo $M_i$ sigue una función de probabilidad $P(M_i) = \pi ^{f_i} (1 - \pi)^{k-f_i}$. 
+Se completa el modelo al asignar probabilidades previas a cada uno de los posibles modelos. Otro supuesto es la regla de Pareto o \textit{sparsity of effects principle} que consiste en pensar que cuando hay varias variables, el sistema es más probable es el dominado por pocos efectos principales e interacciones de orden bajo \cite{montgomery2017design}. Se asume que existe la probabilidad $\pi, \text{ } 0 < \pi < 1$ de que cualquier factor esté activo. Se asume también que la información previa de que un factor esté activo no tiene efecto en la creencia de que otros factores estén activos. Por lo tanto, la probabilidad a priori del modelo $M_i$ sigue una función de probabilidad $P(M_i) \propto \pi ^{f_i} (1 - \pi)^{k-f_i}$. 
 
 Después, se realiza el experimento y se obtienen los resultados en el vector de datos \textbf{$Y$}. Con la nueva información se pueden actualizar las distribuciones de los parámetros de cada modelo, así como la probabilidad de que los modelos sean correctos. En este punto se utiliza teoría de estadística bayesiana que va más allá de lo alcances de esta tesis. En caso de que se busque más información del tema se recomienda leer \cite{mendoza_bayesiana}. 
 
@@ -200,17 +206,17 @@ En esta sección se resume el artículo escrito por \cite{mitchelldetmax} donde 
 
 Considere el modelo de regresión lineal múltiple $y = X \beta + \epsilon$. Donde el vector de observaciones $y$ es de tamaño $n \times 1$; $X$ es la matriz de $n \times k$ de constantes; $\beta$ es el vector $k \times 1$ de coeficientes por estimar; y $\epsilon$ es el vector de errores de tamaño $n \times 1$ de variables aleatorias independientes e idénticamente distribuidas con una media $0$ y varianza desconocida $\sigma^{2}$. El renglón $i$-ésimo de $X$ es $f(x_i)'$ donde $x_i$ es el $i$-ésimo punto de diseño y la función $f$ está determinada por el modelo. Sea $p$ el número de variables independientes y $\chi$ la región donde es factible realizar el experimento.
 
-Se utilizó el método de mínimos cuadrados para calcular los coeficientes $\beta$. El estimador de $\beta$ es $\hat{\beta} = (X'X)^{-1} X'y$, y su matriz de covarianza es $(X'X)^{-1} \sigma^{2}$. En cualquier punto $x \in \chi$, el valor estimado de la \say{verdadera} respuesta es $\hat{y} (x) = f(x)' \hat{\beta}$. Si el modelo es correcto, la esperanza de $\hat{y}(x)$ es la esperanza de la respuesta en el punto $x$. Es decir, el modelo predice correctamente $y$. La varianza de $\hat{y}(x)$ está dada por $v(x) = f(x)' (X'X)^{-1} f(x) \sigma^{2}$. Sin pérdida de generalidad, se puede considerar a $\sigma^{2}$ igual a $1$. 
+Se utilizó el método de mínimos cuadrados para calcular los coeficientes $\beta$. El estimador de $\beta$ es $\hat{\beta} = (X^{T}X)^{-1} X^{T}y$, y su matriz de covarianza es $(X^{T}X)^{-1} \sigma^{2}$. En cualquier punto $x \in \chi$, el valor estimado de la \say{verdadera} respuesta es $\hat{y} (x) = f(x)' \hat{\beta}$. Si el modelo es correcto, la esperanza de $\hat{y}(x)$ es la esperanza de la respuesta en el punto $x$. Es decir, el modelo predice correctamente $y$. La varianza de $\hat{y}(x)$ está dada por $v(x) = f(x)' (X^{T}X)^{-1} f(x) \sigma^{2}$. Sin pérdida de generalidad, se puede considerar a $\sigma^{2}$ igual a $1$. 
 
-Una de las maneras más populares de construir diseños óptimos es el llamado diseño \say{D-óptimos} donde se busca maximizar $|X'X|$. El propósito del artículo de Mitchell es presentar su versión de diseño D-óptimo llamado \say{DETMAX}. 
+Una de las maneras más populares de construir diseños óptimos es el llamado diseño \say{D-óptimos} donde se busca maximizar $|X^{T}X|$. El propósito del artículo de Mitchell es presentar su versión de diseño D-óptimo llamado \say{DETMAX}. 
 
 \subsection{Algoritmo básico}
 
 En 1970, Mitchell publicó un primer artículo donde introdujo su versión del algoritmo de intercambio. En esa ocasión estableció que se debe empezar con un diseño de $n$ ensayos elegido al azar. Para mejorarlo, se agregan y eliminan puntos de acuerdo a las siguientes consignas: 
 
 \begin{enumerate}
-	\item Se suma un ensayo número $n+1$ elegido para alcanzar el incremento máximo posible de $|X'X|$. Después, 
-	\item Se elimina el ensayo en el diseño resultante que genere la menor disminución en  $|X'X|$. 
+	\item Se suma un ensayo número $n+1$ elegido para alcanzar el incremento máximo posible de $|X^{T}X|$. Después, 
+	\item Se elimina el ensayo en el diseño resultante que genere la menor disminución en  $|X^{T}X|$. 
 \end{enumerate}
 
 Estos dos pasos se realizan al primero sumar al diseño original el punto donde $v(x)$ sea máximo y después restando del diseño con $n+1$ ensayos resultante el punto donde $v(x)$ es mínimo.
@@ -229,7 +235,7 @@ Sea $D$ el diseño actual en cualquier momento durante una excursión. Las regla
 	\item Si el número de puntos en $D$ es menor que $n$, se agrega un punto si $D$ no está en $F$ y se elimina un punto de otra manera. 
 \end{enumerate}
 
-Para determinar si algún diseño $D$ está o no en $F$, se debe examinar el determinante $|X'X|$. A pesar de que esto no es un prueba definitiva (ya que dos diseños diferentes pueden tener el mismo determinante), Mitchell establece que no parece afectar el rendimiento del algoritmo y solo toma una fracción de tiempo en comparación a hacer la prueba exacta de equivalencia.
+Para determinar si algún diseño $D$ está o no en $F$, se debe examinar el determinante $|X^{T}X|$. A pesar de que esto no es un prueba definitiva (ya que dos diseños diferentes pueden tener el mismo determinante), Mitchell establece que no parece afectar el rendimiento del algoritmo y solo toma una fracción de tiempo en comparación a hacer la prueba exacta de equivalencia.
 
 En cada iteración se vuelve más difícil obtener un mejor diseño ya que las excursiones se pueden alejar mucho de un nivel de $n$ puntos. Para parar el algoritmo, Mitchell propone establecer límites en el mínimo y máximo número de puntos permitidos en la construcción de un diseño durante una excursión. Su recomendación es establecerlo entre $n \pm 6$. 
 
@@ -262,7 +268,7 @@ El desarrollo detallado y el pseudocódido de la función \texttt{MDr} y del alg
 
 \section{Implementación de MDopt en los lenguajes}
 
-Este proyecto se eligió para ilustrar el poder de cálculo de \textsf{Julia, R} y \textsf{Python} ya que representa un reto de rapidez y complejidad de cálculo. Se utilizó el algoritmo presentado en la sección anterior para desarrollar la función \texttt{MDopt} en \textsf{Julia} y \textsf{Python}. Posteriormente, se utilizaron los paquetes \texttt{JuliaCall} y \texttt{reticulate} de \textsf{R} para crear un vínculo de \textsf{R} con \textsf{Julia} y \textsf{Python} respectivamente. Así, se exportaron y ejecutaron las funciones \texttt{MDopt} a \textsf{R}. Se utilizaron dos ejemplos de experimentos que presenta \cite{meyer1996} para mostrar y comparar la rapidez de ejecución de las tres funciones. En sus ambiente naturales, \textsf{Python} y \textsf{Julia} son más rápidos, pero para efecto de este trabajo se utilizó \textsf{R} como punto de comparación ya que es uno de los propósitos de esta tesis. En esta sección se expone el paralelismo que se encontró al implementar lenguajes externos en \textsf{R}.
+Este proyecto se eligió para ilustrar el poder de cálculo de \textsf{Julia, R} y \textsf{Python} ya que representa un reto de rapidez y complejidad de cálculo. Se utilizó el algoritmo presentado en la sección anterior para desarrollar la función \texttt{MDopt} en \textsf{Julia} y \textsf{Python}. Posteriormente, se utilizaron los paquetes \texttt{JuliaCall} \citep{JuliaCall} y \texttt{reticulate} \citep{software_reticulate} de \textsf{R} para crear un vínculo de \textsf{R} con \textsf{Julia} y \textsf{Python} respectivamente. Así, se exportaron y ejecutaron las funciones \texttt{MDopt} a \textsf{R}. Se utilizaron dos ejemplos de experimentos que presenta \cite{meyer1996} para mostrar y comparar la rapidez de ejecución de las tres funciones. En sus ambiente naturales, \textsf{Python} y \textsf{Julia} son más rápidos, pero para efecto de este trabajo se utilizó \textsf{R} como punto de comparación ya que es uno de los propósitos de esta tesis. En esta sección se expone el paralelismo que se encontró al implementar lenguajes externos en \textsf{R}.
 
 Para ejecutar lenguajes externos en \textsf{R} se requieren dos paquetes. El primero es \texttt{JuliaCall} y, como su nombre lo indica, se encarga de ejecutar comandos de \textsf{Julia} en \textsf{R}. Asimismo, el paquete \texttt{reticulate} cumple el mismo propósito con \textsf{Python}. Ambos paquetes fueron desarrollados con el objetivo de crear un enlace entre su lenguaje y \textsf{R} por lo que se encontraron similitudes entre ellos. La tabla \ref{comandos_similares} presenta los comandos análogos de los paquetes con especificaciones que se encontraron al trabajar con ellos. 
 
@@ -310,7 +316,7 @@ Suponga que busca ejecutar, dentro de \textsf{R}, una función llamada \texttt{f
 
 \subsection{reticulate}
 
-El objetivo del paquete \texttt{reticulate} es hacer posible la ejecución de \textsf{Python} en \textsf{R}. La documentación describe que \say{el paquete \texttt{reticulate} provee herramientas para la interoperabilidad entre \textsf{Python} y \textsf{R}} \cite{reticulate_package}. Los usuarios del paquete tienden a usar funciones de ambos lenguajes de manera entrelazada buscando obtener el código más eficiente posible. A diferencia de \texttt{JuliaCall}, mi experiencia con \texttt{reticulate} es que funciona como una extensión de \textsf{R} ya que permite navegar fácilmente entre ambos lenguajes sin la necesidad de comandos. Más bien, se necesitan los prefijos \texttt{.r} y \texttt{py\$} para distinguir los objetos de cada lenguaje. 
+El objetivo del paquete \texttt{reticulate} es hacer posible la ejecución de \textsf{Python} en \textsf{R}. La documentación describe que \say{el paquete \texttt{reticulate} provee herramientas para la interoperabilidad entre \textsf{Python} y \textsf{R}}, \cite{reticulate_package}. Los usuarios del paquete tienden a usar funciones de ambos lenguajes de manera entrelazada buscando obtener el código más eficiente posible. A diferencia de \texttt{JuliaCall}, mi experiencia con \texttt{reticulate} es que funciona como una extensión de \textsf{R} ya que permite navegar fácilmente entre ambos lenguajes sin la necesidad de comandos. Más bien, se necesitan los prefijos \texttt{.r} y \texttt{py\$} para distinguir los objetos de cada lenguaje. 
 
 Análogo a la sección anterior, suponga que se busca ejecutar, dentro de \textsf{R}, una función llamada \texttt{functionPy(x,y)} creada en \textsf{Python}. El procedimiento que se siguió en este trabajo es el siguiente: 
 
@@ -726,7 +732,7 @@ tiempos_df["BsMD"] <- times
 
 	# Julia con R
 library(JuliaCall)
-julia_setup(JULIA_HOME = ~/Programs/Julia-1.6.3/bin")
+julia_setup(JULIA_HOME = "~/Programs/Julia-1.6.3/bin")
 	
 julia_source("MDopt.jl")
 	
@@ -807,9 +813,6 @@ for (i in runs){
 tiempos_df["reticulate"] <- times
 	
 	write.csv(tiempos_df, "tiempos_MD_ej4.csv")
-	
-	
-	
 \end{minted} 
 
 En los tres lenguajes los resultados fueron los mismos y se muestran en la tabla \ref{results_ej2}.
@@ -846,7 +849,7 @@ Se tomó como referencia la función \texttt{MDopt} desarrollada por \cite{tesis
 
 Se midieron los tiempos de ejecución para determinar el lenguaje que realiza los cálculos más rápidamente. El paquete más rápido fue \texttt{BsMD} seguido por \textsf{Julia}. El paquete \texttt{BsMD2} toma el tercer lugar mientras que la función desarrollada en \textsf{Python} fue la más tardía. Los resultados en los tiempos de ejecución muestran la complejidad del algoritmo y la capacidad de cada uno de los lenguajes. 
 
-Este proyecto realmente muestra el potencial de rendimiento que tiene \textsf{Julia}. Una de las razones de esa rapidez es que \textsf{Julia} pide definir el tipo de objeto con el que se va a trabajar. Esto hace que las funciones asignadas a los objetos funcionen de la manera más eficiente posible. Sin embargo, la definición e inicialización de objetos en \textsf{Julia} fue lo más complicado de este proyecto. Tuve que buscar como definir un vector de dataframes, un vector de vectores y un vector de matrices que guardaran los valores que iba necesitando en la función \texttt{MDopt}. En cambio, en \textsf{Python} todos los objetos se definieron como listas sin ninguna otra especificación. 
+Este proyecto realmente muestra el potencial de rendimiento que tiene \textsf{Julia}. Una de las razones de esa rapidez es que \textsf{Julia} pide definir el tipo de objeto con el que se va a trabajar. Esto hace que las funciones asignadas a los objetos funcionen de la manera más eficiente posible. Sin embargo, la definición e inicialización de objetos en \textsf{Julia} fue lo más complicado de este proyecto. Tuve que buscar como definir un vector de dataframes, un vector de vectores y un vector de matrices que guardaran los valores que iba necesitando en la función \texttt{MDopt}. Los recursos de apoyo fueron escasos lo que ocasionó una gran inversión de tiempo en pocas líneas de código. En cambio, en \textsf{Python} todos los objetos se definieron como listas sin ninguna otra especificación. 
 
 Otra característica que presenta \textsf{Julia} es la necesidad de utilizar un paquete especial llamado \texttt{NamedArrays} para nombrar los renglones y las columnas de los arreglos. Usar este paquete fue la única forma que encontré de referirme a un renglón o columna específica. Esta sería una mejora que propondría para los paquetes \texttt{LinearAlgebra} y \texttt{StatBase}. 
 

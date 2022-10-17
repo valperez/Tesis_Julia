@@ -56,6 +56,36 @@ En este ejercicio se eligió un tema de interés personal: los ingresos. Más es
     \end{aligned}
 \end{equation}
 
+La tabla \ref{regresores_mod_desc} muestra una descripción detallada de los regresores utilizados en el modelo \ref{modelo_final}.
+
+\begin{center}
+	\begin{tabular}{|p{3cm}|p{6.5cm}|} 
+		\hline
+		Nombre & Descripción \\ 
+		\hline 
+		$horas_{trabajadas}$ & Cantidad de horas que la persona entrevistada trabajó la semana pasada \\ 
+		\hline
+		$sexo$ & Sexo de la persona entrevistada \\ 
+		\hline
+		$escolaridad$ & El último año o grado que la persona entrevistada aprobó en la escuela \\ 
+		\hline
+		$entidad_{trabajo}$ & El estado en que está el negocio, empresa o lugar donde trabajó la persona entrevistada la semana pasada \\
+		\hline
+		$posicion_{laboral}$ & Describe el nombre de la posición de trabajo que realiza la persona entrevistada \\
+		\hline
+		$alfabetismo$ & Determina si la persona entrevistada sabe leer y escribir un recado \\
+		\hline
+		$aguinaldo$ & Determina si la persona entrevistada recibe aguinaldo por su trabajo \\
+		\hline
+		$vacaciones$ & Define si la persona entrevistada cuenta con vacaciones con goce de sueldo \\
+		\hline
+		$servicio_medico$ & Determina si la persona entrevistada cuenta con servicio médico (IMSS, ISSTE u otro) \\
+		\hline
+	\end{tabular} 
+	\captionof{table}{Descripción de regresores utilizados en el ejercicio del Censo 2020} \label{regresores_mod_desc}
+\end{center}
+
+
 
 \section{Planteamiento del problema}
 El Censo mexicano es un estudio extensivo sobre la vida de sus habitantes. El área de interés determina el filtro de información y la selección de columnas. Es necesario entender la estructura de las encuestas y la relación entre ellas. Para ello, el INEGI también proporciona el diccionario ampliado que se encuentra en la página \url{https://www.inegi.org.mx/programas/ccpv/2020/default.html#Microdatos} dentro del apartado \textsf{Documentación de la base de datos}. La información que aporta el diccionario es clave ya que expone los códigos y las nomenclaturas que permiten entender como se paso de tener respuestas en hojas de papel a tenerlas en una base de datos.
@@ -73,7 +103,7 @@ Los resultados del Censo se dividen en tres partes: Viviendas, Personas y Migran
     \item Cada regresor es resultado de una pregunta hecha y tiene una variable asignada. Si el entrevistado decide no responder a alguna pregunta se marca la respuesta como \texttt{No especificado}. En este caso, se eliminaron a las personas que no respondieron alguna de las preguntas que corresponden a los regresores. 
 \end{enumerate}
 
-Con los filtros anteriores la cantidad de datos con la que se trabaja se reduce de 15 a 3.5 millones. Este proceso tomó alrededor de 20 minutos en ejecutarse y, posteriormente, se guardó la nueva base de datos. El filtrado de la información se ejecutó en \textsf{Julia} y se guardó para utilizarla posteriormente en \textsf{R} y \textsf{Python}. El código de lectura de la base de datos y los comandos utilizados para la selección de información son los siguientes. A pesar de ser un código largo, está debidamente documentado. 
+Con los filtros anteriores la cantidad de datos con la que se trabaja se reduce de 15 a 3.5 millones. Este proceso tomó alrededor de 20 minutos en ejecutarse y, posteriormente, se guardó la nueva base de datos. El filtrado de la información se ejecutó en \textsf{Julia} y se guardó para utilizarla posteriormente en \textsf{R} y \textsf{Python}. El código de lectura de la base de datos y los comandos utilizados para la selección de información son los siguientes. Adicionalmente a los paquetes ya mencionados, se utilizaron \texttt{StatsBase} \citep{software_statsbase}, \texttt{Random} \citep{Julia-2017} y \texttt{CategoricalArrays} \citep{software_catArrays}. 
 
 
 \begin{minted}{julia}
@@ -145,7 +175,7 @@ CSV.write("personas_filtradas.csv", personas_filt)
 
 \section{Factores y Sub-ajustes} \label{reg_categorias}
 
-Lo primero que se debe verificar es que la lectura de datos haya clasificado las variables de manera correcta. En el modelo presentado en \ref{modelo_final}, la mayoría de las variables del ajuste son categorías o factores, pero \textsf{Julia} las lee como \textsf{Int64}. Por ejemplo, la variable \texttt{NIVACAD} responde a la pregunta sobre el último año o grado aprobado por el entrevistado. Hay 15 respuestas que corresponden a todos los niveles académicos posibles, desde no haber recibido ningún tipo de educación formal hasta haber obtenido un doctorado. Cada respuesta se identifica con un número que va del 0 al 14. Por lo tanto, en el modelo propuesto \ref{modelo_final}, el regresor \texttt{NIVACAD} es de tipo categórico y tiene 15 niveles. Ya que las respuestas son número, el comando \texttt{CSV.read} de \textsf{Julia} identifica incorrectamente la columna como tipo \textsf{Int64}. Esto sucede con todos los factores del modelo compilados en la lista \texttt{categorias} del código mostrado a continuación. En el siguiente código se muestra la manera en la que se convirtieron las variables a factores. 
+Lo primero que se debe verificar es que la lectura de datos haya clasificado las variables de manera correcta. En el modelo presentado en \ref{modelo_final}, la mayoría de las variables del ajuste son categorías o factores, pero \textsf{Julia} las lee como \textsf{Int64}. Por ejemplo, la variable \texttt{NIVACAD} responde a la pregunta sobre el último año o grado aprobado por la persona entrevistada. Hay 15 respuestas que corresponden a todos los niveles académicos posibles, desde no haber recibido ningún tipo de educación formal hasta haber obtenido un doctorado. Cada respuesta se identifica con un número que va del 0 al 14. Por lo tanto, en el modelo propuesto \ref{modelo_final}, el regresor \texttt{NIVACAD} es de tipo categórico y tiene 15 niveles. Ya que las respuestas son número, el comando \texttt{CSV.read} de \textsf{Julia} identifica incorrectamente la columna como tipo \textsf{Int64}. Esto sucede con todos los factores del modelo compilados en la lista \texttt{categorias} del código mostrado a continuación. En el siguiente código se muestra la manera en la que se convirtieron las variables a factores. 
 
 \begin{minted}{julia}
 julia> using DataFrames
@@ -326,7 +356,7 @@ En cualquiera de los sub-ajustes, la mayoría de los regresores son de tipo cate
 \end{center}
 
 
-Como se observa en la tabla \ref{res_fit10_2500mil}, \textsf{Julia} no solo da el cálculo de los coeficientes, también da indicadores como lo son el error estándar y el intervalo de confianza. 
+Como se observa en la tabla \ref{res_fit10_2500mil}, \textsf{Julia} no solo da el cálculo de los coeficientes, también da indicadores como el error estándar y el intervalo de confianza. 
 
 En \textsf{R} se utilizó la función \texttt{lm} para hacer los ajustes mientras que en \textsf{Python} se usó la función \texttt{LinearRegression()} del paquete \texttt{sklearn} explicado a detalle en la sección \ref{sec_sklearn}. El código completo en ambos lenguajes se encuentra en el apéndice \ref{apendice_censo}. 
 
@@ -368,7 +398,7 @@ Por otro lado, en cuanto a tiempo de ejecución, la tabla \ref{app_censo_tiempos
 
 La diferencia en tiempo se hace más notoria si se considera la ejecución del código completo. El desempeño de \textsf{Julia} parece ser más lento en general ya que invierte una cantidad considerable de tiempo en guardar los resultados en un archivo de tipo \textsf{CSV}. Por otro lado, el tiempo de ejecución del código completo en \textsf{Python} es menor. Por lo tanto, la experiencia de usuario, en general, es que a \textsf{Python} le toma menos tiempo obtener los resultados de la regresión. 
 
-En cambio, \textsf{R} es el lenguaje más lento de la triada de lenguajes. Su tiempo mínimo de ejecución es de 25.170 segundos mientras que el tiempo máximo es de 42.471 segundos. Adicionalmente, el lenguaje presenta dificultades al manejar grandes cantidades de datos. Se presentó una sensación de entorpecimiento en la ejecución del código ya que los cálculos eran lentos y, en ocasiones, se presentó un mensaje que pedía reiniciar la sesión de \textsf{R}.   
+En cambio, \textsf{R} es el lenguaje más lento de la triada de lenguajes. Su tiempo mínimo de ejecución es de 25.170 segundos mientras que el tiempo máximo es de 42.471 segundos. Adicionalmente, el lenguaje presenta dificultades al manejar grandes cantidades de datos. Se presentó una sensación de entorpecimiento en la ejecución del código ya que los cálculos eran lentos y, en ocasiones, se presentó un mensaje que pedía reiniciar la sesión de \textsf{R}.    
 
 En suma, en este ejemplo el paquete \texttt{GLM} de \textsf{Julia} cumple su propósito de ajustar el modelo de manera correcta y rápida. Más aún, el paquete también proporciona los estimadores necesarios para un análisis completo de regresión. En cambio, si bien las funciones utilizadas en \textsf{R} y \textsf{Python} no presentan dicha tabla, sí existen los comandos para obtener los estimadores. 
 

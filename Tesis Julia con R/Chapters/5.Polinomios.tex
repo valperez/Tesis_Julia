@@ -111,7 +111,7 @@ Considere el sistema lineal presentado de manera matricial como
 
 Note la similitud de la ecuación anterior con la ecuación (\ref{eq_matricial}). En esencia presentan el mismo problema con variables llamadas de manera diferente. En esta sección se utiliza la notación presentada en la ecuación (\ref{eq_sistema_lineal}) por congruencia con las definiciones y teoremas presentados. 
 
-Se considera que los datos tienen impurezas cuando cualquier cambio en la matriz $A$ o en el vector $b$ resulta en un ajuste de los coeficientes $x$ poco preciso. El caso contrario, donde los métodos dan resultados precisos se conoce a los datos como exactos \citep{numerical_linear_algebra}.
+Se considera que los datos tienen impurezas cuando cualquier cambio en la matriz $A$ o en el vector $b$ resulta en un ajuste de los coeficientes $x$ poco preciso. El caso contrario, donde los métodos dan resultados precisos se conoce a los datos como exactos, \cite{numerical_linear_algebra}.
 
 En general, para el problema \ref{eq_matricial_pol} se tienen tres casos posibles: 
 \begin{enumerate}
@@ -206,7 +206,7 @@ En segundo lugar, se desarrolló una función que generara la matriz $X$ definid
 
 
 \begin{minted}{julia}
-julia> function generar_X(k)# k es la potencia del polinomio
+julia>function generar_X(k)#k es la potencia del polinomio
 
     n = size(filip, 1) # número de renglones
     # Inicialización de una matriz vacía
@@ -311,7 +311,7 @@ R_{11} & R_{12} \\
 donde $R_{11}$ es una matriz triangular superior de tamaño $r \times r$ con entradas en la diagonal diferentes de cero \cite[p.~532]{numerical_linear_algebra}.
 \end{theorem}
 
-El paquete \texttt{LinearAlgebra} en \textsf{Julia} tiene la función \texttt{qr} que permite obtener la descomposición QR versión económica.  
+El paquete \texttt{LinearAlgebra} \citep{Julia-2017} en \textsf{Julia} tiene la función \texttt{qr} que permite obtener la descomposición QR versión económica.  
 
 \begin{minted}{julia}
     # Con QR versión económica
@@ -387,7 +387,7 @@ Los valores singulares de $A \in M_{n}$ son los eigenvalores de $(A^{*}A)^{1/2}$
 
 
 \begin{theorem}
-Sea $A \in M_{m \times n} (F)$ diferente de cero y sea $r =   rango(A)$. Sean $\sigma_1 \geq \sigma_2 \geq \dots \geq \sigma_r > 0$ los valores singulares positivos de A y definamos
+Sea $A \in M_{m \times n} (\mathbb{R})$ diferente de cero y sea $r =   rango(A)$. Sean $\sigma_1 \geq \sigma_2 \geq \dots \geq \sigma_r > 0$ los valores singulares positivos de A y definamos
 
 \begin{equation*}
     \begin{aligned}
@@ -400,7 +400,7 @@ Sea $A \in M_{m \times n} (F)$ diferente de cero y sea $r =   rango(A)$. Sean $\
     \in M_{r}(R).
     \end{aligned}
 \end{equation*}
-Entonces, existen matrices unitarias $U \in M_{m}(F)$ y $V \in M_{n}(F)$ tales que 
+Entonces, existen matrices unitarias $U \in M_{m}(\mathbb{R})$ y $V \in M_{n}(\mathbb{R})$ tales que 
 \begin{equation} \label{decomposicion}
     \begin{aligned}
     A = U \Sigma V^{*}
@@ -417,7 +417,7 @@ donde
     \in M_{m \times n}(R)
     \end{aligned}
 \end{equation*}
- tiene las mismas dimensiones que A. Si m = n, entonces $U, V \in M_{n}(F)$ y $\Sigma = \Sigma_r \oplus 0_{n-r}$
+ tiene las mismas dimensiones que A. Si m = n, entonces $U, V \in M_{n}(\mathbb{R})$ y $\Sigma = \Sigma_r \oplus 0_{n-r}$
  \cite[p.~421]{garcia2017second}.
 \end{theorem}
 
@@ -493,7 +493,7 @@ Por lo tanto, la pseudo inversa de Moore Penrose es la solución de mínimos cua
 Este método tampoco funcionó. Los resultados de este método corresponden a la columna \texttt{MoorePenrose} de las tablas \ref{NIST_res_gr5}, \ref{NIST_res_gr6}, \ref{NIST_res_gr10}. Se continuó indagando en los paquetes de Julia hasta encontrar \textit{Polynomials}. 
 
 \subsection{\textit{Polynomials}}
-\textit{Polynomials} es un paquete que proporciona aritmética básica, integración, diferenciación, evaluación y hallar raíces para polinomios univariados \citep{poly_manual}. Las instrucciones para instalarlo se encuentran en la sección \ref{instalacion_paquete}. 
+\textit{Polynomials} \citep{software_polynomials} es un paquete que proporciona aritmética básica, integración, diferenciación, evaluación y hallar raíces para polinomios univariados \citep{poly_manual}. Las instrucciones para instalarlo se encuentran en la sección \ref{instalacion_paquete}. 
 
 
 El paquete \textit{Polynomials} contiene la función llamada \texttt{fit} que ajusta un polinomio de grado \texttt{deg} a \texttt{x} y \texttt{y} usando interpolación polinomial o aproximación por mínimos cuadrados \citep{poly_manual}. La función toma tres argumentos como entrada. Los primeros dos corresponden a $x$ y $y$ de los datos a utilizar (en este caso, los datos \texttt{filip}). El tercer argumento, \texttt{deg},  compete al grado que se busca sea el polinomio. 
@@ -641,7 +641,7 @@ En cambio, el resto de los métodos obtienen resultados similares en los ajustes
 \end{center}
 \end{figure}
 
-En cuanto a los tiempos de ejecución, la tabla \ref{NIST_tiempos} presenta, en segundos, una comparación entre los métodos desarrollados. Las columnas corresponden al método utilizado mientras que los reglones representan el grado del polinomio. 
+En cuanto a los tiempos de ejecución, hay distintas maneras de medir el tiempo en los tres lenguajes. En este ejercicio y en los dos siguientes se seleccionaron los paquetes y las funciones que se consideraron más convenientes. La tabla \ref{NIST_tiempos} presenta, en segundos, una comparación entre los métodos desarrollados. Las columnas corresponden al método utilizado mientras que los reglones representan el grado del polinomio. 
 
 
 \begin{figure}[h]
@@ -656,7 +656,7 @@ De los métodos programados en \textsf{Julia}, el más rápido es el correspondi
 
 En cuanto a la experiencia de usuario, este proyecto representó un reto algebraico mayor al resto. La tarea de encontrar cuatro formas diferentes de solución a un problema fue un desafío. Como usuaria de los tres lenguajes presentados, quedo insatisfecha con los resultados de \textsf{Julia}, especialmente con los paquetes \texttt{GLM} y \texttt{Polynomials}. Los paquetes deben ser una herramienta que presenten un algoritmo optimizado de la teoría algebraica. El fracaso tan temprano del paquete \texttt{GLM} fue una sorpresa. Por otro lado, a pesar de que el paquete \texttt{Polynomials} obtiene una respuesta con alta precisión numérica, se siente la falta del cálculo de estimadores como lo son la desviación estándar, el valor $p$ y los intervalos de confianza. Esto no es una sorpresa ya que el enfoque del paquete es toda la teoría relacionada con polinomios, no con ajustes de modelos lineales. 
 
-\textsf{R} y \textsf{Python} no decepcionan ni sorprenden. Ambos son lenguajes que llevan más tiempo siendo desarrollados por lo que la verdadera sorpresa sería que no funcionaran. Aún así, en el caso de \textsf{R} es necesario el conocimiento del argumento que representa la tolerancia del ajuste. En cambio, en \textsf{Python} se obtienen los resultados de manera sencilla y con pocas líneas de código. Por lo tanto, por la sencillez y rapidez del lenguaje, \textsf{Python} sería mi candidato principal para hacer el ajuste de un modelo lineal. 
+\textsf{R} y \textsf{Python} no decepcionan ni sorprenden. Ambos son lenguajes que llevan más tiempo siendo desarrollados por lo que la verdadera sorpresa sería que no funcionaran. Adicionalmente, ambos lenguajes cuentan con una vasta cantidad de recursos de apoyo para ejercicios de regresión lineal. Aún así, en el caso de \textsf{R} es necesario el conocimiento del argumento que representa la tolerancia del ajuste. En cambio, en \textsf{Python} se obtienen los resultados de manera sencilla y con pocas líneas de código. Por lo tanto, por la sencillez y rapidez del lenguaje, \textsf{Python} sería mi candidato principal para hacer el ajuste de un modelo lineal. 
 
 En el siguiente capítulo se retoma el enfoque en análisis de datos para desarrollar el ajuste de un modelo lineal usando una extensa cantidad de datos. 
 

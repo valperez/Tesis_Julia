@@ -4,15 +4,15 @@
 
 Los recursos de apoyo disponibles para el uso de \textsf{Python} son vastos y de todos los medios posibles. Se decidió incluirlo en este trabajo ya que su uso en ciencia de datos es cada vez más frecuente. Un ejemplo de ello es la publicación de libros escritos por reconocidos desarrolladores de software como lo son \textit{Python Data Science Handbook} de Jake VanderPlas y \textit{Python for Data Analysis} de Wes McKinney. Otros lenguajes de programación utilizados para ciencia de datos son \textsf{R, SQL} y \textsf{Stata}. 
 
-\textsf{Python} se incluye también en este documento por su uso similar con \textsf{Julia} y \text{R} lo que permite mostrar su sencillez y facilidad de programación. En este trabajo se utilizó \textsf{Python} para los tres proyectos de manejo de datos que se explican a partir del capítulo \ref{cap_polinomios}. En dichos capítulos se presenta el código utilizado en los ejercicios por lo que en las siguientes secciones se comentan los paquetes principales y la interfaz que se utilizaron. 
+\textsf{Python} se incluye también en este documento por su uso similar con \textsf{Julia} y \text{R} lo que permite mostrar su sencillez y facilidad de programación. En este trabajo se utilizó \textsf{Python} para los tres proyectos de manejo de datos que se explican a partir del capítulo \ref{cap_polinomios}. En dichos capítulos se presenta el código utilizado en los ejercicios, por lo que en las siguientes secciones se comentan los paquetes principales y la interfaz que se utilizaron. 
 
 \section{Listas}
 \say{Una \textit{lista} es una colección de elementos en un orden particular}, \cite{matthes2019python}. La lista es la estructura de datos elemental y principal de \textsf{Python} ya que permite almacenar diferentes tipos de elementos en un solo objeto. Una lista se crea usando paréntesis cuadrados \texttt{[]}. Por ejemplo, si se quisiera hacer una lista de animales en el zoológico el comando sería 
 
-\begin{lstlisting}[language=Python]
+\begin{minted}{python}
 animales = ["zebra", "leon", "jirafa", "elefante"]
 animales[1]
-\end{lstlisting}
+\end{minted}
 
 Los elementos de una lista pueden accederse mediante su índice y el uso de corchetes cuadrados. Por ejemplo, el comando \texttt{animales[1]} regresa \texttt{"león"}. Una característica clave de las listas en \textsf{Python} es que, a diferencia de \textsf{R} y \textsf{Julia}, las listas comienzan a numerar sus elementos desde el cero. 
 
@@ -22,14 +22,14 @@ Existen más estructuras de datos en \textsf{Python} cuyas características cump
 Al igual que en \textsf{Julia}, en \textsf{Python} se desarrolló el lenguaje original separado de los paquetes. La diversidad del desarrollo de los paquetes es tal que facilita hacer casi cualquier tipo de análisis matemático posible. 
 
 Para usar cualquier instrucción de un paquete se tiene primero que nombrar su apodo y después llamar a la función. El apodo del paquete se lo otorga el usuario al momento de importarlo. Por ejemplo, 
-\begin{lstlisting}[language=Python]
+\begin{minted}{python}
 	import numpy as np
-\end{lstlisting}
+\end{minted}
 
 \noindent importa el paquete \texttt{NumPy} con el apodo \texttt{np}. Si se quisiera llamar a la función \texttt{array} de este paquete se tendría que escribir el comando \texttt{np.array}. En las siguientes secciones se presentan los paquetes de \textsf{Python} utilizados en este trabajo. 
 
 \subsection{NumPy} \label{seccion_numpy}
-\texttt{NumPy} es el paquete fundamental para computación científica en \textsf{Python} ya que es el que proporciona los objetos multidimensionales como lo son los vectores y matrices. Estos objetos se pueden crear sin necesidad de \texttt{NumPy}, pero hacerlo mediante el paquete otorga algunas ventajas. La primera de ellas es que los arreglos creados en \texttt{NumPy} tienen dimensiones inmutables; la segunda es que sus elementos deben pertenecer del mismo tipo de dato; la tercera es que facilitan operaciones matemáticas en grandes cantidades de datos; y, finalmente, la cuarta es que es uno de los paquetes preferidos por la comunidad de \textsf{Python} lo cual lo hace objeto de una gran cantidad de publicaciones sobre su uso y aplicación. 
+\texttt{NumPy} \citep{software_numpy} es el paquete fundamental para computación científica en \textsf{Python} ya que es el que proporciona los objetos multidimensionales como lo son los vectores y matrices. Estos objetos se pueden crear sin necesidad de \texttt{NumPy}, pero hacerlo mediante el paquete otorga algunas ventajas. La primera de ellas es que los arreglos creados en \texttt{NumPy} tienen dimensiones inmutables; la segunda es que sus elementos deben pertenecer del mismo tipo de dato; la tercera es que facilitan operaciones matemáticas en grandes cantidades de datos; y, finalmente, la cuarta es que es uno de los paquetes preferidos por la comunidad de \textsf{Python} lo cual lo hace objeto de una gran cantidad de publicaciones sobre su uso y aplicación. 
 
 En esta tesis se usó \texttt{NumPy} para crear y manipular arreglos, así como hacer un ajuste de un polinomio usando el método de mínimos cuadrados. A continuación se presenta la lista completa de comandos que se utilizaron con su respectiva explicación proveniente del paquete oficial de \texttt{NumPy}, \cite{numpy_manual}. 
 
@@ -58,7 +58,7 @@ En esta tesis se usó \texttt{NumPy} para crear y manipular arreglos, así como 
 
 
 \subsection{pandas}
-\texttt{pandas} es el segundo paquete en importancia de \textsf{Python} ya que ofrece manipulación y análisis de datos de manera rápida, flexible y sencilla. Sus funciones se enfocan en el uso eficiente de dataframes, lectura y escritura de datos, agrupación y unión de conjuntos de datos, entre otros \citep{pandas_manual}. En esta tesis se utilizaron los siguientes comandos de este paquete.
+\texttt{pandas} \citep{software_pandas} es el segundo paquete en importancia de \textsf{Python} ya que ofrece manipulación y análisis de datos de manera rápida, flexible y sencilla. Sus funciones se enfocan en el uso eficiente de dataframes, lectura y escritura de datos, agrupación y unión de conjuntos de datos, entre otros \citep{pandas_manual}. En esta tesis se utilizaron los siguientes comandos de este paquete.
 
 \begin{itemize}
 	\item pd.read\_csv(\texttt{filepath}): Lee un archivo \texttt{csv} y lo convierte a dataframe.
@@ -69,24 +69,24 @@ En esta tesis se usó \texttt{NumPy} para crear y manipular arreglos, así como 
 \end{itemize}
 
 \subsection{os}
-Otro paquete utilizado en este trabajo fue \texttt{os} ya que proporciona una manera portátil de usar la funcionalidad dependiente del sistema operativo \citep{doc_python}. Este es el paquete que permite hacer la conexión entre \textsf{Python} y los archivos de una computadora. Los comandos que se utilizaron son dos. El primero fue \texttt{os.chdir(path)} que permite seleccionar el directorio en el que se está trabajando. Mientras que el segundo fue \texttt{os.listdir(path)} que proporciona una lista de archivos en el \texttt{path} dado. 
+Otro módulo utilizado en este trabajo fue \texttt{os} \citep{software_python} ya que proporciona una manera portátil de usar la funcionalidad dependiente del sistema operativo \citep{doc_python}. Este es el paquete que permite hacer la conexión entre \textsf{Python} y los archivos de una computadora. Los comandos que se utilizaron son dos. El primero fue \texttt{os.chdir(path)} que permite seleccionar el directorio en el que se está trabajando. Mientras que el segundo fue \texttt{os.listdir(path)} que proporciona una lista de archivos en el \texttt{path} dado. 
 
 
 \subsection{scikit-learn} \label{sec_sklearn}
-\texttt{scikit-learn} es un paquete creado para \textit{machine learning} o aprendizaje de máquina en \textsf{Python}. También es conocido como \texttt{sklearn} y proporciona herramientas simples y eficientes para la predicción en análisis de datos. Por ejemplo, clasificación, regresión, agrupamiento o conglomerado y reducción de dimensiones en modelos \citep{doc_python}. En este trabajo se utilizó para hacer regresiones lineales. El usuario puede importar el paquete de dos maneras. 
+\texttt{scikit-learn} \citep{software_scikitlearn} es un paquete creado para \textit{machine learning} o aprendizaje de máquina en \textsf{Python}. También es conocido como \texttt{sklearn} y proporciona herramientas simples y eficientes para la predicción en análisis de datos. Por ejemplo, clasificación, regresión, agrupamiento o conglomerado y reducción de dimensiones en modelos \citep{doc_python}. En este trabajo se utilizó para hacer regresiones lineales. El usuario puede importar el paquete de dos maneras. 
 
-\begin{lstlisting}[language=Python]
+\begin{minted}{python}
 	import sklearn
 	from sklearn import linear_model
 	
 	regr = linear_model.LinearRegression()
 	model = regr.fit(x, y)
-\end{lstlisting}
+\end{minted}
 
 La primera línea de instrucción importa el paquete \texttt{sklearn} completo, mientras que la segunda solo toma la parte de modelos lineales. Con el paquete cargado, la tercera línea de código se encarga de guardar en la variable \texttt{regr} que lo que se busca es ajustar un modelo lineal definido como en la ecuación \ref{eq_rlm}. Finalmente, el último comando del código calcula los coeficientes $\beta$  usando el método de mínimos cuadrados. 
 
 \subsection{itertools}
-\say{itertools es un módulo que estandariza un conjunto importante de herramientas rápidas y eficientes de memoria que son útiles en sí mismas o en combinación}, \cite{doc_python}. Este paquete tiene ciertas funciones implementadas que se pueden recrear sin la necesidad del mismo. Sin embargo, la ventaja de utilizar \texttt{itertools} es la velocidad en la que las genera. 
+\say{itertools es un módulo que estandariza un conjunto importante de herramientas rápidas y eficientes de memoria que son útiles en sí mismas o en combinación}, \cite{doc_python}. Este paquete tiene ciertas funciones implementadas que se pueden recrear sin la necesidad del mismo. Sin embargo, la ventaja de utilizar \texttt{itertools} \citep{software_python} es la velocidad en la que las genera. 
 
 En este trabajo se utilizo \texttt{itertools.combinations()} para crear las combinaciones de posibles factores activos del problema de discriminación de modelos presentado en el capítulo \ref{chapter_MDopt}. Todos los paquetes anteriores se utilizaron mediante la interfaz gráfica \textsf{Jupyter Notebook} que se presenta a continuación.
 
